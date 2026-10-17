@@ -6,7 +6,14 @@
 **Documentation updated:** 2026-10-17
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 
-This guide explains the system at a high level. It is not a replacement for the numbered Rotom Support (RS) documents, which remain authoritative for configuration, troubleshooting, and recovery.
+This guide is for newcomers, administrators, and recovery operators who need to understand how Rotom's infrastructure and services fit together. Use it to learn the system and identify the right source; use the numbered Rotom Support (RS) documents for authoritative configuration, troubleshooting, and recovery procedures.
+
+## Start here
+
+- For a quick orientation, read **System at a glance**, then **How requests reach Rotom** and **Service and storage relationships**.
+- For an active fault or planned change, use the [Server Inventory task and symptom router](../runbook/01-Rotom-Server-Inventory.md#start-by-task-or-symptom) instead of treating this overview as a procedure.
+- For replacement-hardware recovery after losing PVE and Rotom, begin with the [Total-Loss Recovery emergency path](../guide/PVE-and-Rotom-Total-Loss-Recovery.md#emergency-recovery-path).
+- When a status label shows uncertainty or a mismatch, follow the linked numbered source and verify live state before acting.
 
 ## Reading the status labels
 
@@ -18,7 +25,7 @@ This guide explains the system at a high level. It is not a replacement for the 
 - **Retired** means it must not be treated as a current service or recreated from history without new evidence and authorization.
 - **Uncertain** or **inferred** identifies a conclusion that the available evidence does not fully prove.
 
-## Overview
+## System at a glance
 
 Rotom is a Debian 13 virtual machine, VMID `100`, hosted by the Proxmox VE server `pve`. It is the main application server for a small collection of home, media, document, website, game-server, monitoring, proxy, and administration services. Most applications run as Docker Compose projects.
 
@@ -322,14 +329,14 @@ No active-but-undocumented container, NPM hostname, or Rotom `nas-*` fstab contr
 
 ## Further reading
 
-- [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md) — starting point, task router, and current system summary
-- [02 - Docker Services](../runbook/02-Docker-Services.md) — container and Compose inventory, service contracts, and container recovery
-- [03 - Network and Domains](../runbook/03-Network-and-Domains.md) — addresses, listeners, DNS, TLS, NPM routes, and access troubleshooting
-- [04 - NAS and Storage](../runbook/04-NAS-and-Storage.md) — exact NFS contracts, automount behavior, NAS dependencies, and mount recovery
-- [05 - Backup and Restore](../runbook/05-Backup-and-Restore.md) — backup scope, retention, assurance levels, limitations, and ordinary restores
-- [06 - Maintenance and Automation](../runbook/06-Maintenance-and-Automation.md) — timers, helpers, status services, and routine operations
-- [07 - Users and Permissions](../runbook/07-Users-and-Permissions.md) — service identities, numeric ownership, ACLs, and administrative boundaries
-- [08 - Rotom Directory Tree](../runbook/08-Rotom-Directory-Tree.txt) — concise path and topology reference
-- [PVE and Rotom Total-Loss Recovery](../guide/PVE-and-Rotom-Total-Loss-Recovery.md) — supplementary end-to-end recovery orchestration for replacement hardware
+- [Server Inventory: task router and current system summary](../runbook/01-Rotom-Server-Inventory.md)
+- [Docker Services: container inventory, Compose contracts, and service recovery](../runbook/02-Docker-Services.md)
+- [Network and Domains: addresses, listeners, DNS, TLS, NPM routes, and access diagnosis](../runbook/03-Network-and-Domains.md)
+- [NAS and Storage: NFS contracts, automount behavior, dependencies, and mount recovery](../runbook/04-NAS-and-Storage.md)
+- [Backup and Restore: backup scope, retention, assurance, limitations, and ordinary restores](../runbook/05-Backup-and-Restore.md)
+- [Maintenance and Automation: timers, helpers, status services, and routine operations](../runbook/06-Maintenance-and-Automation.md)
+- [Users and Permissions: service identities, numeric ownership, ACLs, and administrative access](../runbook/07-Users-and-Permissions.md)
+- [Rotom Directory Tree: current topology and recovery-critical paths](../runbook/08-Rotom-Directory-Tree.txt)
+- [PVE and Rotom Total-Loss Recovery: replacement-hardware orchestration](../guide/PVE-and-Rotom-Total-Loss-Recovery.md)
 
 For any change or incident, begin with the relevant numbered RS document, inspect live state, and stop if the live system differs materially from the recorded contract. Never copy credentials, tokens, private keys, cookies, certificate private material, or Restic passwords into troubleshooting notes.

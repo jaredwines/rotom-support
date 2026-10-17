@@ -4,32 +4,34 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Rename supplementary architecture source
+**Documentation updated:** 2026-10-17 — Rewrite published overview and navigation guidance
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
 ## 1. Purpose and Scope
 
-This document is the front-page architecture/index for Rotom. It summarizes the current system and points to the canonical subject document for detailed facts; it is not the canonical home for full account, container, network, mount, backup, automation, or filesystem registers.
+This is the starting page for anyone administering, troubleshooting, maintaining, or recovering Rotom. Use it to choose the canonical procedure, understand the current system at a glance, and identify recorded uncertainty before acting.
 
-Purpose: front-page index and quick-reference architecture summary.
+This inventory routes work and summarizes cross-system state. The detailed account, container, network, mount, backup, automation, and filesystem registers remain in their numbered subject owners.
 
 **RS state labels:** **Current** means the latest supported recorded state; **Historical** preserves dated evidence that may no longer apply; **Retired** means intentionally no longer active; **Proposed** is not implemented; **Needs Verification** means the RS lacks enough current evidence and should not be treated as settled.
 
 ## Start by Task or Symptom
 
-Procedures answer **what to do**. Current-state reference answers **what exists**. Reconstruction material supports disaster recovery. Historical and retired sections are evidence, not current instructions. Document `00` is the sole maintenance authority.
+Choose the row that best matches the work. In the destination, read the current-state inputs, read-only preflight, and stop conditions before using a procedure.
 
 | Task or symptom | Canonical destination |
 |---|---|
-| Website, container, or application unavailable | [02 — Diagnose and Recover a Container or Docker-Backed Website](02-Docker-Services.md#diagnose-and-recover-a-container-or-docker-backed-website) |
-| Proxy, listener, DNS, TLS, domain, routing, or external-access problem | [03 — Diagnose the Access Path](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure) |
-| NAS path, NFS mount, or storage dependency unavailable | [04 — Diagnose and Recover a Configured NAS Mount](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) |
-| Backup execution, failure, repository verification, or restore | [05 — Backup and Restore Tasks](05-Backup-and-Restore.md#start-by-task-or-symptom) |
-| Timer, scheduled automation, update, or maintenance problem | [06 — Automation and Maintenance Tasks](06-Maintenance-and-Automation.md#start-by-task-or-symptom) |
-| Permission, ownership, user, group, identity, or access problem | [07 — Identity and Access Tasks](07-Users-and-Permissions.md#start-by-task-or-symptom) |
-| Filesystem-path lookup | [08 — Current Topology](08-Rotom-Directory-Tree.txt) |
-| RS maintenance or publication | [00 — Current Documentation Maintenance Rules](00-Rotom-Change-Log.md#current-documentation-maintenance-rules) |
+| Website, container, or application unavailable | [02 — container and Docker-backed website diagnosis and recovery](02-Docker-Services.md#diagnose-and-recover-a-container-or-docker-backed-website) |
+| Proxy, listener, DNS, TLS, domain, routing, or external-access problem | [03 — end-to-end access-path diagnosis](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure) |
+| NAS path, NFS mount, or storage dependency unavailable | [04 — configured NAS-mount diagnosis and recovery](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) |
+| Backup execution, failure, repository verification, or restore | [05 — backup and restore task router](05-Backup-and-Restore.md#start-by-task-or-symptom) |
+| Timer, scheduled automation, update, or maintenance problem | [06 — automation and maintenance task router](06-Maintenance-and-Automation.md#start-by-task-or-symptom) |
+| Permission, ownership, user, group, identity, or access problem | [07 — identity and access task router](07-Users-and-Permissions.md#start-by-task-or-symptom) |
+| Filesystem-path lookup | [08 — current and historical filesystem topology](08-Rotom-Directory-Tree.txt) |
+| RS maintenance or publication | [00 — documentation maintenance rules and change history](00-Rotom-Change-Log.md#current-documentation-maintenance-rules) |
+
+Procedures answer **what to do**; current-state sections answer **what exists**. Reconstruction material supports disaster recovery. Historical and retired sections are evidence, not current instructions. Document `00` is the sole RS maintenance authority.
 
 ### Maintaining the Runbook-First Model
 
@@ -37,10 +39,10 @@ Follow the canonical [Runbook-First Maintenance Standard](00-Rotom-Change-Log.md
 
 ### Recommended reading path
 
-1. Read **Current Rotom Summary** for the newest system-wide orientation.
-2. Use **How to use the RS** or **Current Source Map** to select the canonical subject document.
+1. Read **Current Rotom Summary** for a system-wide orientation.
+2. Use the task router above or **Choose by Subject** below to select the canonical document.
 3. In that document, read its navigation/authority block and current-state sections before any procedure.
-4. Use **Outstanding Decisions and Needs Verification** to identify uncertainty that must not be guessed through.
+4. Review **Outstanding and Needs Verification** for uncertainty that must not be guessed through.
 5. Consult preserved history only for provenance, rollback context, or reconstruction, and reconcile it with current sections plus read-only live evidence first.
 
 The inventory summarizes cross-system facts but does not replace the detailed subject owners listed below. When a summary and a detailed owner appear inconsistent, preserve both, investigate the evidence dates, and record the discrepancy rather than silently choosing one.
@@ -49,20 +51,20 @@ The inventory summarizes cross-system facts but does not replace the detailed su
 
 Jared confirmed completion and verification of the current Rotom Restic full-data-read plus restore rehearsal, current Rotom VM Backup VMA verification or disposable restore, Libraries/Paperless NAS snapshot retention plus isolated restore, NAS metadata persistence after a NAS/UniFi Drive event, controlled live Libraries-NFS-loss behavior, end-to-end Wake-on-LAN, VPN credential rotation, UniFi/router-policy review, full isolated Palworld disaster-recovery rehearsal, authenticated Paperless acceptance, Fran PVE browser login, legacy NPM-record review, certificate renewal, and dormant Docker-artifact review. Detailed transcripts, identifiers, and retain/remove decisions were not supplied in this chat; retain historical test evidence below as history, but do not present these items as current gaps.
 
-### How to use the RS
+### Choose by subject
 
 Start here, then follow the canonical subject document instead of relying on duplicated detail:
 
 | Need | Canonical source |
 |---|---|
-| Documentation governance and dated history | [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md) |
-| Containers, Compose, images, and runtime deployment | [02-Docker-Services.md](02-Docker-Services.md) |
-| Addresses, DNS, ports, proxying, TLS, and exposure | [03-Network-and-Domains.md](03-Network-and-Domains.md) |
-| NAS exports, NFS mounts, storage ownership, and automounts | [04-NAS-and-Storage.md](04-NAS-and-Storage.md) |
-| Backup scope, repositories, verification, and restore | [05-Backup-and-Restore.md](05-Backup-and-Restore.md) |
-| Timers, maintenance, monitoring, and administration workflow | [06-Maintenance-and-Automation.md](06-Maintenance-and-Automation.md) |
-| Accounts, UID/GID contracts, ACLs, sudo, and access policy | [07-Users-and-Permissions.md](07-Users-and-Permissions.md) |
-| Filesystem topology and important paths | [08-Rotom-Directory-Tree.txt](08-Rotom-Directory-Tree.txt) |
+| Documentation governance and dated history | [00 — maintenance contract and protected change history](00-Rotom-Change-Log.md) |
+| Containers, Compose, images, and runtime deployment | [02 — Docker service operations and current contracts](02-Docker-Services.md) |
+| Addresses, DNS, ports, proxying, TLS, and exposure | [03 — network, domain, and access-path operations](03-Network-and-Domains.md) |
+| NAS exports, NFS mounts, storage ownership, and automounts | [04 — NAS storage contracts and mount recovery](04-NAS-and-Storage.md) |
+| Backup scope, repositories, verification, and restore | [05 — backup architecture, assurance, and restore procedures](05-Backup-and-Restore.md) |
+| Timers, maintenance, monitoring, and administration workflow | [06 — maintenance, automation, and RS tooling](06-Maintenance-and-Automation.md) |
+| Accounts, UID/GID contracts, ACLs, sudo, and access policy | [07 — identities, permissions, and administrative access](07-Users-and-Permissions.md) |
+| Filesystem topology and important paths | [08 — current topology and retained historical paths](08-Rotom-Directory-Tree.txt) |
 
 Within each subject document, use the current-state sections first. Use historical or pre-migration evidence only for provenance, reconstruction, or recovery; do not replay it as current instruction without reconciling it against live read-only state.
 
@@ -138,9 +140,9 @@ Rotom Support is every file intentionally kept in the project's Available Source
 
 The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Documents/ChatGPT/rotom-runbook` on the Mac. On Rotom, `rs path` resolves the checkout using the existing `~/.config/rr/repository` compatibility fallback; append `runbook/` to locate the numbered files. The Mac checkout retains its established path; `/usr/local/bin/rs` was independently installed and verified there. Its `/usr/local/bin/rr` is a verified compatibility wrapper for `rs`. Available Sources replacement remains manual by Jared.
 
-The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. Its canonical repository file is `architecture/Rotom-Architecture-System.md`, published as supplementary portal content alongside the distinct `internals/website/architecture/index.md` landing-page input. The installed publisher still expects the prior source filename until a separately authorized live publisher update.
+The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. Its canonical repository file is `architecture/Rotom-Architecture-System.md`, published as supplementary portal content alongside the distinct `internals/website/architecture/index.md` landing-page input. Read-only inspection on 2026-10-17 confirmed that the installed publisher uses this canonical filename.
 
-The private **Rotom Support** portal publishes the complete numbered `00`–`08` RS allowlist at `/runbook/`, the supplementary landing inputs `internals/website/architecture/index.md` and `internals/website/guides/index.md`, the canonical supplementary architecture overview at `/architecture/rotom-architecture-overview/`, and the canonical supplementary total-loss recovery guide at `/guides/pve-and-rotom-total-loss-recovery/`. No other repository files under `guide/` or `architecture/` are included. Those supplementary sources do not change Runbook membership or Available Sources; they explain, orchestrate, and route to numbered sources rather than establish competing operational truth.
+The private **Rotom Support** portal publishes the complete numbered `00`–`08` RS allowlist at `/runbook/`, the supplementary landing inputs `internals/website/architecture/index.md` and `internals/website/guides/index.md`, the canonical supplementary architecture overview at `/architecture/rotom-architecture-system/`, and the canonical supplementary total-loss recovery guide at `/guides/pve-and-rotom-total-loss-recovery/`. No other repository files under `guide/` or `architecture/` are included. Those supplementary sources do not change Runbook membership or Available Sources; they explain, orchestrate, and route to numbered sources rather than establish competing operational truth.
 
 ## 8. Current Source Map
 

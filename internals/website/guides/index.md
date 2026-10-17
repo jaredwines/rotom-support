@@ -1,35 +1,53 @@
 # Rotom Guides
 
-These guides help choose the right Runbook procedure. They are explanatory entry points, not independent operational instructions.
+This page is for Rotom administrators and recovery operators who know what they need to do but are not sure which document owns the work. Use it to choose an entry point; follow the linked Runbook procedure for current facts, safeguards, and commands.
 
-## Recover PVE and Rotom after total loss
+## Start here
 
-Use [PVE and Rotom Total-Loss Recovery](pve-and-rotom-total-loss-recovery.md) to coordinate blank-hardware recovery across the authoritative Runbook sources. The guide supplies ordering, gates, and acceptance checks; the linked numbered documents continue to own the current operational facts and procedures.
+- For routine administration or an active fault, start with the [Server Inventory task and symptom router](../runbook/01-Rotom-Server-Inventory.md#start-by-task-or-symptom).
+- For replacement-hardware recovery after losing both PVE and Rotom, use the [PVE and Rotom Total-Loss Recovery guide](pve-and-rotom-total-loss-recovery.md).
+- If you already know the affected area, choose the matching task below.
 
-## Get oriented
+These guides and indexes are explanatory entry points. The numbered Runbook remains the operational authority.
 
-Start with the [Runbook Server Inventory](../runbook/01-Rotom-Server-Inventory.md) for the current topology and task router. Use its *Start by Task or Symptom* table to select the canonical owner before acting on a service, network, storage, recovery, automation, or identity issue.
+## Applications and access
 
-## Deploy or diagnose a Docker application
+### Deploy or recover a Docker application
 
-Read [Docker Services](../runbook/02-Docker-Services.md) first. It identifies the Compose contract, persistent data boundary, preflight, stop conditions, verification, and recovery path for Docker-backed services. Inspect the existing Compose definition before changing it, and do not recreate unrelated containers.
+Use [Docker Services: container and website diagnosis](../runbook/02-Docker-Services.md#diagnose-and-recover-a-container-or-docker-backed-website) for Compose contracts, persistent-data boundaries, read-only preflight, stop conditions, verification, and recovery. Inspect the existing `compose.yaml` before changing it, and do not recreate unrelated containers.
 
-## Manage a reverse-proxy service
+### Trace a domain, proxy, TLS, or listener problem
 
-Use [Network and Domains](../runbook/03-Network-and-Domains.md) to trace the access path: client resolution, TLS, Nginx Proxy Manager route and access list, listener, and application upstream. Keep private-access and loopback boundaries intact; a successful backend response alone does not prove a safe proxy configuration.
+Use [Network and Domains: access-path diagnosis](../runbook/03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure) to check client resolution, TLS, the Nginx Proxy Manager route and access list, the listener, and the application upstream. A working backend alone does not prove the complete access path is correct or safely exposed.
 
-## Work with NAS-backed storage
+## Storage, backup, and recovery
 
-Use [NAS and Storage](../runbook/04-NAS-and-Storage.md) to identify the exact automount contract, service dependency, and ownership model. Never infer that a retired guest path means NAS data was deleted, and do not manufacture an outage merely to test recovery.
+### Diagnose NAS-backed storage
 
-## Back up or restore Rotom
+Use [NAS and Storage: configured-mount diagnosis and recovery](../runbook/04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) to identify the exact automount contract, dependent services, ownership model, and safe recovery sequence. A retired guest path does not prove that NAS data was deleted. Do not create an outage merely to test recovery.
 
-Follow [Backup and Restore](../runbook/05-Backup-and-Restore.md). It distinguishes the Rotom Restic repository, PVE configuration backup, VM backup, and NAS snapshot layers, including their verification and restoration limits. Treat credential handling and protected repository changes as separately controlled work.
+### Back up or restore Rotom
 
-## Troubleshoot scheduled work
+Use [Backup and Restore: task and symptom router](../runbook/05-Backup-and-Restore.md#start-by-task-or-symptom) to choose among Rotom Restic Backup, PVE Restic Backup, Rotom VM Backup, and NAS snapshots. The document explains their different scopes, assurance levels, verification requirements, and restore limits. Credential handling and protected repository changes remain separately controlled.
 
-[Maintenance and Automation](../runbook/06-Maintenance-and-Automation.md) is the source for timers, maintenance behavior, publisher workflow, and monitoring. Start with read-only evidence and preserve the existing safeguards around backups and publication.
+### Recover the complete platform after total loss
 
-## Use Codex with Rotom
+Use [PVE and Rotom Total-Loss Recovery: emergency recovery path](pve-and-rotom-total-loss-recovery.md#emergency-recovery-path) only for blank-hardware reconstruction. It coordinates recovery order, evidence gates, safe stops, and final acceptance across the numbered Runbook sources; those sources still own the current operational facts and procedures.
 
-Resolve the Runbook with `rs path`, read the repository instructions and the relevant authoritative source, inspect live state, compare it with the documented state, make the smallest targeted change, and verify it. Update the Runbook from the final verified state under its maintenance contract. Codex does not replace the required authorization boundaries for protected data, credentials, or PVE actions.
+## Maintenance and administration
+
+### Investigate timers, updates, or scheduled work
+
+Use [Maintenance and Automation: task and symptom router](../runbook/06-Maintenance-and-Automation.md#start-by-task-or-symptom) for timers, routine maintenance, monitoring, and the guarded Rotom Support workflow. Begin with read-only evidence and preserve the existing safeguards around backups and publication.
+
+### Resolve an identity, ownership, or access problem
+
+Use [Users and Permissions: identity and access task router](../runbook/07-Users-and-Permissions.md#start-by-task-or-symptom) for account state, UID/GID contracts, filesystem ownership, ACLs, sudo, Docker access, and authentication boundaries.
+
+### Find an important path
+
+Use the [Rotom Directory Tree current-topology reference](../runbook/08-Rotom-Directory-Tree.txt) to locate service roots, persistent data, mountpoints, backup paths, and retained recovery artifacts. Treat its historical and retired paths as evidence, not instructions to recreate them.
+
+## Using Codex with Rotom
+
+Resolve the checkout with `rs path`, read the repository instructions and the relevant numbered source, inspect live state, and compare it with the documented state. Make the smallest authorized change, verify the result, and update the Runbook from the final supported state. Codex does not replace approval boundaries for protected data, credentials, destructive actions, or PVE work.
