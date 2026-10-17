@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Rewrite published overview and landing pages
+**Documentation updated:** 2026-10-17 — Align published page titles
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,13 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Align published page titles
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`; installed `mkdocs-rr` publisher and `mkdocs.yml`.
+- **Status:** **Implemented / Verified.** The Runbook landing heading is now Rotom Runbook; navigation labels and browser titles match their page headings. The overall site remains Rotom Support.
+- **Evidence:** The guarded publisher's validation build and publication succeeded; all 15 generated pages had matching browser titles and headings, and the live Runbook page returned the new title and heading. Pre-change publisher and configuration recovery copies remain beside the installed files.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Rewrite published overview and landing pages
 
