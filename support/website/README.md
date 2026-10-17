@@ -8,7 +8,7 @@ This directory contains selected supplementary Markdown inputs for the private R
 - [`architecture/`](architecture/README.md) contains the supplementary architecture page.
 - [`guides/`](guides/README.md) contains the supplementary task-routing page.
 
-The publisher combines these selected inputs with the approved numbered runbooks, but publication does not make the supplementary pages Rotom Support members or Available Sources. Generated site output and the live deployment are maintained outside this directory; edit the canonical repository inputs rather than generated files.
+The publisher combines these selected inputs with the approved numbered runbooks and two explicitly approved canonical supplementary documents: `architecture/Rotom-Architecture-Overview.md` and `guide/PVE-and-Rotom-Total-Loss-Recovery.md`. Publication does not make the supplementary pages Rotom Support members or Available Sources. Generated site output and the live deployment are maintained outside this directory; edit the canonical repository inputs rather than generated files.
 
 The README files in this tree are repository navigation only and are not approved publication inputs.
 

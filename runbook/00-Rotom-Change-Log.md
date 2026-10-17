@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Publish supplementary architecture and recovery documents
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, repository navigation files `README.md`, `architecture/README.md`, and `guide/README.md`, supplementary website inputs `support/website/README.md`, `support/website/architecture/index.md`, and `support/website/guides/index.md`, plus the live guarded publisher and MkDocs navigation configuration.
+- **Status:** **Implemented / Documentation only / Verified** for source selection and local validation; live publication pending the guarded deployment step.
+- **Changes:** Added the canonical supplementary `architecture/Rotom-Architecture-Overview.md` and `guide/PVE-and-Rotom-Total-Loss-Recovery.md` files to the private portal's explicit allowlist and organized navigation without changing their source content, RS membership, Available Sources status, or canonical ownership boundaries. Repository navigation, the publisher description, and section landing pages now expose those relationships clearly. Internal control files, repository-navigation-only READMEs, and tooling/development artifacts remain excluded.
+- **Evidence:** Repository and live-site audit found a clean checkout, no untracked files, the expected trusted-LAN-only portal, a clean guarded deployment clone five commits behind GitHub, and no credential values, private keys, tokens, cookies, or personal contact data in either selected document. Final build, deployment, route, access-boundary, and revision evidence will be recorded after publication.
+- **Outstanding:** Run final validation, commit and push the source changes, publish through the guarded workflow, verify every new route and the access boundary, then update this entry with the final evidence. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Move repository architecture overview
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `08-Rotom-Directory-Tree.txt`, repository navigation files `README.md`, `guide/README.md`, and `architecture/README.md`; moved `guide/Rotom-Architecture-Overview.md` to `architecture/Rotom-Architecture-Overview.md`.

@@ -44,9 +44,9 @@ These README files are repository navigation only. Their presence does not make 
 
 ## Supplementary guides
 
-Every file under `guide/` is a repository guide that remains separate from the RS, Core Numbered Reference Set, Available Sources, RS-only validation, and RS publication. Use [PVE and Rotom Total-Loss Recovery](guide/PVE-and-Rotom-Total-Loss-Recovery.md) for blank-hardware disaster-recovery orchestration and acceptance.
+Every file under `guide/` is a repository guide that remains separate from the RS, Core Numbered Reference Set, Available Sources, RS-only validation, and RS publication. Use [PVE and Rotom Total-Loss Recovery](guide/PVE-and-Rotom-Total-Loss-Recovery.md) for blank-hardware disaster-recovery orchestration and acceptance. That guide is also published as explicitly selected supplementary portal content without changing its authority or membership.
 
-The [Rotom Architecture Overview](architecture/Rotom-Architecture-Overview.md) is also supplementary repository material, not an RS member or Available Source.
+The [Rotom Architecture Overview](architecture/Rotom-Architecture-Overview.md) is also supplementary repository material, not an RS member or Available Source. It is published in the portal's supplementary Architecture section under the same boundary.
 
 ## Using this repository
 

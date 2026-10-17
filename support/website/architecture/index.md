@@ -2,6 +2,8 @@
 
 This page is a verified orientation to Rotom's design. For current operational facts and procedures, use the linked [Runbook](../runbook/index.md).
 
+For a fuller newcomer-oriented map of the current system, read the [Detailed System Overview](rotom-architecture-overview.md). It remains supplementary and does not replace the numbered Runbook.
+
 ## Physical infrastructure and virtualization
 
 Rotom is a Debian virtual machine (VMID 100) on the `pve` Proxmox VE host. The VM uses the reserved LAN address `192.168.1.69`; the PVE host is `192.168.1.68`; and the UniFi NAS is `192.168.1.70`. The [Server Inventory](../runbook/01-Rotom-Server-Inventory.md) is the authoritative current system map.

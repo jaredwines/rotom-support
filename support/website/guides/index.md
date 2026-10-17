@@ -2,6 +2,10 @@
 
 These guides help choose the right Runbook procedure. They are explanatory entry points, not independent operational instructions.
 
+## Recover PVE and Rotom after total loss
+
+Use [PVE and Rotom Total-Loss Recovery](pve-and-rotom-total-loss-recovery.md) to coordinate blank-hardware recovery across the authoritative Runbook sources. The guide supplies ordering, gates, and acceptance checks; the linked numbered documents continue to own the current operational facts and procedures.
+
 ## Get oriented
 
 Start with the [Runbook Server Inventory](../runbook/01-Rotom-Server-Inventory.md) for the current topology and task router. Use its *Start by Task or Symptom* table to select the canonical owner before acting on a service, network, storage, recovery, automation, or identity issue.
