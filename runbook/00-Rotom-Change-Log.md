@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
+**Documentation updated:** 2026-10-17 — Rename repository internals directory
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -33,7 +33,7 @@ Each supported state-changing procedure must preserve an observable outcome, pre
 
 Document `01` must be updated whenever a supported task, destination, filename, heading, or canonical owner changes, so a person or Codex can reach the canonical procedure within one or two links. It routes tasks and must not duplicate complete procedures. Do not maintain competing canonical procedures in multiple documents; supporting facts and cross-domain branches must link to the owning document.
 
-Review the affected document's **Maintenance and Revalidation Triggers** whenever current state changes. Update automated tests whenever a supported task, procedure, ownership boundary, or required structure changes. Before publication, run `support/tooling/test-rr-runbooks`, `support/tooling/rs lint`, `git diff --check`, the required semantic ownership/duplication review, and `rs check` at clean Git checkpoints.
+Review the affected document's **Maintenance and Revalidation Triggers** whenever current state changes. Update automated tests whenever a supported task, procedure, ownership boundary, or required structure changes. Before publication, run `internals/tooling/test-rr-runbooks`, `internals/tooling/rs lint`, `git diff --check`, the required semantic ownership/duplication review, and `rs check` at clean Git checkpoints.
 
 > An RS update is incomplete if it changes how Rotom is operated, diagnosed, maintained, or recovered without also reviewing and updating the affected runbook procedure, task-router entry, revalidation triggers, and automated tests.
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Rename repository internals directory
+
+- **Files changed:** Moved repository directory `support/` to `internals/`; updated current paths in `AGENTS.md`, `README.md`, `architecture/README.md`, `guide/README.md`, `runbook/README.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, repository tooling and navigation files, and the live guarded publisher.
+- **Status:** **Implemented / Documentation only / Verified / Published.** No Rotom application, storage, network, identity, credential, backup, or recovery state changed.
+- **Changes:** Renamed the repository-only umbrella directory to distinguish internal agent material, tooling, and website inputs from the Rotom Support repository name. Updated current references, structural tests, secret-scan scope, and the publisher's explicit supplementary-source allowlist while preserving historical `support/` paths as dated evidence.
+- **Evidence:** Began from clean `main` matching cached `origin/main`. Repository structure, CLI, guide, lint, shell-syntax, link, secret-pattern, and whitespace checks passed. The guarded publisher validated the renamed explicit source selection in an isolated build, publication completed, and the existing private portal routes remained available over loopback and HTTPS.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Publish supplementary architecture and recovery documents
 

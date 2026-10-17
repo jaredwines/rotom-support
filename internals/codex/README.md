@@ -1,4 +1,4 @@
-# Codex Support
+# Codex Internals
 
 This directory stores agent-facing support material for working on Rotom.
 

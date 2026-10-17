@@ -9,13 +9,13 @@ This repository is the Git working copy for the Rotom Support (RS).
 - Follow the current RS rather than duplicating its detailed procedures in this file.
 - Preserve historical entries as historical evidence. Do not silently rewrite old records to match current state.
 
-Repository support files such as root `AGENTS.md`, `.gitignore`, `README.md`, and files under `support/` are not RS members merely because they are stored in this Git repository. Available Sources remains the RS membership boundary.
+Repository-internal files such as root `AGENTS.md`, `.gitignore`, `README.md`, and files under `internals/` are not RS members merely because they are stored in this Git repository. Available Sources remains the RS membership boundary.
 
 The current numbered RS files `00`–`08` live under `runbook/` in the checkout resolved by `rs path`. Relative links between these files remain within that directory.
 
 ## Supplementary guides
 
-Every file under `guide/` is separate from Rotom Support. Files in that directory are not RS members, are not part of the Core Numbered Reference Set, must not be added to Available Sources, and must not be required by RS-only validation or publication. Validate guide content with `support/tooling/test-guides`, not by expanding RS membership. A guide may link to RS fact owners; if a guide change also changes an RS-owned fact or procedure, update that RS owner separately under the maintenance contract.
+Every file under `guide/` is separate from Rotom Support. Files in that directory are not RS members, are not part of the Core Numbered Reference Set, must not be added to Available Sources, and must not be required by RS-only validation or publication. Validate guide content with `internals/tooling/test-guides`, not by expanding RS membership. A guide may link to RS fact owners; if a guide change also changes an RS-owned fact or procedure, update that RS owner separately under the maintenance contract.
 
 ## RS Git workflow
 

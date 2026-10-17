@@ -12,4 +12,4 @@ The publisher combines these selected inputs with the approved numbered runbooks
 
 The README files in this tree are repository navigation only and are not approved publication inputs.
 
-The publication workflow is owned by [06 — Maintenance and Automation](../../runbook/06-Maintenance-and-Automation.md), while authority and membership are defined by [01 — Rotom Server Inventory](../../runbook/01-Rotom-Server-Inventory.md#7-rotom-support-model). Run the repository validations described in [`support/tooling/`](../tooling/README.md) after changes.
+The publication workflow is owned by [06 — Maintenance and Automation](../../runbook/06-Maintenance-and-Automation.md), while authority and membership are defined by [01 — Rotom Server Inventory](../../runbook/01-Rotom-Server-Inventory.md#7-rotom-support-model). Run the repository validations described in [`internals/tooling/`](../tooling/README.md) after changes.

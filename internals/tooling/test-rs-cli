@@ -3,7 +3,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-RS="$REPO_ROOT/support/tooling/rs"
+RS="$REPO_ROOT/internals/tooling/rs"
 EXPECTED_REMOTE="git@github.com:jaredwines/rotom-support.git"
 FIXTURE_ROOT="$(mktemp -d)"
 REMOTE="$FIXTURE_ROOT/remote.git"
@@ -109,7 +109,7 @@ mv "$CONFIG_ROOT/rs/repository.saved" "$CONFIG_ROOT/rs/repository"
 printf '%s\n' "$FIXTURE_ROOT/missing" >"$CONFIG_ROOT/rr/repository"
 expect_success "rs configuration takes precedence" run_rr path
 run_wrapper() {
-    (cd "$FIXTURE_ROOT" && env XDG_CONFIG_HOME="$CONFIG_ROOT" "$REPO_ROOT/support/tooling/rr" "$@")
+    (cd "$FIXTURE_ROOT" && env XDG_CONFIG_HOME="$CONFIG_ROOT" "$REPO_ROOT/internals/tooling/rr" "$@")
 }
 expect_success "rr wrapper delegates to rs" run_wrapper path
 grep -Fxq "$CHECKOUT" "$FIXTURE_ROOT/output" && pass "rr wrapper output" || fail "rr wrapper output"

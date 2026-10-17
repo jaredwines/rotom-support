@@ -31,14 +31,14 @@ The current RS consists of the Core Numbered Reference Set in `runbook/`:
 | [07 - Users and Permissions](runbook/07-Users-and-Permissions.md) | Identity, ownership, permission, privilege, and access operations |
 | [08 - Rotom Directory Tree](runbook/08-Rotom-Directory-Tree.txt) | Current filesystem reference with historical paths clearly separated |
 
-Available Sources defines the RS membership boundary. Repository-support files, including this README, are not RS members unless intentionally added to Available Sources. The current source map and membership details live in [01 - Rotom Server Inventory](runbook/01-Rotom-Server-Inventory.md).
+Available Sources defines the RS membership boundary. Repository-internal files, including this README, are not RS members unless intentionally added to Available Sources. The current source map and membership details live in [01 - Rotom Server Inventory](runbook/01-Rotom-Server-Inventory.md).
 
 ## Repository map
 
 - [`runbook/`](runbook/README.md) contains the authoritative Core Numbered Reference Set.
 - [`guide/`](guide/README.md) contains supplementary guides that remain separate from Rotom Support.
 - [`architecture/`](architecture/README.md) contains supplementary architecture material, distinct from the website architecture input.
-- [`support/`](support/README.md) contains agent support, repository tooling, and supplementary website inputs.
+- [`internals/`](internals/README.md) contains agent-facing material, repository tooling, and supplementary website inputs.
 
 These README files are repository navigation only. Their presence does not make them Rotom Support members or Available Sources.
 
@@ -54,9 +54,9 @@ The [Rotom Architecture Overview](architecture/Rotom-Architecture-Overview.md) i
 - Use the current RS documents for operational reference; do not use older change-log entries as instructions to recreate prior state.
 - Read the canonical maintenance contract in [00 - Rotom Change Log](runbook/00-Rotom-Change-Log.md) before preparing an RS change.
 - Use the guarded `rs` helper for normal repository operations. `rs path` resolves the active checkout.
-- Run the repository's offline `support/tooling/rs lint` validation before synchronization checks. After the matching helper version is installed, `rs lint` is equivalent.
-- From any directory, run `bash "$(rs path)/support/tooling/test-rr-runbooks"` to validate only the numbered runbook-first RS's permanent structure and nine-file membership.
-- Run `bash "$(rs path)/support/tooling/test-guides"` separately to validate files under `guide/` without changing RS membership.
+- Run the repository's offline `internals/tooling/rs lint` validation before synchronization checks. After the matching helper version is installed, `rs lint` is equivalent.
+- From any directory, run `bash "$(rs path)/internals/tooling/test-rr-runbooks"` to validate only the numbered runbook-first RS's permanent structure and nine-file membership.
+- Run `bash "$(rs path)/internals/tooling/test-guides"` separately to validate files under `guide/` without changing RS membership.
 
 ## Safety
 

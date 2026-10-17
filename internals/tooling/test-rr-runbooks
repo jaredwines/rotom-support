@@ -61,28 +61,28 @@ done
 
 require_text 00-Rotom-Change-Log.md "### Runbook-First Maintenance Standard"
 require_text 00-Rotom-Change-Log.md "An RS update is incomplete if it changes how Rotom is operated, diagnosed, maintained, or recovered"
-require_text 00-Rotom-Change-Log.md "support/tooling/test-rr-runbooks"
+require_text 00-Rotom-Change-Log.md "internals/tooling/test-rr-runbooks"
 require_text 00-Rotom-Change-Log.md 'The sole canonical documentation-update command is **`Update the RS`**'
 require_text README.md "# Rotom Support"
 require_text AGENTS.md "## RS Git workflow"
 require_text AGENTS.md 'Every file under `guide/` is separate from Rotom Support'
 require_text README.md 'Every file under `guide/` is a repository guide that remains separate from the RS'
-require_file support/tooling/rs
-require_file support/tooling/rr
-require_file support/tooling/test-rs-cli
-require_file support/tooling/test-rr-cli
-require_file support/tooling/test-guides
-require_file support/website/home.md
-require_file support/website/architecture/index.md
-require_file support/website/guides/index.md
-require_file support/website/README.md
-require_file support/website/architecture/README.md
-require_file support/website/guides/README.md
+require_file internals/tooling/rs
+require_file internals/tooling/rr
+require_file internals/tooling/test-rs-cli
+require_file internals/tooling/test-rr-cli
+require_file internals/tooling/test-guides
+require_file internals/website/home.md
+require_file internals/website/architecture/index.md
+require_file internals/website/guides/index.md
+require_file internals/website/README.md
+require_file internals/website/architecture/README.md
+require_file internals/website/guides/README.md
 
 expected_website_sources='architecture/index.md
 guides/index.md
 home.md'
-actual_website_sources=$(cd "$REPO_ROOT/support/website" && find . -type f ! -name README.md | sed 's|^\./||' | LC_ALL=C sort)
+actual_website_sources=$(cd "$REPO_ROOT/internals/website" && find . -type f ! -name README.md | sed 's|^\./||' | LC_ALL=C sort)
 if [[ "$actual_website_sources" == "$expected_website_sources" ]]; then
     pass "supplementary website sources are explicitly bounded"
 else
@@ -92,7 +92,7 @@ fi
 expected_website_readmes='README.md
 architecture/README.md
 guides/README.md'
-actual_website_readmes=$(cd "$REPO_ROOT/support/website" && find . -type f -name README.md | sed 's|^\./||' | LC_ALL=C sort)
+actual_website_readmes=$(cd "$REPO_ROOT/internals/website" && find . -type f -name README.md | sed 's|^\./||' | LC_ALL=C sort)
 if [[ "$actual_website_readmes" == "$expected_website_readmes" ]]; then
     pass "website navigation READMEs are explicitly bounded"
 else
