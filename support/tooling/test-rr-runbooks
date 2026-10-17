@@ -75,15 +75,28 @@ require_file support/tooling/test-guides
 require_file support/website/home.md
 require_file support/website/architecture/index.md
 require_file support/website/guides/index.md
+require_file support/website/README.md
+require_file support/website/architecture/README.md
+require_file support/website/guides/README.md
 
 expected_website_sources='architecture/index.md
 guides/index.md
 home.md'
-actual_website_sources=$(cd "$REPO_ROOT/support/website" && find . -type f | sed 's|^\./||' | LC_ALL=C sort)
+actual_website_sources=$(cd "$REPO_ROOT/support/website" && find . -type f ! -name README.md | sed 's|^\./||' | LC_ALL=C sort)
 if [[ "$actual_website_sources" == "$expected_website_sources" ]]; then
     pass "supplementary website sources are explicitly bounded"
 else
     fail "supplementary website sources differ from the approved publication inputs"
+fi
+
+expected_website_readmes='README.md
+architecture/README.md
+guides/README.md'
+actual_website_readmes=$(cd "$REPO_ROOT/support/website" && find . -type f -name README.md | sed 's|^\./||' | LC_ALL=C sort)
+if [[ "$actual_website_readmes" == "$expected_website_readmes" ]]; then
+    pass "website navigation READMEs are explicitly bounded"
+else
+    fail "website navigation READMEs differ from the approved repository navigation files"
 fi
 
 require_text 01-Rotom-Server-Inventory.md "## Start by Task or Symptom"

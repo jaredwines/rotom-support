@@ -4,7 +4,7 @@
 **Document role:** Canonical source for NAS exports, NFS mounts, storage layout, automount behavior, and storage contracts
 **Hosts:** PVE hypervisor `pve`, Debian VM `rotom`, and UniFi UNAS 2  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-15 — Prepare Rotom Runbook identity and migration gates
+**Documentation updated:** 2026-10-17 — Record owner-confirmed NAS protection status
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -324,7 +324,6 @@ Historical service-root, mount, export, and directory captures remain available 
 
 ## 8. Outstanding / Needs Verification
 
-- Exact NAS snapshot schedules and retention for current Libraries data.
 - NAS-side disposition of guest-retired exports and their data.
 - Root-only pre-change recovery-helper copy retention.
 - Incident-specific selection and verification of a usable recovery point.

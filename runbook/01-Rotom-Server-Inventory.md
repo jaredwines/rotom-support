@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Rename the repository architecture directory
+**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -68,7 +68,7 @@ Within each subject document, use the current-state sections first. Use historic
 
 ## 2. Current Rotom Summary
 
-**Evidence date:** 2026-10-16 unless a row states otherwise.
+**Evidence date:** 2026-10-17 unless a row states otherwise.
 
 Rotom is Debian 13 VMID 100 on Proxmox VE host `pve`. The guest uses reserved address `192.168.1.69`; PVE uses `192.168.1.68`; the UniFi NAS uses `192.168.1.70`.
 
@@ -85,6 +85,8 @@ The verified application topology is **23 running Compose-managed containers, 19
 The five service accounts are locked. Their NSS home fields still name absent `/home/<service>` paths; those paths are not deployment or recovery roots. Human administrators are Jared and Fran. Fran is a full administrator and the sole human member of Docker group GID `989`; Docker membership is root-equivalent.
 
 Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. `jaredwines.com` is intentionally active and publishes only `127.0.0.1:7777:80` for NPM proxy host `8`. Aloha publishes `7778:80`.
+
+Cloudflare DDNS uses explicit container DNS `192.168.1.1`; the container was recreated after the setting was added and then confirmed the current Cloudflare A record was already up to date. Arcane's accepted automation baseline is daily automatic update at midnight with no excluded containers, automatic healing every five minutes with no excluded containers, at most five restarts within a 30-minute window, scheduled pruning disabled, and project-symlink following enabled. Both Palworld servers are intended to remain running under `restart: unless-stopped`.
 
 Remote Desktop Commander runs from `/opt/desktop-commander` as locked identity `desktopcmd` (`1001:1001`). Its former home is absent.
 
@@ -113,6 +115,8 @@ Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-d
 
 Current recovery procedures and limitations are owned by [05 — Backup and Restore](05-Backup-and-Restore.md). Backup layers are complementary and must not be treated as interchangeable.
 
+On 2026-10-17 Jared confirmed that the router/WAN, PVE, NAS control plane, and NAS snapshot protection are working and asked that further authenticated inspection be waived. This resolves them as active audit gaps; exact control-plane exports were not captured and must still be rechecked during a relevant incident or configuration change.
+
 ## 5. Retired Infrastructure Warnings
 
 Uptime Kuma and its Rotom/PVE alert-delivery layer, Syncthing, Gamarr, JDownloader, the ROM importer, Igir automation, and the browser-upload bridge are retired. Their former service ports `3002`, `8384`, `6767`, and `8090` had no listeners during the 2026-10-15 audit.
@@ -123,9 +127,8 @@ The alerting worker, units, timers, scripts, Homepage integration, and delivery 
 
 ## 6. Outstanding and Needs Verification
 
-- Arcane currently reports `autoUpdate=true`, `autoHealEnabled=true`, `scheduledPruneEnabled=false`, and `followProjectSymlinks=true`. Exact exclusions and intended long-term policy remain unresolved.
 - Root-only rollback archives for the retired shared Docker bridges and the pre-change NAS-recovery helper were not readable during this audit. Retain or remove them only after a separately authorized exact-path inspection.
-- Palworld Jared and Fran were running and healthy on 2026-10-15; their intended persistence relative to the earlier deliberately stopped state remains an owner decision.
+- Arcane's two named volumes, stale project rows, and any unreferenced images require exact-object review before cleanup; the accepted automation policy is not cleanup authorization.
 - Continue normal monitoring of the historical PVE NIC/reset and non-fatal iGPU option-ROM warning. Do not infer a single cause without new evidence.
 - Select and verify an incident-appropriate recovery point at recovery time; retention changes available snapshot and archive sets.
 

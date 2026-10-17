@@ -33,6 +33,15 @@ The current RS consists of the Core Numbered Reference Set in `runbook/`:
 
 Available Sources defines the RS membership boundary. Repository-support files, including this README, are not RS members unless intentionally added to Available Sources. The current source map and membership details live in [01 - Rotom Server Inventory](runbook/01-Rotom-Server-Inventory.md).
 
+## Repository map
+
+- [`runbook/`](runbook/README.md) contains the authoritative Core Numbered Reference Set.
+- [`guide/`](guide/README.md) contains supplementary guides that remain separate from Rotom Support.
+- [`architecture/`](architecture/README.md) is an empty placeholder, distinct from the website architecture input.
+- [`support/`](support/README.md) contains agent support, repository tooling, and supplementary website inputs.
+
+These README files are repository navigation only. Their presence does not make them Rotom Support members or Available Sources.
+
 ## Supplementary guides
 
 Every file under `guide/` is a repository guide that remains separate from the RS, Core Numbered Reference Set, Available Sources, RS-only validation, and RS publication. Use [PVE and Rotom Total-Loss Recovery](guide/PVE-and-Rotom-Total-Loss-Recovery.md) for blank-hardware disaster-recovery orchestration and acceptance.

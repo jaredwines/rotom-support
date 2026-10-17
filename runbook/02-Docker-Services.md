@@ -2,9 +2,9 @@
 
 **Documentation set:** Rotom Support
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
-**Scope:** Rotom workload layer; the current runtime baseline is the 2026-10-16 inventory in section 1
+**Scope:** Rotom workload layer; the current runtime baseline is the 2026-10-17 inventory in section 1
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-16 — Reconcile recovery-critical topology
+**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -212,7 +212,7 @@ Revalidate this runbook when a website's desired deployment state, Compose path,
 
 ## 1. Current Docker Runtime and Deployment State
 
-**Evidence date:** 2026-10-16.
+**Evidence date:** 2026-10-17.
 
 The final live topology contains 23 running containers, 19 Docker networks, two named volumes, and 18 active Compose definitions. The extra network is the unattached `rotom-docs_default` network retained with the inactive rollback stack; its existence is not cleanup authorization. Every supported application is Compose-managed under `/srv/rotom/stacks`.
 
@@ -232,14 +232,15 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 |---|---|---|
 | Homepage and Glances | Supported active pair | One Compose file at `/srv/rotom/stacks/platform/homepage/compose.yaml`; Glances has no host listener |
 | Nginx Proxy Manager | Supported active service | Host networking; authoritative state under Platform appdata; no Docker socket |
-| Arcane | Supported active service | Platform stacks are mounted for management; automation policy is recorded in document 06 |
+| Arcane | Supported active service | Platform stacks are mounted for management; accepted automation policy is recorded in document 06; empty exclusions do not authorize cleanup |
+| Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported active site | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8` |
 | Libraries applications | Supported active services | Authoritative NAS payload under `/mnt/nas-libraries`; non-creating binds where loss would be unsafe |
 | Paperless | Supported active service | VM-local database/configuration plus `/mnt/nas-libraries/paperless` media |
 | qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract, WireGuard, loopback UI `127.0.0.1:8080` |
-| Palworld Jared and Fran | Supported active services | VM-local state; UDP publications unchanged; both healthy at the evidence date |
+| Palworld Jared and Fran | Supported active services | VM-local state; UDP publications unchanged; both healthy and intended to remain running under `restart: unless-stopped` |
 | Home Assistant and Homebridge | Supported active services | VM-local state under Smart Home appdata; host networking retained for discovery; each Compose file explicitly uses DNS `192.168.1.1` |
 
 Container state is time-sensitive. Diagnose current runtime state with the runbook above instead of relying on the evidence-date count alone.
@@ -281,10 +282,8 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 
 ## 7. Outstanding / Needs Verification
 
-- Arcane automatic update and auto-heal are enabled; exact exclusions and intended policy require owner confirmation.
-- Two Arcane-related named volumes and any unreferenced images require authenticated Arcane-policy and exact-object review before cleanup.
+- Two Arcane-related named volumes, stale project rows, and any unreferenced images require exact-object review before cleanup; the accepted automation policy does not authorize their deletion.
 - Actual residual Docker network/image objects were not enumerated during the documentation cleanup because privileged Docker access was unavailable.
-- Palworld persistence intent relative to the earlier stopped state remains unresolved.
 
 ## 8. Related Documentation
 

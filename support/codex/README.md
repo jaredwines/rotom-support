@@ -1,0 +1,7 @@
+# Codex Support
+
+This directory stores agent-facing support material for working on Rotom.
+
+- [`rotom-global-AGENTS.md`](rotom-global-AGENTS.md) is a repository backup of the active global Codex instructions. Its opening note defines the synchronization expectation; the active file remains outside this repository.
+
+This is agent support, not an authoritative runbook or Available Source. Operational facts and procedures must link to their numbered owner in [`runbook/`](../../runbook/README.md). When the active global instructions are intentionally changed, review this backup for the corresponding update and follow the root [`AGENTS.md`](../../AGENTS.md) plus the [RS maintenance contract](../../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules) if RS behavior or ownership changes.

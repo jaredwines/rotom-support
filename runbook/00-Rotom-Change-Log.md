@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Rename the repository architecture directory
+**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,13 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Resolve architecture audit findings
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `08-Rotom-Directory-Tree.txt`, and repository guide `guide/Rotom-Architecture-Overview.md`.
+- **Status:** **Implemented / Verified / Documentation only.** Added explicit DNS `192.168.1.1` to the Cloudflare DDNS Compose service and recreated only that container. Corrected the recorded Aloha NPM upstream to live `127.0.0.1:7778`. Recorded Jared's acceptance of the observed Arcane update/heal policy and of both healthy Palworld servers remaining running under `restart: unless-stopped`.
+- **Evidence:** Before the DDNS correction, its generated resolver reported no external nameservers and logs repeatedly showed resolution failure. After recreation it named `192.168.1.1`, retained restart count zero, and reported the Cloudflare A record already current; the other 23 running containers remained running. Live NPM data plus local and external probes verified Aloha HTTP `200`. Cloudflare API/public DNS checks verified the unproxied apex A record and wildcard CNAME. Arcane settings were read from its live database; Palworld health, restart policies, and scheduled update/backup settings were inspected live. PVE read-only status APIs reported successful current VM and PVE Restic backups. Jared confirmed the router/WAN, PVE, NAS control plane, and NAS snapshot protection work and waived further authenticated inspection.
+- **Outstanding:** Arcane stale project rows, two named volumes, and any unreferenced images remain a separate exact-object cleanup review. Exact router, PVE, and NAS control-plane exports were intentionally not captured; this is an evidence-provenance limit, not an active discrepancy. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Rename repository architecture directory
 

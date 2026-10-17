@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Rotom LAN, DNS, Docker networking, ports, Cloudflare, NPM, and domain routing
 **Hosts:** PVE hypervisor `pve` plus Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-15 — Migrate the private documentation portal to Rotom Support
+**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -77,7 +77,7 @@ Retain the time, vantage point, hostname, resolved address, direct/local-SNI/ext
 
 ## 1. Current Network and Exposure Summary
 
-**Evidence date:** 2026-10-15 unless stated otherwise.
+**Evidence date:** 2026-10-17 unless stated otherwise.
 
 Rotom is a DHCP client with a UniFi reservation at `192.168.1.69`. PVE is `192.168.1.68`, and the UniFi NAS is `192.168.1.70`, all on the trusted `192.168.1.0/24` LAN.
 
@@ -94,7 +94,7 @@ Nginx Proxy Manager is host-networked and owns the guest's HTTP/HTTPS reverse-pr
 | `docs.rotom.casa` | `127.0.0.1:8082` | Legacy private hostname; NPM host `22` permanently redirects paths and query strings to `https://support.rotom.casa/runbook/` |
 | `pve.rotom.casa` | HTTPS `192.168.1.68:8006` | Forced TLS, WebSockets, and the configured access list |
 | `jaredwines.com` | `127.0.0.1:7777` | Active behind NPM proxy host `8`; public and local-SNI checks returned `200` |
-| `alohamillworks.com` | `192.168.1.69:7778` | Active website |
+| `alohamillworks.com` | `127.0.0.1:7778` | Active website; local-SNI and external public probes returned `200` |
 
 Application routes for Paperless, Prowlarr, RomM, Home Assistant, Homebridge, Jellyfin, Radarr, Sonarr, and the other supported services must be diagnosed through the access-path runbook above and their current NPM records. Do not infer route state from a dated database table.
 
@@ -124,7 +124,9 @@ PVE has separate backup-only NAS paths for PVE Restic Backup and Rotom VM Backup
 
 ## 5. DNS, DDNS, and TLS
 
-Cloudflare DDNS remains an outbound-only Platform service. Its protected token value is not documented. NPM remains the TLS termination and reverse-proxy authority for Rotom application routes.
+Cloudflare DDNS remains an outbound-only Platform service. Its protected token value is not documented. On 2026-10-17, repeated container DNS failures were traced to Docker's embedded resolver having no usable external nameserver. Explicit container DNS `192.168.1.1` was added to its Compose definition and only that container was recreated. Its generated resolver then named `192.168.1.1`, restart count remained zero, and the updater reported the current A record was already up to date. NPM remains the TLS termination and reverse-proxy authority for Rotom application routes.
+
+Cloudflare API and DNS checks on 2026-10-17 verified an unproxied apex A record for `rotom.casa` pointing to the current public address and an unproxied wildcard CNAME `*.rotom.casa` pointing to the apex. The LAN resolver overrides only the apex to `192.168.1.69`; wildcard names follow the public CNAME unless another local record exists. Jared confirmed the router WAN/VLAN path works and waived further authenticated inspection; exact control-plane settings were not exported into this review.
 
 Local and public DNS can legitimately differ. Diagnose the local resolver result, public authoritative result, NPM route, certificate, access list, and upstream independently. A wildcard DNS answer does not prove that an application or proxy route exists.
 
@@ -161,7 +163,6 @@ The pre-virtualization bare-metal interface, routing, UFW, Docker bridge-address
 
 ## 9. Known Gaps / Needs Verification
 
-- Router WAN forwarding and VLAN implementation remain outside guest-level evidence.
 - Residual Docker network objects require privileged Docker inspection before any object cleanup.
 - Retained historical NPM database rows require owner intent plus generated-config and route checks before removal.
 - Continue normal PVE NIC/iGPU monitoring; existing evidence does not prove a single cause for historical resets.

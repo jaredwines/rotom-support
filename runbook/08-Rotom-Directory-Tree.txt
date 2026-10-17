@@ -4,7 +4,7 @@
 # Configuration semantics remain canonical in documents 02 through 07.
 # Index: 01-Rotom-Server-Inventory.md
 # Maintenance contract and protected history: 00-Rotom-Change-Log.md
-# Evidence date: 2026-10-16
+# Evidence date: 2026-10-17
 #
 # CURRENT TOPOLOGY
 #
@@ -15,7 +15,7 @@
 #   stacks/
 #     platform/
 #       arcane/compose.yaml
-#       cloudflare-ddns/compose.yaml
+#       cloudflare-ddns/compose.yaml        explicit container DNS 192.168.1.1
 #       homepage/compose.yaml              Homepage + Glances
 #       nginx-proxy-manager/compose.yaml
 #       mkdocs-rr/compose.yaml              Rotom Support active stack
@@ -186,10 +186,10 @@
 # /usr/local/bin/rr                                      compatibility wrapper
 # /home/jared/.config/rr/repository                      private path configuration
 # Available Sources remains the RS membership boundary and replacement is manual.
+# Router/WAN, PVE, NAS control-plane, and NAS snapshot operation were owner-confirmed working on 2026-10-17;
+# exact authenticated control-plane exports were intentionally not captured in this review.
 #
 # NEEDS VERIFICATION
-# - Arcane exclusions and intended long-term automatic-update/auto-heal policy.
-# - Exact current NAS snapshot schedules and retention.
 # - Root-only rollback archive retention.
 # - Residual Docker network/image objects before any object cleanup.
 # - Incident-specific recovery-point selection.

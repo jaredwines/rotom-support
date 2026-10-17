@@ -3,8 +3,8 @@
 **Documentation set:** Rotom Support
 **Document role:** Canonical source for scheduled/routine maintenance, automation, monitoring behavior, and operational administration workflow
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
-**Baseline verified:** Current state reconciled through 2026-10-16; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-16 — Record the Rotom checkout move
+**Baseline verified:** Current state reconciled through 2026-10-17; see outstanding items for remaining verification
+**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -105,9 +105,13 @@ The helper can recover only supported containers with an eligible restart policy
 
 ## 3. Arcane Automation
 
-The latest complete evidence reports `autoUpdate=true`, `autoHealEnabled=true`, `scheduledPruneEnabled=false`, and `followProjectSymlinks=true`.
+On 2026-10-17 Jared accepted the following live Arcane settings as the intended baseline: automatic update enabled daily at midnight (`0 0 0 * * *`) with an empty container-exclusion list; automatic healing enabled every five minutes (`0 */5 * * * *`) with an empty exclusion list; no more than five healing restarts in a 30-minute window; scheduled pruning disabled; and project-symlink following enabled. Arcane project polling remains enabled hourly.
 
-Arcane automatic activity has recreated or updated containers in the past. Exact project exclusions and intended long-term automation policy remain **Needs Verification**. Do not infer cleanup safety for images, named volumes, or intentionally stopped services from Arcane activity alone.
+The corresponding stored flags are `autoUpdate=true`, `autoHealEnabled=true`, `scheduledPruneEnabled=false`, and `followProjectSymlinks=true`.
+
+Arcane automatic activity has recreated or updated containers in the past. Empty exclusion lists mean every otherwise eligible container is in scope for those functions; they do not authorize image, named-volume, stale-project-row, or intentionally stopped-service cleanup.
+
+Cloudflare DDNS checks the external address every minute. Its Compose definition explicitly uses router DNS `192.168.1.1`; this was added on 2026-10-17 after the container's embedded resolver repeatedly failed to reach Cloudflare. The recreated container resolved successfully and reported the existing A record already current.
 
 ## 4. Monitoring and Retired Alerting
 
@@ -151,10 +155,9 @@ The tracked `support/tooling/rs` owns offline lint. The legacy test filename `te
 
 ## 8. Outstanding / Needs Verification
 
-- Arcane exclusions and intended long-term automatic-update/auto-heal policy.
 - Root-only rollback archive retention.
 - PVE iGPU option-ROM warning and historical reset/NIC stability only if symptoms recur.
-- Exact NAS snapshot settings and incident-specific recovery points.
+- Incident-specific recovery-point selection.
 - Fran's deferred SSH-key setup.
 - Bluetooth pairing and data exchange with a specific device; post-reboot kernel firmware log verification.
 
