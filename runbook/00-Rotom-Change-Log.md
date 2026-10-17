@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Rename repository internals directory
+**Documentation updated:** 2026-10-17 — Rename supplementary architecture source
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Rename supplementary architecture source
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, repository navigation files `README.md` and `architecture/README.md`, supplementary website inputs `internals/website/README.md` and `internals/website/architecture/index.md`; moved `architecture/Rotom-Architecture-Overview.md` to `architecture/Rotom-Architecture-System.md`.
+- **Status:** **Documentation only / Verified.** No Rotom application, storage, network, identity, credential, backup, recovery, generated-site, or live publisher state changed.
+- **Changes:** Renamed the canonical supplementary architecture source and updated repository navigation and future-build links. Preserved the current published `/architecture/rotom-architecture-overview/` route and recorded that the installed guarded publisher still expects the prior source filename pending separate live-change authorization.
+- **Evidence:** User-requested filename change, repository-wide reference audit, numbered-RS and guide validation, RS lint, and Git whitespace validation.
+- **Outstanding:** Update and verify the installed guarded publisher before the next publication, then publish the renamed page and reconcile the canonical portal route. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Rename repository internals directory
 

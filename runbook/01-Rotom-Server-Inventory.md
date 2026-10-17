@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
+**Documentation updated:** 2026-10-17 — Rename supplementary architecture source
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -138,7 +138,7 @@ Rotom Support is every file intentionally kept in the project's Available Source
 
 The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Documents/ChatGPT/rotom-runbook` on the Mac. On Rotom, `rs path` resolves the checkout using the existing `~/.config/rr/repository` compatibility fallback; append `runbook/` to locate the numbered files. The Mac checkout retains its established path; `/usr/local/bin/rs` was independently installed and verified there. Its `/usr/local/bin/rr` is a verified compatibility wrapper for `rs`. Available Sources replacement remains manual by Jared.
 
-The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. Its canonical file is published as supplementary portal content alongside the distinct `internals/website/architecture/index.md` landing-page input.
+The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. Its canonical repository file is `architecture/Rotom-Architecture-System.md`, published as supplementary portal content alongside the distinct `internals/website/architecture/index.md` landing-page input. The installed publisher still expects the prior source filename until a separately authorized live publisher update.
 
 The private **Rotom Support** portal publishes the complete numbered `00`–`08` RS allowlist at `/runbook/`, the supplementary landing inputs `internals/website/architecture/index.md` and `internals/website/guides/index.md`, the canonical supplementary architecture overview at `/architecture/rotom-architecture-overview/`, and the canonical supplementary total-loss recovery guide at `/guides/pve-and-rotom-total-loss-recovery/`. No other repository files under `guide/` or `architecture/` are included. Those supplementary sources do not change Runbook membership or Available Sources; they explain, orchestrate, and route to numbered sources rather than establish competing operational truth.
 
