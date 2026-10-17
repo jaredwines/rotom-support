@@ -1,4 +1,4 @@
-# Rotom Architecture Overview
+# Rotom Architecture System
 
 **Artifact class:** Supplementary repository architecture document; not a Rotom Support or Available Sources member
 **Document role:** Newcomer-friendly map of Rotom's services, access paths, storage, and data protection

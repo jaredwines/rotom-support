@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Rename supplementary architecture source
+**Documentation updated:** 2026-10-17 — Rename supplementary architecture title
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Rename supplementary architecture title
+
+- **Files changed:** `00-Rotom-Change-Log.md`, repository navigation files `README.md` and `architecture/README.md`, supplementary website input `internals/website/architecture/index.md`, and `architecture/Rotom-Architecture-System.md`.
+- **Status:** **Documentation only / Verified.** No Rotom application, generated-site, or live publisher state changed.
+- **Changes:** Changed the supplementary document title and matching repository navigation labels from **Rotom Architecture Overview** to **Rotom Architecture System**.
+- **Evidence:** User-requested title change, repository-wide title audit, numbered-RS and guide validation, RS lint, and Git whitespace validation.
+- **Outstanding:** The installed guarded publisher still requires the separately authorized filename update recorded below before this title can be published. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Rename supplementary architecture source
 

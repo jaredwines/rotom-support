@@ -2,7 +2,7 @@
 
 This page is a verified orientation to Rotom's design. For current operational facts and procedures, use the linked [Runbook](../runbook/index.md).
 
-For a fuller newcomer-oriented map of the current system, read the [Detailed System Overview](rotom-architecture-system.md). It remains supplementary and does not replace the numbered Runbook.
+For a fuller newcomer-oriented map of the current system, read [Rotom Architecture System](rotom-architecture-system.md). It remains supplementary and does not replace the numbered Runbook.
 
 ## Physical infrastructure and virtualization
 
