@@ -2,12 +2,6 @@
 
 Rotom Support is the private operations portal for people who administer, troubleshoot, or recover Rotom. It combines the authoritative numbered Runbook with supplementary architecture context and task-oriented guides.
 
-## Start here
-
-- If something is broken or you need to make a change, use the [Server Inventory task and symptom router](runbook/01-Rotom-Server-Inventory.md#start-by-task-or-symptom).
-- If you are learning how the systems fit together, read the [Rotom Architecture System](architecture/rotom-architecture-system.md).
-- If PVE and Rotom have both been lost, begin with the [Total-Loss Recovery emergency path](guides/pve-and-rotom-total-loss-recovery.md#emergency-recovery-path).
-
 ## Choose a section
 
 - [Runbook: current state and operating procedures](runbook/index.md) contains the approved numbered source set for configuration, maintenance, security, troubleshooting, and recovery.
