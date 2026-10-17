@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Correct Mac checkout path
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`.
+- **Status:** **Documentation only / Verified.**
+- **Changes:** Updated the current Mac checkout path and resolver fact; prior path records remain historical.
+- **Evidence:** Jared supplied terminal output showing `rs path` resolves `/Users/jared/Documents/ChatGPT/rotom-support` and `rs status` reports the expected SSH origin, clean `main`, and zero cached commits ahead or behind at `09233c1`. The resolver configuration was updated on the Mac.
+- **Outstanding:** A fresh GitHub check was not shown; Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Align published page titles
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`; installed `mkdocs-rr` publisher and `mkdocs.yml`.
