@@ -138,9 +138,9 @@ Rotom Support is every file intentionally kept in the project's Available Source
 
 The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Documents/ChatGPT/rotom-runbook` on the Mac. On Rotom, `rs path` resolves the checkout using the existing `~/.config/rr/repository` compatibility fallback; append `runbook/` to locate the numbered files. The Mac checkout retains its established path; `/usr/local/bin/rs` was independently installed and verified there. Its `/usr/local/bin/rr` is a verified compatibility wrapper for `rs`. Available Sources replacement remains manual by Jared.
 
-The checkout also has an `architecture/` directory, currently containing only a Git placeholder; it has no current RS source. It is distinct from the existing supplementary website input `support/website/architecture/index.md`.
+The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. The directory is distinct from the existing supplementary website input `support/website/architecture/index.md`.
 
-The private **Rotom Support** portal publishes the complete numbered `00`–`08` RS allowlist at `/runbook/`, plus the explicitly selected supplementary `support/website/architecture/index.md` and `support/website/guides/index.md` inputs. Repository files under `guide/` are not included. Those supplementary sources do not change Runbook membership or Available Sources; they explain and route to numbered sources rather than establish operational truth.
+The private **Rotom Support** portal publishes the complete numbered `00`–`08` RS allowlist at `/runbook/`, plus the explicitly selected supplementary `support/website/architecture/index.md` and `support/website/guides/index.md` inputs. Repository files under `guide/` and `architecture/` are not included. Those supplementary sources do not change Runbook membership or Available Sources; they explain and route to numbered sources rather than establish operational truth.
 
 ## 8. Current Source Map
 

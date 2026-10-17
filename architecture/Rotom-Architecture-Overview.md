@@ -1,6 +1,6 @@
 # Rotom Architecture Overview
 
-**Artifact class:** Supplementary repository guide; not a Rotom Support or Available Sources member
+**Artifact class:** Supplementary repository architecture document; not a Rotom Support or Available Sources member
 **Document role:** Newcomer-friendly map of Rotom's services, access paths, storage, and data protection
 **Evidence baseline:** Rotom Support plus read-only live inspection on 2026-10-17
 **Documentation updated:** 2026-10-17
@@ -330,6 +330,6 @@ No active-but-undocumented container, NPM hostname, or Rotom `nas-*` fstab contr
 - [06 - Maintenance and Automation](../runbook/06-Maintenance-and-Automation.md) — timers, helpers, status services, and routine operations
 - [07 - Users and Permissions](../runbook/07-Users-and-Permissions.md) — service identities, numeric ownership, ACLs, and administrative boundaries
 - [08 - Rotom Directory Tree](../runbook/08-Rotom-Directory-Tree.txt) — concise path and topology reference
-- [PVE and Rotom Total-Loss Recovery](PVE-and-Rotom-Total-Loss-Recovery.md) — supplementary end-to-end recovery orchestration for replacement hardware
+- [PVE and Rotom Total-Loss Recovery](../guide/PVE-and-Rotom-Total-Loss-Recovery.md) — supplementary end-to-end recovery orchestration for replacement hardware
 
 For any change or incident, begin with the relevant numbered RS document, inspect live state, and stop if the live system differs materially from the recorded contract. Never copy credentials, tokens, private keys, cookies, certificate private material, or Restic passwords into troubleshooting notes.

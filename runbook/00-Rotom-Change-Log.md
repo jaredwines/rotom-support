@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Move repository architecture overview
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `08-Rotom-Directory-Tree.txt`, repository navigation files `README.md`, `guide/README.md`, and `architecture/README.md`; moved `guide/Rotom-Architecture-Overview.md` to `architecture/Rotom-Architecture-Overview.md`.
+- **Status:** **Documentation only / Verified.**
+- **Changes:** Moved the supplementary Rotom architecture overview into the repository's architecture directory and updated navigation, source-map, publication-boundary, and directory-reference text. The overview remains outside Rotom Support and Available Sources.
+- **Evidence:** Requested repository organization change, local checkout inspection, guide and numbered-RS structural tests, RS lint, and Git whitespace validation.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Resolve architecture audit findings
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `08-Rotom-Directory-Tree.txt`, and repository guide `guide/Rotom-Architecture-Overview.md`.
