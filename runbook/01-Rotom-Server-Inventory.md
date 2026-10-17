@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-16 — Record the Rotom checkout move
+**Documentation updated:** 2026-10-17 — Rename the repository architecture directory
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -135,7 +135,7 @@ Rotom Support is every file intentionally kept in the project's Available Source
 
 The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Documents/ChatGPT/rotom-runbook` on the Mac. On Rotom, `rs path` resolves the checkout using the existing `~/.config/rr/repository` compatibility fallback; append `runbook/` to locate the numbered files. The Mac checkout retains its established path; `/usr/local/bin/rs` was independently installed and verified there. Its `/usr/local/bin/rr` is a verified compatibility wrapper for `rs`. Available Sources replacement remains manual by Jared.
 
-The checkout also has an `Architecture/` directory, currently containing only a Git placeholder; it has no current RS source. It is distinct from the existing supplementary website input `support/website/architecture/index.md`.
+The checkout also has an `architecture/` directory, currently containing only a Git placeholder; it has no current RS source. It is distinct from the existing supplementary website input `support/website/architecture/index.md`.
 
 The private **Rotom Support** portal publishes the complete numbered `00`–`08` RS allowlist at `/runbook/`, plus the explicitly selected supplementary `support/website/architecture/index.md` and `support/website/guides/index.md` inputs. Repository files under `guide/` are not included. Those supplementary sources do not change Runbook membership or Available Sources; they explain and route to numbered sources rather than establish operational truth.
 

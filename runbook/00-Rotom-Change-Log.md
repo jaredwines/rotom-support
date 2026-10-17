@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-16 — Move the Rotom checkout to rotom-support
+**Documentation updated:** 2026-10-17 — Rename the repository architecture directory
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Rename repository architecture directory
+
+- **Files changed:** `architecture/.gitkeep`, `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `08-Rotom-Directory-Tree.txt`.
+- **Status:** **Implemented / Documentation only.**
+- **Changes:** Renamed the repository's empty `Architecture/` directory to `architecture/` and updated its current source map and directory reference. The separate website architecture input remains unchanged.
+- **Evidence:** Local checkout inspection and the requested rename.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
 
 ## 2026-10-16 — Verify Mac compatibility cutover
 
