@@ -129,6 +129,9 @@ fi
 RECOVERY_GUIDE="guide/PVE-and-Rotom-Total-Loss-Recovery.md"
 if [[ -f "$REPO_ROOT/$RECOVERY_GUIDE" ]]; then
     require_text "$RECOVERY_GUIDE" "## Emergency Recovery Path"
+    require_text "$RECOVERY_GUIDE" "## AI-Assisted Recovery Bootstrap"
+    require_text "$RECOVERY_GUIDE" "The bootstrap prompt grants **read-only discovery authority only**."
+    require_text "$RECOVERY_GUIDE" "If AI access becomes unavailable"
     require_text "$RECOVERY_GUIDE" "## Operator Navigation and Incident Control"
     require_text "$RECOVERY_GUIDE" "### Recovery Control Sheet"
     require_text "$RECOVERY_GUIDE" "### Recovery architecture"

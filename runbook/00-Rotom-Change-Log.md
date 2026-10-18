@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Add AI-assisted total-loss recovery bootstrap
+
+- **Files changed:** `05-Backup-and-Restore.md`, `guide/PVE-and-Rotom-Total-Loss-Recovery.md`, `guide/README.md`, `internals/tooling/test-guides`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented / Documentation only.** No PVE, Rotom, NAS, backup, network, credential, or external-service state was changed.
+- **Changes:** Added a copy-ready, provider-neutral AI recovery-coordinator prompt, required-input packet, structured phase/evidence protocol, explicit human approval boundaries, prompt-injection and secret-handling rules, completion definition, resumable handoff, and manual fallback. Added canonical backup-runbook routing and structural validation for the new section.
+- **Evidence:** The prompt follows the existing RS phase gates and current authority model, including **PVE — Jared executes**, restricted staging, exact-source verification, isolated VM boot, human approval for destructive or production-identity actions, and Phases 0–20 acceptance. Guide and RS validation passed before publication.
+- **Outstanding:** AI remains optional and cannot supply missing credentials, surviving backups, hardware facts, external access, or human authorization. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Record /srv/rotom human access ACLs
 
 - **Files changed:** `07-Users-and-Permissions.md`, `00-Rotom-Change-Log.md`.

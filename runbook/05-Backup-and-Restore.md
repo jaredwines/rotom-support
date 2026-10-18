@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Add and verify complete isolated Rotom restore rehearsal
+**Documentation updated:** 2026-10-17 — Add AI-assisted total-loss recovery routing
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -17,7 +17,7 @@ Record substantive changes to this document in the change log as part of the sam
 - Use **7. Restore Procedure** for recovery planning, while verifying the selected recovery point and current target paths before action.
 - Treat **6. Recovery-Critical Historical Evidence** as evidence; it does not prove that a snapshot, local artifact, mount, or credential path still exists.
 - Review **8. Recovery Limitations and Outstanding Work** before relying on a protection domain.
-- For complete loss of the PVE computer, use the supplementary RS [PVE and Rotom Total-Loss Recovery guide](../guide/PVE-and-Rotom-Total-Loss-Recovery.md#emergency-recovery-path). The guide orchestrates recovery but is not a canonical operational fact owner; this document retains ownership of backup architecture and ordinary restores.
+- For complete loss of the PVE computer, use the supplementary RS [PVE and Rotom Total-Loss Recovery guide](../guide/PVE-and-Rotom-Total-Loss-Recovery.md#emergency-recovery-path). When AI assistance is available, its [AI-Assisted Recovery Bootstrap](../guide/PVE-and-Rotom-Total-Loss-Recovery.md#ai-assisted-recovery-bootstrap) provides a copy-ready coordination prompt with the same authority and stop boundaries. The guide orchestrates recovery but is not a canonical operational fact owner; this document retains ownership of backup architecture and ordinary restores.
 - This file owns backup and restore claims; storage locations, automation schedules, and privilege boundaries remain canonical in documents 04, 06, and 07.
 
 ## Start by Task or Symptom
@@ -31,6 +31,7 @@ Record substantive changes to this document in the change log as part of the sam
 | Restore data | Select a known recovery point and restore to an isolated restricted staging location before planning live replacement |
 | PVE Restic or Rotom VM VZDump work | Use the PVE sections in this document; all PVE actions are **PVE — Jared executes** |
 | Rebuild from blank replacement hardware | Use the supplementary [PVE and Rotom Total-Loss Recovery guide](../guide/PVE-and-Rotom-Total-Loss-Recovery.md#emergency-recovery-path) |
+| Coordinate blank-hardware recovery with AI | Use the guide's optional [AI-Assisted Recovery Bootstrap](../guide/PVE-and-Rotom-Total-Loss-Recovery.md#ai-assisted-recovery-bootstrap); AI does not replace RS, credentials, human approval, or the manual fallback |
 
 ## Run and Verify Rotom Restic Backup
 
