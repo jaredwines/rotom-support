@@ -22,5 +22,5 @@
 .diagram-dialog::backdrop { background: rgba(0, 0, 0, .75); }
 .diagram-close { display: block; margin-left: auto; }
 .diagram-view { height: calc(100% - 3rem); overflow: auto; text-align: center; }
-.diagram-view svg { height: auto; max-width: none !important; min-width: 100%; width: max(100%, 1000px); }
+.diagram-view .mermaid { min-width: 1000px; width: 100%; }
 .diagram-expand:focus-visible, .diagram-close:focus-visible { outline: 3px solid var(--md-accent-fg-color); outline-offset: 3px; }

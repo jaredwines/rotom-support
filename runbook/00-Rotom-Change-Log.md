@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Fix diagram expand controls after rendering
+
+- **Files changed:** `internals/publisher/diagram-expand.js`, `internals/publisher/diagram-expand.css.js`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented**.
+- **Changes:** Attach expand controls to rendered Mermaid diagrams and move the original diagram into the expanded view, preserving the theme's closed shadow DOM.
+- **Evidence:** The site theme replaces the original Mermaid code element with a rendered element containing a closed shadow root; the original control targeted the replaced element.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Add diagram expand controls
 
 - **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/diagram-expand.js`, `internals/publisher/diagram-expand.css.js`, `internals/publisher/test-publisher.py`, `internals/publisher/README.md`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
