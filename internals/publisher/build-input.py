@@ -12,7 +12,8 @@ repo, stage = map(pathlib.Path, sys.argv[1:3])
 docs = stage / 'docs'
 docs.mkdir(parents=True)
 paths = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '-z']).split(b'\0')
-paths = [p.decode('utf-8') for p in paths if p]
+paths = [name for p in paths if p for name in [p.decode('utf-8')]
+         if not any(part.startswith('.git') for part in pathlib.PurePosixPath(name).parts)]
 nav = []
 aliases = {}
 for name in paths:

@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Exclude Git-related paths from the site
+
+- **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/sync`, `internals/publisher/test-publisher.py`, `internals/publisher/README.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented / Verified** for the installed publisher and non-publishing build; publication remains to be verified.
+- **Changes:** Exclude paths containing a component beginning with `.git` from site navigation and raw downloads, without changing repository files or membership.
+- **Evidence:** Jared's request; publisher fixture tests and a non-publishing build passed after installation. The previous publisher exposed tracked Git-related files in navigation and raw copies.
+- **Outstanding:** Validate and publish the revised site; Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Name README pages in site navigation
 
 - **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/test-publisher.py`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.

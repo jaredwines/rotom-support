@@ -26,11 +26,16 @@ docker run --rm --network none --security-opt no-new-privileges --cap-drop ALL \
   -v "$stage/docs:/docs:ro" -v "$stage/mkdocs.yml:/mkdocs.yml:ro" -v "$site:/site" \
   squidfunk/mkdocs-material@sha256:1a4e939cfd62b90943b6a829eb8544933e4e94eab18b8ca1d0f912fa9a532c37 build --clean --config-file /mkdocs.yml
 mkdir -p "$site/raw"
-git -C "$repo" archive "$rev" | tar -xf - -C "$site/raw"
+git -C "$repo" archive "$rev" | tar --exclude='.git*' -xf - -C "$site/raw"
 python3 - "$repo" "$stage/mkdocs.yml" "$site" <<'PY'
 import hashlib, json, pathlib, subprocess, sys
 repo, config, site = map(pathlib.Path, sys.argv[1:])
 tracked = [x.decode() for x in subprocess.check_output(['git','-C',str(repo),'ls-files','-z']).split(b'\0') if x]
+excluded = [name for name in tracked if any(part.startswith('.git') for part in pathlib.PurePosixPath(name).parts)]
+tracked = [name for name in tracked if name not in excluded]
+for name in excluded:
+    assert not (site / 'raw' / name).exists(), name
+assert not any(part.startswith('.git') for path in (site / 'raw').rglob('*') for part in path.relative_to(site / 'raw').parts)
 nav = json.loads(config.read_text())['nav']
 manifest = json.loads((config.parent / 'manifest.json').read_text())
 def nav_pages(items):
