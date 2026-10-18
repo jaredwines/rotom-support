@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Linux accounts, UID/GID identities, groups, privileges, ACLs, and access policy
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
 **Baseline verified:** Current state reconciled through 2026-10-15; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-15 — Prepare Rotom Runbook identity and migration gates
+**Documentation updated:** 2026-10-17 — Record human read access under /srv/rotom
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -99,9 +99,11 @@ The five `/home/<service>` directories are absent even though NSS retains those 
 
 `/srv/rotom` is root-administered. Declarative `stacks/` and `scripts/` content, mutable `appdata/`, protected `secrets/`, and any explicitly retained recovery material have different ownership and exposure requirements. Preserve existing owners, modes, ACLs, and default ACL inheritance.
 
-Jared has named read/traverse or administrative ACL access where documented. That access does not change the owning service identity and should not be replaced by broad group membership or world-writable modes.
+On 2026-10-17 named ACL entries were applied recursively under `/srv/rotom` for `jared` and `fran`: read and directory traversal, with execute also granted on files already executable. Directory default ACLs carry both named entries for new children. This includes `/srv/rotom/secrets`; it does not change service ownership. ACL masks were recalculated, potentially making pre-existing group entries effective; do not infer unchanged group access from unchanged ownership. A check found both default entries on all 5,934 directories then present, and spot checks verified access; it did not establish effective read access for every file.
 
-Smart Home Compose files remain owned by `smart-home:smart-home` with their documented restrictive modes. Unintended Game Servers ACL entries were removed without changing service access.
+Default ACLs are limited by the creation mode and later permission changes: a file created as `0600` or directory as `0700` can mask inherited named access. Use the diagnosis procedure above and authorized sudo when ordinary access is denied; no automatic ACL repair is installed or implied. The earlier recursive change under `/home` was reversed for entries in the saved pre-change ACL snapshot. Files created after that snapshot were not included in the restore. Spot checks confirmed the original home-directory ACLs and private-key modes; a complete audit of post-snapshot home items was not performed.
+
+Smart Home Compose files retain their service ownership; check current modes and effective ACLs rather than relying on historic restrictive modes. Historical Game Servers ACL cleanup predates the 2026-10-17 named grants.
 
 ## 3. NAS Numeric Identity
 
@@ -124,7 +126,7 @@ Use the owning service identity for ordinary service-specific administration. Ro
 
 - RS GitHub operations run as `jared`; do not copy Jared's private key into a service account.
 - Protected Restic credentials remain root-only and are never documented by value.
-- Service secrets remain under `/srv/rotom/secrets` with restrictive ownership and modes.
+- Service secrets remain under `/srv/rotom/secrets`; the named ACL policy above gives Jared and Fran read/traverse access where effective. Preserve service ownership and avoid exposing credential contents.
 - Remote Desktop Commander remains locked, has no sudo or Docker membership, and uses its existing outbound service registration without exposing its device state.
 - Fran's SSH-key setup remains deferred; password/sudo and PVE browser access are separate from SSH authorization.
 

@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Record Homepage NAS monitoring changes
+**Documentation updated:** 2026-10-17 — Record /srv/rotom human access ACLs
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Record /srv/rotom human access ACLs
+
+- **Files changed:** `07-Users-and-Permissions.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented / Verified / Documentation only.**
+- **Changes:** Recorded Jared and Fran named access and default ACLs under `/srv/rotom`, including secrets, the limits of inheritance, and the potential effect of recalculated ACL masks. The temporary broader `/home` change was restored from the pre-change snapshot for recorded entries; post-snapshot items were not included.
+- **Evidence:** Recursive ACL commands completed successfully; 5,934 current directories had default entries for each account. Root and secrets ACLs and selected access tests passed. Home root ACLs and SSH private-key modes were spot checked after restore. No failed systemd units were reported. Not every file or application was individually tested.
+- **Outstanding:** Future restrictive creation modes can mask named access; no automatic repair was installed. Audit post-snapshot `/home` items and application-specific effects if needed. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Update Homepage NAS monitoring
 
