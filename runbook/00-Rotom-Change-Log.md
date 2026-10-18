@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Enable Mermaid diagrams on the support site
+
+- **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/test-publisher.py`, `internals/publisher/README.md`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented**.
+- **Changes:** Configured the repository mirror to render Mermaid fenced diagrams and added a publisher configuration check.
+- **Evidence:** The published architecture page displayed Mermaid source as a code block; the site builder did not enable Mermaid fences.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Add the Rotom architecture diagram
 
 - **Files changed:** `architecture/Rotom-Architecture-Diagram.md`, `architecture/README.md`, `00-Rotom-Change-Log.md`.

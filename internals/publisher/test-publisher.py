@@ -38,7 +38,9 @@ with tempfile.TemporaryDirectory() as directory:
             for value in entry.values():
                 yield from leaves(value) if isinstance(value, list) else [value]
     assert sorted(leaves(nav)) == sorted(views.values())
-    features = json.loads((stage / 'mkdocs.yml').read_text())['theme']['features']
+    config = json.loads((stage / 'mkdocs.yml').read_text())
+    assert {'name': 'mermaid', 'class': 'mermaid'} in config['markdown_extensions'][0]['pymdownx.superfences']['custom_fences']
+    features = config['theme']['features']
     assert 'navigation.tabs' in features and 'toc.follow' in features
     assert [next(iter(entry)) for entry in nav] == ['Home', 'Repository']
     section_nav = next(entry['Section'] for entry in nav[1]['Repository'] if 'Section' in entry)

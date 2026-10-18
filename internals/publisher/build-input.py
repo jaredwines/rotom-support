@@ -153,6 +153,7 @@ nav = [{markdown_titles['index.md']: 'index.md'}] + [{name: nav_items(group)} fo
 config = {'site_name': 'Rotom Support', 'docs_dir': '/docs', 'site_dir': '/site',
           'theme': {'name': 'material', 'language': 'en', 'features': ['navigation.tabs', 'navigation.tabs.sticky', 'navigation.sections', 'navigation.top', 'toc.follow', 'search.suggest', 'search.highlight'],
                     'palette': [{'scheme': 'slate', 'primary': 'deep purple', 'accent': 'purple'}]},
+          'markdown_extensions': [{'pymdownx.superfences': {'custom_fences': [{'name': 'mermaid', 'class': 'mermaid'}]}}],
           'extra': {'generator': False}, 'nav': nav}
 (stage / 'mkdocs.yml').write_text(json.dumps(config), encoding='utf-8')
 (stage / 'manifest.json').write_text(json.dumps(manifest), encoding='utf-8')
