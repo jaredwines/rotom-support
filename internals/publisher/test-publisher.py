@@ -20,9 +20,17 @@ with tempfile.TemporaryDirectory() as directory:
     subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
     subprocess.run(['python3', str(builder), str(repo), str(stage)], check=True)
     nav = json.loads((stage / 'mkdocs.yml').read_text())['nav']
-    assert {next(iter(entry)) for entry in nav} == set(files)
+    views = json.loads((stage / 'manifest.json').read_text())
+    assert set(views) == set(files)
+    def leaves(items):
+        for entry in items:
+            for value in entry.values():
+                yield from leaves(value) if isinstance(value, list) else [value]
+    assert sorted(leaves(nav)) == sorted(views.values())
+    features = json.loads((stage / 'mkdocs.yml').read_text())['theme']['features']
+    assert 'navigation.tabs' in features and 'toc.follow' in features
+    assert [next(iter(entry)) for entry in nav] == ['Home', 'Repository']
     assert (stage / 'docs/index.md').read_text() == files['README.md']
-    views = {next(iter(entry)): next(iter(entry.values())) for entry in nav}
     assert (stage / 'docs' / views['section/README.md']).read_text() == files['section/README.md']
     assert 'hidden text' in (stage / 'docs' / views['.hidden']).read_text()
     assert '````text\n```\nscript\n````' in (stage / 'docs' / views['tools/script']).read_text()

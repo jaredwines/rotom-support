@@ -32,12 +32,20 @@ import hashlib, json, pathlib, subprocess, sys
 repo, config, site = map(pathlib.Path, sys.argv[1:])
 tracked = [x.decode() for x in subprocess.check_output(['git','-C',str(repo),'ls-files','-z']).split(b'\0') if x]
 nav = json.loads(config.read_text())['nav']
-assert {next(iter(x)) for x in nav} == set(tracked)
+manifest = json.loads((config.parent / 'manifest.json').read_text())
+def nav_pages(items):
+    for item in items:
+        for value in item.values():
+            if isinstance(value, list):
+                yield from nav_pages(value)
+            else:
+                yield value
+assert set(manifest) == set(tracked)
+assert sorted(nav_pages(nav)) == sorted(manifest.values())
 for name in tracked:
     original, published = repo / name, site / 'raw' / name
     assert published.is_file() and hashlib.sha256(original.read_bytes()).digest() == hashlib.sha256(published.read_bytes()).digest(), name
-for entry in nav:
-    name, page = next(iter(entry.items()))
+for name, page in manifest.items():
     path = pathlib.PurePosixPath(page)
     if path.name in ('index.md', 'README.md'):
         output = site / path.parent / 'index.html'
@@ -68,7 +76,17 @@ if ! mv "$site" "$base/site"; then
     mv "$backup" "$base/site"
     exit 1
 fi
-if ! docker compose -f "$compose" up -d --no-deps --force-recreate docs || ! curl -fsS --max-time 10 http://127.0.0.1:8082/ >/dev/null; then
+ready=0
+if docker compose -f "$compose" up -d --no-deps --force-recreate docs; then
+    for attempt in 1 2 3 4 5; do
+        if curl -fsS --max-time 5 http://127.0.0.1:8082/ >/dev/null 2>&1; then
+            ready=1
+            break
+        fi
+        sleep 1
+    done
+fi
+if [ "$ready" -ne 1 ]; then
     mv "$base/site" "$site"
     mv "$backup" "$base/site"
     docker compose -f "$compose" up -d --no-deps --force-recreate docs || true

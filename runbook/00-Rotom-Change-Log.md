@@ -84,6 +84,13 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Organize repository site navigation
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `06-Maintenance-and-Automation.md`, and `internals/publisher/` builder, publisher, and test.
+- **Status:** **Implemented / Verified.** The site groups tracked repository files under Home, Runbook, Architecture, Guides, Internals, and Repository tabs and provides a contents panel for document headings. Source membership and raw file preservation are unchanged.
+- **Evidence:** The isolated build contained all 40 tracked file pages and rendered the tabs and document contents. The first publication rolled back after an immediate startup health check raced the container; adding a bounded retry allowed the validated build to publish. The preceding site and publisher files were retained.
+- **Outstanding:** Available Sources replacement remains manual by Jared; verify the final GitHub revision after this change is pushed.
+
 ## 2026-10-17 — Mirror the complete repository on the private site
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, repository navigation and publisher files.

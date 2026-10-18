@@ -97,8 +97,28 @@ for name in paths:
 
 (docs / 'index.md').write_text(markdown((repo / 'README.md').read_bytes(), 'README.md', 'index.md'), encoding='utf-8')
 nav.insert(0, {'README.md': 'index.md'})
+manifest = {name: page for entry in nav for name, page in entry.items()}
+groups = {'Runbook': {}, 'Architecture': {}, 'Guides': {}, 'Internals': {}, 'Repository': {}}
+section_names = {'runbook': 'Runbook', 'architecture': 'Architecture', 'guide': 'Guides', 'internals': 'Internals'}
+for name, page in manifest.items():
+    if name == 'README.md':
+        continue
+    parts = pathlib.PurePosixPath(name).parts
+    section = section_names.get(parts[0], 'Repository')
+    remaining = parts[1:] if parts[0] in section_names else parts
+    node = groups[section]
+    for part in remaining[:-1]:
+        node = node.setdefault(part, {})
+    node[remaining[-1]] = page
+
+def nav_items(tree):
+    return [{name: nav_items(value) if isinstance(value, dict) else value}
+            for name, value in sorted(tree.items(), key=lambda item: (item[0] != 'README.md', item[0].lower()))]
+
+nav = [{'Home': 'index.md'}] + [{name: nav_items(group)} for name, group in groups.items() if group]
 config = {'site_name': 'Rotom Support', 'docs_dir': '/docs', 'site_dir': '/site',
-          'theme': {'name': 'material', 'language': 'en', 'features': ['navigation.sections', 'navigation.top', 'search.suggest', 'search.highlight'],
+          'theme': {'name': 'material', 'language': 'en', 'features': ['navigation.tabs', 'navigation.tabs.sticky', 'navigation.sections', 'navigation.top', 'toc.follow', 'search.suggest', 'search.highlight'],
                     'palette': [{'scheme': 'slate', 'primary': 'deep purple', 'accent': 'purple'}]},
           'extra': {'generator': False}, 'nav': nav}
 (stage / 'mkdocs.yml').write_text(json.dumps(config), encoding='utf-8')
+(stage / 'manifest.json').write_text(json.dumps(manifest), encoding='utf-8')
