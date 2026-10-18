@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+import json
+import pathlib
+import posixpath
+import re
+import shutil
+import subprocess
+import sys
+from urllib.parse import quote
+
+repo, stage = map(pathlib.Path, sys.argv[1:3])
+docs = stage / 'docs'
+docs.mkdir(parents=True)
+paths = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '-z']).split(b'\0')
+paths = [p.decode('utf-8') for p in paths if p]
+nav = []
+aliases = {}
+for name in paths:
+    path = pathlib.PurePosixPath(name)
+    if name == 'README.md':
+        aliases[name] = 'index.md'
+    elif name.endswith('/README.md') and repo.joinpath(*path.parent.parts, 'index.md').exists():
+        aliases[name] = str(path.parent / ('repository-readme-' + name.encode().hex() + '.md'))
+    else:
+        aliases[name] = name
+
+def markdown(data, name, page):
+    text = data.decode('utf-8')
+    def rewrite(match):
+        dest = match.group(1)
+        path, marker, anchor = dest.partition('#')
+        if marker:
+            anchor = re.sub(r'^(phase-[0-9]+)---', r'\1-', anchor)
+        if not path:
+            return '](#' + anchor if marker else match.group(0)
+        if '://' in path or path.startswith('/'):
+            return match.group(0)
+        target = posixpath.normpath(posixpath.join(posixpath.dirname(name), path))
+        site_targets = {
+            ('internals/website/home.md', 'runbook/index.md'): 'runbook/README.md',
+            ('internals/website/home.md', 'runbook/00-Rotom-Change-Log.md'): 'runbook/00-Rotom-Change-Log.md',
+            ('internals/website/architecture/index.md', 'rotom-architecture-system.md'): 'architecture/Rotom-Architecture-System.md',
+            ('internals/website/architecture/index.md', '../runbook/index.md'): 'runbook/README.md',
+            ('internals/website/guides/index.md', 'pve-and-rotom-total-loss-recovery.md'): 'guide/PVE-and-Rotom-Total-Loss-Recovery.md',
+            ('internals/website/guides/index.md', '../runbook/index.md'): 'runbook/README.md',
+        }
+        target = site_targets.get((name, path), target)
+        if target not in aliases:
+            return match.group(0)
+        relative = posixpath.relpath(aliases[target], posixpath.dirname(page) or '.')
+        return '](' + relative + (marker + anchor if marker else '')
+    return re.sub(r'\]\(([^\s)]+)', rewrite, text)
+
+for name in paths:
+    path = pathlib.PurePosixPath(name)
+    if path.is_absolute() or '..' in path.parts or '\n' in name:
+        raise ValueError('Unsafe tracked path')
+    source = repo.joinpath(*path.parts)
+    if source.is_symlink() or not source.is_file():
+        raise ValueError('Tracked path is not a regular file: ' + name)
+    data = source.read_bytes()
+    target = docs.joinpath(*path.parts)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+    try:
+        data.decode('utf-8')
+        binary = b'\x00' in data
+    except UnicodeDecodeError:
+        binary = True
+    conflicts = name.endswith('/README.md') and repo.joinpath(*path.parent.parts, 'index.md').exists()
+    if name == 'README.md':
+        continue
+    if binary:
+        if name.endswith('.md'):
+            target.unlink()
+        page = '__repository_files__/' + name.encode().hex() + '.md'
+        view = docs / page
+        view.parent.mkdir(parents=True, exist_ok=True)
+        view.write_text('[' + name.replace(']', '\\]') + '](/raw/' + quote(name) + ')\n', encoding='utf-8')
+    elif name.endswith('.md') and not conflicts:
+        page = name
+        target.write_text(markdown(data, name, page), encoding='utf-8')
+    elif conflicts:
+        page = str(path.parent / ('repository-readme-' + name.encode().hex() + '.md'))
+        view = docs / page
+        view.parent.mkdir(parents=True, exist_ok=True)
+        view.write_text(markdown(data, name, page), encoding='utf-8')
+    else:
+        page = '__repository_files__/' + name.encode().hex() + '.md'
+        view = docs / page
+        view.parent.mkdir(parents=True, exist_ok=True)
+        text = data.decode('utf-8')
+        longest = max((len(m.group(1)) for line in text.splitlines() if (m := re.match(r'^ {0,3}(`+)', line))), default=0)
+        fence = '`' * max(3, longest + 1)
+        view.write_text(fence + 'text\n' + text + ('\n' if not text.endswith('\n') else '') + fence + '\n', encoding='utf-8')
+    nav.append({name: page})
+
+(docs / 'index.md').write_text(markdown((repo / 'README.md').read_bytes(), 'README.md', 'index.md'), encoding='utf-8')
+nav.insert(0, {'README.md': 'index.md'})
+config = {'site_name': 'Rotom Support', 'docs_dir': '/docs', 'site_dir': '/site',
+          'theme': {'name': 'material', 'language': 'en', 'features': ['navigation.sections', 'navigation.top', 'search.suggest', 'search.highlight'],
+                    'palette': [{'scheme': 'slate', 'primary': 'deep purple', 'accent': 'purple'}]},
+          'extra': {'generator': False}, 'nav': nav}
+(stage / 'mkdocs.yml').write_text(json.dumps(config), encoding='utf-8')

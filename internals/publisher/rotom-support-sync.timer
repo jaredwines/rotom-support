@@ -1,0 +1,10 @@
+[Unit]
+Description=Check GitHub for Rotom Support updates
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target

@@ -29,6 +29,7 @@ Choose the row that best matches the work. In the destination, read the current-
 | Timer, scheduled automation, update, or maintenance problem | [06 — automation and maintenance task router](06-Maintenance-and-Automation.md#start-by-task-or-symptom) |
 | Permission, ownership, user, group, identity, or access problem | [07 — identity and access task router](07-Users-and-Permissions.md#start-by-task-or-symptom) |
 | Filesystem-path lookup | [08 — current and historical filesystem topology](08-Rotom-Directory-Tree.txt) |
+| Website repository synchronization or publication | [06 — documentation and synchronization workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow) |
 | RS maintenance or publication | [00 — documentation maintenance rules and change history](00-Rotom-Change-Log.md#current-documentation-maintenance-rules) |
 
 Procedures answer **what to do**; current-state sections answer **what exists**. Reconstruction material supports disaster recovery. Historical and retired sections are evidence, not current instructions. Document `00` is the sole RS maintenance authority.
@@ -140,9 +141,9 @@ Rotom Support is every file intentionally kept in the project's Available Source
 
 The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Documents/ChatGPT/rotom-support` on the Mac. On Rotom, `rs path` resolves the checkout using the existing `~/.config/rr/repository` compatibility fallback; append `runbook/` to locate the numbered files. The Mac resolver configuration points to its checkout; `/usr/local/bin/rs` was independently installed and verified there. Its `/usr/local/bin/rr` is a verified compatibility wrapper for `rs`. Available Sources replacement remains manual by Jared.
 
-The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. Its canonical repository file is `architecture/Rotom-Architecture-System.md`, published as supplementary portal content alongside the distinct `internals/website/architecture/index.md` landing-page input. Read-only inspection on 2026-10-17 confirmed that the installed publisher uses this canonical filename.
+The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. Its canonical repository file is `architecture/Rotom-Architecture-System.md`, published alongside the other tracked repository files. The separate `internals/website/architecture/index.md` is a retained former landing-page input.
 
-The private **Rotom Support** portal publishes the complete numbered `00`–`08` RS allowlist at `/runbook/`, whose landing page is titled **Rotom Runbook**, the supplementary landing inputs `internals/website/architecture/index.md` and `internals/website/guides/index.md`, the canonical supplementary architecture overview at `/architecture/rotom-architecture-system/`, and the canonical supplementary total-loss recovery guide at `/guides/pve-and-rotom-total-loss-recovery/`. No other repository files under `guide/` or `architecture/` are included. Those supplementary sources do not change Runbook membership or Available Sources; they explain, orchestrate, and route to numbered sources rather than establish competing operational truth.
+The private **Rotom Support** portal mirrors every tracked file on GitHub `main`, including repository internals and supplementary guides, with the repository README as its home page. Original bytes are available under `/raw/`; publication does not change RS membership, Available Sources, or canonical authority. The publisher checks for changes every five minutes and retains a previous site before each replacement. See [06 — Documentation and Synchronization Workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow).
 
 ## 8. Current Source Map
 

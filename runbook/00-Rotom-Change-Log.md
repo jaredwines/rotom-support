@@ -84,6 +84,13 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Mirror the complete repository on the private site
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, repository navigation and publisher files.
+- **Status:** **Implemented / Verified.** The private site now displays every tracked GitHub `main` file, serves exact original copies under `/raw/`, and checks for updates every five minutes. RS membership and Available Sources are unchanged.
+- **Evidence:** A clean checkout passed `rs check`; an isolated build verified all 34 then-tracked files and raw copies. The published site served all 34 originals byte-for-byte over loopback HTTP; the updater timer was active, its first check succeeded, and `mkdocs-rr` was running with a read-only root filesystem. The prior publisher and site were retained for recovery.
+- **Outstanding:** Available Sources replacement remains manual by Jared. Recheck the final GitHub revision after this documentation update is pushed.
+
 ## 2026-10-17 — Correct Mac checkout path
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`.

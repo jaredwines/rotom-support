@@ -1,6 +1,6 @@
 # Website Architecture Input
 
-This directory contains one supplementary portal source: [`index.md`](index.md), the architecture orientation page linked from the website home page.
+This directory contains one supplementary portal source: [`index.md`](index.md), the former architecture orientation page.
 
 The page explains relationships among documented infrastructure, services, network, storage, and recovery layers. It is website input, not generated or deployed output, and it does not replace the authoritative numbered runbooks, become an Available Source, or acquire Rotom Support membership through publication.
 

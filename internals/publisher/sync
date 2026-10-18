@@ -1,0 +1,77 @@
+#!/bin/sh
+set -eu
+exec 9>/run/lock/rotom-support-sync.lock
+flock -n 9 || exit 0
+base=/srv/rotom/appdata/platform/mkdocs-rr
+mode=${1:-}
+repo=$base/repository
+remote=https://github.com/jaredwines/rotom-support.git
+compose=/srv/rotom/stacks/platform/mkdocs-rr/compose.yaml
+[ "$(git -C "$repo" remote get-url origin)" = "$remote" ]
+[ "$(git -C "$repo" branch --show-current)" = main ]
+[ -z "$(git -C "$repo" status --porcelain)" ]
+git -C "$repo" fetch --prune origin
+set -- $(git -C "$repo" rev-list --left-right --count origin/main...HEAD)
+[ "$2" -eq 0 ]
+if [ "$1" -gt 0 ]; then git -C "$repo" merge --ff-only origin/main; fi
+rev=$(git -C "$repo" rev-parse HEAD)
+if [ "$mode" = '--if-changed' ] && [ -f "$base/site/.repository-commit" ] && [ "$(cat "$base/site/.repository-commit")" = "$rev" ]; then exit 0; fi
+stage=$(mktemp -d "$base/mirror-source.tmp.XXXXXX")
+site=$(mktemp -d "$base/mirror-site.tmp.XXXXXX")
+chmod 755 "$stage" "$site"
+cleanup() { rm -rf "$stage" "$site"; }
+trap cleanup EXIT HUP INT TERM
+python3 /usr/local/lib/rotom-support/build-input.py "$repo" "$stage"
+docker run --rm --network none --security-opt no-new-privileges --cap-drop ALL \
+  -v "$stage/docs:/docs:ro" -v "$stage/mkdocs.yml:/mkdocs.yml:ro" -v "$site:/site" \
+  squidfunk/mkdocs-material@sha256:1a4e939cfd62b90943b6a829eb8544933e4e94eab18b8ca1d0f912fa9a532c37 build --clean --config-file /mkdocs.yml
+mkdir -p "$site/raw"
+git -C "$repo" archive "$rev" | tar -xf - -C "$site/raw"
+python3 - "$repo" "$stage/mkdocs.yml" "$site" <<'PY'
+import hashlib, json, pathlib, subprocess, sys
+repo, config, site = map(pathlib.Path, sys.argv[1:])
+tracked = [x.decode() for x in subprocess.check_output(['git','-C',str(repo),'ls-files','-z']).split(b'\0') if x]
+nav = json.loads(config.read_text())['nav']
+assert {next(iter(x)) for x in nav} == set(tracked)
+for name in tracked:
+    original, published = repo / name, site / 'raw' / name
+    assert published.is_file() and hashlib.sha256(original.read_bytes()).digest() == hashlib.sha256(published.read_bytes()).digest(), name
+for entry in nav:
+    name, page = next(iter(entry.items()))
+    path = pathlib.PurePosixPath(page)
+    if path.name in ('index.md', 'README.md'):
+        output = site / path.parent / 'index.html'
+    else:
+        output = site / path.with_suffix('') / 'index.html'
+    assert output.is_file(), (name, str(output))
+redirects = {
+ 'runbook/08-Rotom-Directory-Tree': '/__repository_files__/' + 'runbook/08-Rotom-Directory-Tree.txt'.encode().hex() + '/',
+ 'architecture/rotom-architecture-system': '/architecture/Rotom-Architecture-System/',
+ 'guides': '/guide/',
+ 'guides/pve-and-rotom-total-loss-recovery': '/guide/PVE-and-Rotom-Total-Loss-Recovery/',
+}
+for old, new in redirects.items():
+    target = site / old / 'index.html'
+    assert not target.exists(), old
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text('<!doctype html><meta http-equiv="refresh" content="0; url=' + new + '">')
+PY
+printf '%s\n' "$rev" > "$site/.repository-commit"
+if [ "$mode" = '--validate-only' ]; then
+    echo "Validated repository $rev without publication"
+    exit 0
+fi
+backup=$(mktemp -d "$base/site.before-mirror.XXXXXX")
+rmdir "$backup"
+mv "$base/site" "$backup"
+if ! mv "$site" "$base/site"; then
+    mv "$backup" "$base/site"
+    exit 1
+fi
+if ! docker compose -f "$compose" up -d --no-deps --force-recreate docs || ! curl -fsS --max-time 10 http://127.0.0.1:8082/ >/dev/null; then
+    mv "$base/site" "$site"
+    mv "$backup" "$base/site"
+    docker compose -f "$compose" up -d --no-deps --force-recreate docs || true
+    exit 1
+fi
+echo "Published repository $rev; previous site retained at $backup"

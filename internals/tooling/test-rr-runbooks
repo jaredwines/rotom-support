@@ -72,6 +72,10 @@ require_file internals/tooling/rr
 require_file internals/tooling/test-rs-cli
 require_file internals/tooling/test-rr-cli
 require_file internals/tooling/test-guides
+require_file internals/publisher/build-input.py
+require_file internals/publisher/sync
+require_file internals/publisher/test-publisher.py
+require_file internals/publisher/rotom-support-sync.timer
 require_file internals/website/home.md
 require_file internals/website/architecture/index.md
 require_file internals/website/guides/index.md
@@ -131,6 +135,7 @@ require_text 05-Backup-and-Restore.md "## Run and Verify Rotom Restic Backup"
 require_text 05-Backup-and-Restore.md "rotom-restic-backup.service"
 require_text 05-Backup-and-Restore.md "Changes Rotom and protected storage/repository state"
 require_text 06-Maintenance-and-Automation.md "## Investigate a Failed Timer or Automation"
+require_text 06-Maintenance-and-Automation.md "### Verify or recover repository publication"
 require_text 07-Users-and-Permissions.md "## Diagnose an Identity, Ownership, or Access Failure"
 require_text 07-Users-and-Permissions.md 'Never use `chmod 777`'
 

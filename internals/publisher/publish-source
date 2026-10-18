@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+[ "${MKDOCS_RR_SKIP_CONTAINER_START:-0}" = 0 ] || { echo 'Skipping container recreation is not supported by this publisher' >&2; exit 1; }
+case "${MKDOCS_RR_VALIDATE_ONLY:-0}" in
+    1) exec /usr/local/sbin/rotom-support-sync --validate-only ;;
+    0) exec /usr/local/sbin/rotom-support-sync ;;
+    *) echo 'Invalid MKDOCS_RR_VALIDATE_ONLY' >&2; exit 1 ;;
+esac

@@ -1,0 +1,9 @@
+[Unit]
+Description=Synchronize Rotom Support website from GitHub
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/rotom-support-sync --if-changed
+TimeoutStartSec=10min
