@@ -29,7 +29,19 @@ mkdir -p "$site/raw"
 python3 - "$repo" "$stage/mkdocs.yml" "$site" <<'PY'
 import hashlib, json, pathlib, subprocess, sys, tarfile
 repo, config, site = map(pathlib.Path, sys.argv[1:])
-tracked = [x.decode() for x in subprocess.check_output(['git','-C',str(repo),'ls-files','-z']).split(b'\0') if x]
+records = subprocess.check_output(['git','-C',str(repo),'ls-files','--stage','-z']).split(b'\0')
+tracked = []
+tracked_modes = {}
+for record in records:
+    if not record:
+        continue
+    metadata, raw_name = record.split(b'\t', 1)
+    mode, _object_id, stage_number = metadata.split()
+    if stage_number != b'0':
+        raise ValueError('Unmerged tracked path')
+    name = raw_name.decode()
+    tracked.append(name)
+    tracked_modes[name] = int(mode, 8)
 source_suffixes = {'.sh', '.bash', '.zsh', '.py', '.js', '.mjs', '.cjs', '.ts', '.tsx',
                    '.jsx', '.c', '.cc', '.cpp', '.h', '.hpp', '.go', '.rs', '.rb',
                    '.pl', '.php', '.java', '.sql', '.ps1', '.lua',
@@ -43,7 +55,7 @@ def excluded(name):
     with source.open('rb') as f:
         shebang = f.read(2) == b'#!'
     return (any(part.startswith('.git') for part in path.parts) or
-            path.suffix.lower() in source_suffixes or shebang or bool(source.stat().st_mode & 0o111))
+            path.suffix.lower() in source_suffixes or shebang or bool(tracked_modes[name] & 0o111))
 allowed = [name for name in tracked if not excluded(name)]
 nav = json.loads(config.read_text())['nav']
 manifest = json.loads((config.parent / 'manifest.json').read_text())

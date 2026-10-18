@@ -4,7 +4,7 @@ This directory contains the implementation and checks for the private Rotom Supp
 
 ## Files
 
-- [`build-input.py`](build-input.py) prepares the site input, Mermaid rendering configuration, and navigation from tracked repository files, excluding Git-related paths, source code, scripts, and systemd unit files. The same paths are excluded from raw downloads.
+- [`build-input.py`](build-input.py) prepares the site input, Mermaid rendering configuration, and navigation from tracked repository files, excluding Git-related paths, source code, scripts, systemd unit files, and files whose Git index mode is executable. The same paths are excluded from raw downloads. Git's tracked mode is authoritative so POSIX ACL masks cannot accidentally reclassify ordinary documents.
 - `diagram-expand.js` and `diagram-expand.css.js` provide the site-only expand controls for Mermaid diagrams; the builder includes them as assets while excluding source files from repository navigation and raw downloads.
 - [`sync`](sync) synchronizes the deployment checkout, builds and validates the site, and publishes it.
 - [`publish-source`](publish-source) is the compatibility entry point for the updater.

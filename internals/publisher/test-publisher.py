@@ -25,6 +25,12 @@ with tempfile.TemporaryDirectory() as directory:
         path.write_bytes(contents if isinstance(contents, bytes) else contents.encode())
     (repo / 'tools/executable').chmod(0o755)
     subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
+    # Simulate ACL masks changing traditional group execute bits after the index
+    # was written. Publication must use the Git-tracked executable contract.
+    for name in files:
+        path = repo / name
+        path.chmod(path.stat().st_mode | 0o010)
+    (repo / 'tools/executable').chmod(0o644)
     for asset in ('diagram-expand.js', 'diagram-expand.css.js'):
         target = repo / 'internals/publisher' / asset
         target.parent.mkdir(parents=True, exist_ok=True)

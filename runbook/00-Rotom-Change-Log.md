@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Record /srv/rotom human access ACLs
+**Documentation updated:** 2026-10-17 — Repair ACL-safe Rotom Support publication
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Repair ACL-safe Rotom Support publication
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `06-Maintenance-and-Automation.md`, `internals/publisher/README.md`, `internals/publisher/build-input.py`, `internals/publisher/sync`, `internals/publisher/test-publisher.py`.
+- **Status:** **Implemented / Verified.** The current GitHub `main` revision is published by the private Rotom Support site.
+- **Changes:** Changed executable-file classification from the deployment filesystem's ACL-influenced mode bits to the executable mode recorded in Git's index, while retaining exclusions for source extensions and shebang files. This preserves the `/srv/rotom` human-read ACL policy without misclassifying ordinary RS documents. Reconciled the installed agent-navigation title and link mappings back into the tracked builder and added an ACL-mode regression test.
+- **Evidence:** The failure was reproduced as a manifest mismatch after named ACL masks made ordinary deployment-clone documents appear group-executable. Publisher tests, RS tests and lint, a non-publishing full build, live publication, representative rendered and raw-file requests, deployed-revision comparison, timer state, container health, and failed-unit checks passed after the repair.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Add AI-assisted total-loss recovery bootstrap
 

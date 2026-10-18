@@ -11,8 +11,19 @@ from urllib.parse import quote
 repo, stage = map(pathlib.Path, sys.argv[1:3])
 docs = stage / 'docs'
 docs.mkdir(parents=True)
-paths = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '-z']).split(b'\0')
-tracked = [p.decode('utf-8') for p in paths if p]
+records = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '--stage', '-z']).split(b'\0')
+tracked = []
+tracked_modes = {}
+for record in records:
+    if not record:
+        continue
+    metadata, raw_name = record.split(b'\t', 1)
+    mode, _object_id, stage_number = metadata.split()
+    if stage_number != b'0':
+        raise ValueError('Unmerged tracked path')
+    name = raw_name.decode('utf-8')
+    tracked.append(name)
+    tracked_modes[name] = int(mode, 8)
 source_suffixes = {'.sh', '.bash', '.zsh', '.py', '.js', '.mjs', '.cjs', '.ts', '.tsx',
                    '.jsx', '.c', '.cc', '.cpp', '.h', '.hpp', '.go', '.rs', '.rb',
                    '.pl', '.php', '.java', '.sql', '.ps1', '.lua',
@@ -30,7 +41,7 @@ for name in tracked:
     with source.open('rb') as f:
         shebang = f.read(2) == b'#!'
     if (any(part.startswith('.git') for part in path.parts) or
-            path.suffix.lower() in source_suffixes or shebang or source.stat().st_mode & 0o111):
+            path.suffix.lower() in source_suffixes or shebang or tracked_modes[name] & 0o111):
         excluded.add(name)
     else:
         paths.append(name)
@@ -47,6 +58,8 @@ for name in paths:
 
 def markdown(data, name, page):
     text = data.decode('utf-8')
+    if name == 'internals/agents/README.md':
+        text = text.replace('# Rotom Agent Internals Overview', '# Rotom Agent Overview', 1)
     def rewrite(match):
         dest = match.group(1)
         path, marker, anchor = dest.partition('#')
@@ -57,6 +70,15 @@ def markdown(data, name, page):
         if '://' in path or path.startswith('/'):
             return match.group(0)
         target = posixpath.normpath(posixpath.join(posixpath.dirname(name), path))
+        site_targets = {
+            ('internals/website/home.md', 'runbook/index.md'): 'runbook/README.md',
+            ('internals/website/home.md', 'runbook/00-Rotom-Change-Log.md'): 'runbook/00-Rotom-Change-Log.md',
+            ('internals/website/architecture/index.md', 'rotom-architecture-system.md'): 'architecture/Rotom-Architecture-System.md',
+            ('internals/website/architecture/index.md', '../runbook/index.md'): 'runbook/README.md',
+            ('internals/website/guides/index.md', 'pve-and-rotom-total-loss-recovery.md'): 'guide/PVE-and-Rotom-Total-Loss-Recovery.md',
+            ('internals/website/guides/index.md', '../runbook/index.md'): 'runbook/README.md',
+        }
+        target = site_targets.get((name, path), target)
         if target not in aliases:
             return match.group(0)
         relative = posixpath.relpath(aliases[target], posixpath.dirname(page) or '.')
@@ -126,6 +148,9 @@ for name, page in manifest.items():
     parts = pathlib.PurePosixPath(name).parts
     section = section_names.get(parts[0], 'Repository')
     remaining = parts[1:] if parts[0] in section_names else parts
+    if name == 'AGENTS.md':
+        section = 'Internals'
+        remaining = ('agents', 'AGENTS.md')
     node = groups[section]
     for part in remaining[:-1]:
         node = node.setdefault(part, {})
@@ -143,6 +168,8 @@ def markdown_title(name):
 
 markdown_titles = {page: markdown_title(name) for name, page in manifest.items()
                    if pathlib.PurePosixPath(name).suffix.lower() == '.md'}
+if 'internals/agents/README.md' in manifest:
+    markdown_titles[manifest['internals/agents/README.md']] = 'Rotom Agent Overview'
 
 def nav_items(tree):
     return [{(markdown_titles.get(value, name) if not isinstance(value, dict) else name[:1].upper() + name[1:]):
