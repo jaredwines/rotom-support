@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Record complete Rotom restore rehearsal
+**Documentation updated:** 2026-10-17 — Record Homepage NAS monitoring changes
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-17 — Update Homepage NAS monitoring
+
+- **Files changed:** `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented / Verified.**
+- **Changes:** Renamed the Library NAS Storage card to NAS Storage and its description to Shared NAS volume capacity; retained its Libraries mount filesystem metric. Removed the separate UNAS Reachability ping card. The earlier entry describing that card remains historical.
+- **Evidence:** Homepage's service API reported the renamed card with the existing Glances metric and no UNAS Reachability card. The five live NFS mounts reported the same capacity and usage for the shared NAS volume.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Refresh total-loss recovery readiness evidence
 

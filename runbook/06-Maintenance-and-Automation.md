@@ -115,7 +115,7 @@ Cloudflare DDNS checks the external address every minute. Its Compose definition
 
 ## 4. Monitoring and Retired Alerting
 
-Homepage, Glances, the Rotom/PVE backup-status APIs, and the PVE CPU-temperature API are current read-only monitoring surfaces.
+Homepage, Glances, the Rotom/PVE backup-status APIs, and the PVE CPU-temperature API are current read-only monitoring surfaces. Homepage’s **NAS Storage** card uses Glances filesystem capacity for `/mnt/host-root/mnt/nas-libraries`; the NFS mounts report capacity for the shared underlying NAS volume, not the Libraries folder alone. Homepage no longer has a separate UNAS Reachability ping card.
 
 Uptime Kuma and the Rotom/PVE alert-delivery layer are retired. No worker, service, timer, script, Homepage mapping, or delivery input remains. An empty root-only `/var/lib/rotom-alerting` directory persists; it is not active state and is not authorized for deletion by documentation cleanup.
 
