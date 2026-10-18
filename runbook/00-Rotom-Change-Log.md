@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Add the Rotom architecture diagram
+
+- **Files changed:** `architecture/Rotom-Architecture-Diagram.md`, `architecture/README.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Documentation only**.
+- **Changes:** Added a Mermaid overview of system, service, storage, and backup relationships and linked it from architecture navigation.
+- **Evidence:** Current server inventory and existing architecture overview; no new live audit.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Simplify the Docker Compose guide
 
 - **Files changed:** `guide/Editing-Docker-Compose.md`, `guide/README.md`, `00-Rotom-Change-Log.md`.

@@ -6,6 +6,7 @@ This directory is an RS component containing supplementary architecture material
 
 ## Contents
 
+- [Rotom Architecture Diagram](Rotom-Architecture-Diagram.md) provides a compact Mermaid view of the system and its backup relationships.
 - [Rotom Architecture System](Rotom-Architecture-System.md) is a newcomer-friendly map of Rotom's services, access paths, storage, and data protection. It is also published in the private repository mirror.
 
 The current high-level authoritative system map remains owned by the [Server Inventory](../runbook/01-Rotom-Server-Inventory.md).
