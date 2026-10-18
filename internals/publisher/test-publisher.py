@@ -12,28 +12,24 @@ with tempfile.TemporaryDirectory() as directory:
     subprocess.run(['git', 'init', '-q', str(repo)], check=True)
     files = {'README.md': '# Home\n', '.hidden': 'hidden text\n',
              'section/README.md': '# Section\n', 'section/index.md': '# Index\n',
-             'section/topic.md': '# Topic Title\nText\n', 'section/untitled.md': 'No heading\n',
-             'tools/script': '```\nscript\n', 'binary.bin': b'\x00\xff',
+             'section/topic.md': '# Topic Title\n[Script](../tools/script)\n', 'section/untitled.md': 'No heading\n',
+             'tools/script': '#!/bin/sh\nscript\n', 'tools/check.py': 'print(1)\n',
+             'tools/run.sh': 'echo ok\n', 'tools/executable': 'data\n', 'binary.bin': b'\x00\xff',
              '.gitignore': 'ignored rule\n', 'section/.gitattributes': 'attributes\n',
              '.github/workflows/check.yml': 'workflow\n'}
     for name, contents in files.items():
         path = repo / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(contents if isinstance(contents, bytes) else contents.encode())
+    (repo / 'tools/executable').chmod(0o755)
     subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
     subprocess.run(['python3', str(builder), str(repo), str(stage)], check=True)
     nav = json.loads((stage / 'mkdocs.yml').read_text())['nav']
     views = json.loads((stage / 'manifest.json').read_text())
-    excluded = {name for name in files if any(part.startswith('.git') for part in pathlib.PurePosixPath(name).parts)}
+    excluded = {'.gitignore', 'section/.gitattributes', '.github/workflows/check.yml',
+                'tools/script', 'tools/check.py', 'tools/run.sh', 'tools/executable'}
     assert set(views) == set(files) - excluded
     assert all(not (stage / 'docs' / name).exists() for name in excluded)
-    tree = subprocess.check_output(['git', '-C', str(repo), 'write-tree'], text=True).strip()
-    archive = subprocess.check_output(['git', '-C', str(repo), 'archive', tree])
-    raw = root / 'raw'
-    raw.mkdir()
-    subprocess.run(['tar', '--exclude=.git*', '-xf', '-', '-C', str(raw)], input=archive, check=True)
-    assert all(not (raw / name).exists() for name in excluded)
-    assert all((raw / name).read_bytes() == (repo / name).read_bytes() for name in files if name not in excluded)
     def leaves(items):
         for entry in items:
             for value in entry.values():
@@ -43,7 +39,7 @@ with tempfile.TemporaryDirectory() as directory:
     assert 'navigation.tabs' in features and 'toc.follow' in features
     assert [next(iter(entry)) for entry in nav] == ['Home', 'Repository']
     section_nav = next(entry['Section'] for entry in nav[1]['Repository'] if 'Section' in entry)
-    assert any('Tools' in entry for entry in nav[1]['Repository'])
+    assert not any('Tools' in entry for entry in nav[1]['Repository'])
     assert {'Section': views['section/README.md']} in section_nav
     assert {'Index': views['section/index.md']} in section_nav
     assert {'Topic Title': views['section/topic.md']} in section_nav
@@ -51,7 +47,8 @@ with tempfile.TemporaryDirectory() as directory:
     assert (stage / 'docs/index.md').read_text() == files['README.md']
     assert (stage / 'docs' / views['section/README.md']).read_text() == files['section/README.md']
     assert 'hidden text' in (stage / 'docs' / views['.hidden']).read_text()
-    assert '````text\n```\nscript\n````' in (stage / 'docs' / views['tools/script']).read_text()
+    assert '[Script](' not in (stage / 'docs' / views['section/topic.md']).read_text()
+    assert 'Script' in (stage / 'docs' / views['section/topic.md']).read_text()
     assert '/raw/binary.bin' in (stage / 'docs' / views['binary.bin']).read_text()
     (repo / 'link').symlink_to('README.md')
     subprocess.run(['git', '-C', str(repo), 'add', 'link'], check=True)

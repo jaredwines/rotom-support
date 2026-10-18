@@ -12,8 +12,26 @@ repo, stage = map(pathlib.Path, sys.argv[1:3])
 docs = stage / 'docs'
 docs.mkdir(parents=True)
 paths = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '-z']).split(b'\0')
-paths = [name for p in paths if p for name in [p.decode('utf-8')]
-         if not any(part.startswith('.git') for part in pathlib.PurePosixPath(name).parts)]
+tracked = [p.decode('utf-8') for p in paths if p]
+source_suffixes = {'.sh', '.bash', '.zsh', '.py', '.js', '.mjs', '.cjs', '.ts', '.tsx',
+                   '.jsx', '.c', '.cc', '.cpp', '.h', '.hpp', '.go', '.rs', '.rb',
+                   '.pl', '.php', '.java', '.sql', '.ps1', '.lua'}
+paths = []
+excluded = set()
+for name in tracked:
+    path = pathlib.PurePosixPath(name)
+    source = repo.joinpath(*path.parts)
+    if path.is_absolute() or '..' in path.parts or '\n' in name:
+        raise ValueError('Unsafe tracked path')
+    if source.is_symlink() or not source.is_file():
+        raise ValueError('Tracked path is not a regular file: ' + name)
+    with source.open('rb') as f:
+        shebang = f.read(2) == b'#!'
+    if (any(part.startswith('.git') for part in path.parts) or
+            path.suffix.lower() in source_suffixes or shebang or source.stat().st_mode & 0o111):
+        excluded.add(name)
+    else:
+        paths.append(name)
 nav = []
 aliases = {}
 for name in paths:
@@ -41,6 +59,14 @@ def markdown(data, name, page):
             return match.group(0)
         relative = posixpath.relpath(aliases[target], posixpath.dirname(page) or '.')
         return '](' + relative + (marker + anchor if marker else '')
+    def unlink_hidden(match):
+        label, dest = match.group(1), match.group(2)
+        path = dest.partition('#')[0]
+        if not path or '://' in path or path.startswith('/'):
+            return match.group(0)
+        target = posixpath.normpath(posixpath.join(posixpath.dirname(name), path))
+        return label if target in excluded else match.group(0)
+    text = re.sub(r'(?<!!)\[([^\]]+)\]\(([^\s)]+)\)', unlink_hidden, text)
     return re.sub(r'\]\(([^\s)]+)', rewrite, text)
 
 for name in paths:

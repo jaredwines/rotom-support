@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Hide source code and scripts from the site
+
+- **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/sync`, `internals/publisher/test-publisher.py`, `internals/publisher/README.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented / Verified** for the installed publisher and non-publishing build; publication remains to be verified.
+- **Changes:** Exclude source files and scripts from site navigation and raw downloads; retain the repository files and render links to excluded files as text.
+- **Evidence:** Jared requested hiding source code and scripts, including extensionless scripts; publisher tests and a non-publishing build passed after installation.
+- **Outstanding:** Validate and publish the revised site; Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Capitalize site folder labels
 
 - **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/test-publisher.py`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.

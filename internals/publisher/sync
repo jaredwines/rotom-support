@@ -26,18 +26,43 @@ docker run --rm --network none --security-opt no-new-privileges --cap-drop ALL \
   -v "$stage/docs:/docs:ro" -v "$stage/mkdocs.yml:/mkdocs.yml:ro" -v "$site:/site" \
   squidfunk/mkdocs-material@sha256:1a4e939cfd62b90943b6a829eb8544933e4e94eab18b8ca1d0f912fa9a532c37 build --clean --config-file /mkdocs.yml
 mkdir -p "$site/raw"
-git -C "$repo" archive "$rev" | tar --exclude='.git*' -xf - -C "$site/raw"
 python3 - "$repo" "$stage/mkdocs.yml" "$site" <<'PY'
-import hashlib, json, pathlib, subprocess, sys
+import hashlib, json, pathlib, subprocess, sys, tarfile
 repo, config, site = map(pathlib.Path, sys.argv[1:])
 tracked = [x.decode() for x in subprocess.check_output(['git','-C',str(repo),'ls-files','-z']).split(b'\0') if x]
-excluded = [name for name in tracked if any(part.startswith('.git') for part in pathlib.PurePosixPath(name).parts)]
-tracked = [name for name in tracked if name not in excluded]
-for name in excluded:
-    assert not (site / 'raw' / name).exists(), name
-assert not any(part.startswith('.git') for path in (site / 'raw').rglob('*') for part in path.relative_to(site / 'raw').parts)
+source_suffixes = {'.sh', '.bash', '.zsh', '.py', '.js', '.mjs', '.cjs', '.ts', '.tsx',
+                   '.jsx', '.c', '.cc', '.cpp', '.h', '.hpp', '.go', '.rs', '.rb',
+                   '.pl', '.php', '.java', '.sql', '.ps1', '.lua'}
+def excluded(name):
+    path = pathlib.PurePosixPath(name)
+    source = repo.joinpath(*path.parts)
+    assert not path.is_absolute() and '..' not in path.parts and '\n' not in name
+    assert not source.is_symlink() and source.is_file(), name
+    with source.open('rb') as f:
+        shebang = f.read(2) == b'#!'
+    return (any(part.startswith('.git') for part in path.parts) or
+            path.suffix.lower() in source_suffixes or shebang or bool(source.stat().st_mode & 0o111))
+allowed = [name for name in tracked if not excluded(name)]
 nav = json.loads(config.read_text())['nav']
 manifest = json.loads((config.parent / 'manifest.json').read_text())
+assert set(manifest) == set(allowed)
+proc = subprocess.Popen(['git', '-C', str(repo), 'archive', 'HEAD'], stdout=subprocess.PIPE)
+with tarfile.open(fileobj=proc.stdout, mode='r|') as archive:
+    for member in archive:
+        if member.name not in manifest:
+            continue
+        assert member.isfile(), member.name
+        target = site / 'raw' / member.name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        source = archive.extractfile(member)
+        assert source is not None
+        with target.open('wb') as dest:
+            import shutil
+            shutil.copyfileobj(source, dest)
+assert proc.wait() == 0
+for name in set(tracked) - set(allowed):
+    assert not (site / 'raw' / name).exists(), name
+tracked = allowed
 def nav_pages(items):
     for item in items:
         for value in item.values():

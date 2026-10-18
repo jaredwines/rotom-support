@@ -145,7 +145,7 @@ The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Docume
 
 Available Sources is a separate, manually maintained publication or reference destination. It does not define RS membership and must not be treated as the complete repository; replacement remains manual by Jared.
 
-The private **Rotom Support** portal mirrors tracked files on GitHub `main` except paths containing a component beginning with `.git`, including repository internals and supplementary guides, with the repository README as its home page. Original bytes of published files are available under `/raw/`; publication does not alter repository membership, the distinct purpose and authority of each area, or the contents of Available Sources. The publisher checks for changes every five minutes and retains a previous site before each replacement. See [06 — Documentation and Synchronization Workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow).
+The private **Rotom Support** portal mirrors tracked files on GitHub `main` except Git-related paths, source code, and scripts, including repository internals and supplementary guides, with the repository README as its home page. Original bytes of published files are available under `/raw/`; publication does not alter repository membership, the distinct purpose and authority of each area, or the contents of Available Sources. The publisher checks for changes every five minutes and retains a previous site before each replacement. See [06 — Documentation and Synchronization Workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow).
 
 ## 8. Current Source Map
 
