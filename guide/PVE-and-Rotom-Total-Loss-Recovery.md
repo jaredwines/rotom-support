@@ -4,7 +4,7 @@
 **Document role:** Orchestration guide for rebuilding PVE and Rotom after complete loss of the original computer
 **Scenario:** Replacement hardware; original PVE installation, local disks, and running Rotom VM are unavailable
 **Evidence baseline:** PVE inspection on 2026-10-16 and Rotom recovery verification on 2026-10-17
-**Documentation updated:** 2026-10-17 — Record complete Rotom restore and native database rehearsal
+**Documentation updated:** 2026-10-17 — Record current PVE and Rotom recovery rehearsals
 **Routine backup authority:** [05 - Backup and Restore](../runbook/05-Backup-and-Restore.md)
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 **RS dependency governance:** [00 - Rotom Change Log](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules)
@@ -211,16 +211,17 @@ Complete this while the current systems still exist. A missing required item is 
 - [ ] Record PVE/Rotom/NAS IP reservations and the decision on reusing the Rotom MAC.
 - [ ] Record ConBee II `1cf1:0030`, Intel Bluetooth `8087:0aaa`, iGPU `8086:3ea5`, device purpose, physical port, and acceptance test.
 - [ ] Record current NAS export discovery and snapshot policy, including isolated restore steps.
-- [ ] Retain a current VZDump verification and isolated-boot transcript.
+- [x] Retain a current VZDump compression/VMA verification transcript — passed 2026-10-17 for `vzdump-qemu-100-2026_10_17-05_00_07.vma.zst`.
+- [ ] Retain a current isolated-boot VZDump restore transcript.
 - [x] Rehearse a complete Rotom Restic staging restore and native database checks — passed 2026-10-17 for snapshot `aad4a52e`.
-- [ ] Retain a current PVE Restic staging-restore transcript.
+- [x] Retain a current PVE Restic full-data-read and staging-restore transcript — passed 2026-10-17 for snapshot `19ed0226`; exact staging cleanup remains pending.
 - [ ] Retain a current NAS snapshot isolated-restore transcript and application/NAS consistency result.
 - [ ] Retain current authenticated application-acceptance results.
 - [x] Keep evidence from a full-data-read Restic check separate from ordinary successful backup logs — all 1,077 packs passed 2026-10-17.
 
 ### Demonstrated readiness and maximum-readiness gate
 
-Runbook document 05 owns the current backup and restore evidence. On 2026-10-17, the current Rotom automatic snapshot completed successfully, the exact repository mount and timer passed preflight, a standard Restic repository check found no errors across 22 snapshots, and a full-data-read check read all 1,077 packs without error. A complete isolated restore of snapshot `aad4a52e` recovered 39,398 files/directories totaling 18.600 GiB; Restic verified all 27,581 restored files. All 17 discovered SQLite databases passed full integrity checks. Restored Paperless PostgreSQL and RomM MariaDB copies completed crash recovery with no network or published ports, passed native integrity checks, and produced complete logical dumps. The disposable containers and root-only rehearsal tree were then removed. Earlier evidence includes an isolated VZDump restore that booted with its network disconnected and owner-confirmed current VMA/disposable-restore and Libraries NAS exercises whose detailed transcripts were not supplied.
+Runbook document 05 owns the current backup and restore evidence. On 2026-10-17, the current Rotom automatic snapshot completed successfully, the exact repository mount and timer passed preflight, a standard Restic repository check found no errors across 22 snapshots, and a full-data-read check read all 1,077 packs without error. A complete isolated restore of snapshot `aad4a52e` recovered 39,398 files/directories totaling 18.600 GiB; Restic verified all 27,581 restored files. All 17 discovered SQLite databases passed full integrity checks. Restored Paperless PostgreSQL and RomM MariaDB copies completed crash recovery with no network or published ports, passed native integrity checks, and produced complete logical dumps. The disposable containers and root-only rehearsal tree were then removed. PVE Restic snapshot `19ed0226` passed a full-data-read check and a root-only staging restore that recovered 307 files/directories and verified all 116 files; scope review found the expected reconstruction evidence and no private-material paths. Current VZDump `vzdump-qemu-100-2026_10_17-05_00_07.vma.zst` passed complete zstd and streamed VMA verification with pipeline status zero. Earlier evidence includes an isolated VZDump restore that booted with its network disconnected and owner-confirmed Libraries NAS exercises whose detailed transcripts were not supplied.
 
 Do not describe readiness as complete merely because the written plan is complete. **Maximum demonstrated readiness** requires all of the following evidence to be current and retained:
 
@@ -412,6 +413,8 @@ The old host used PVE `192.168.1.68`, Rotom `192.168.1.69`, NAS `192.168.1.70`, 
 ## Phase 4 - Validate PVE Restic
 
 PVE Restic currently uses `/mnt/nas-pve-restic-backup/pve-restic-backup`, stages at `/var/backups/pve-restic-recovery`, and holds selected files plus inventories. Current staging included network/boot/package configuration, PVE public/config files, VM configuration evidence, local scripts/units, and `RESTORE-NOTES.txt`; it did not contain VM disks, VZDump archives, the Restic password, SSH private keys, `/var/lib/pve-cluster/config.db`, or the private contents of `/etc/pve/priv`.
+
+**VERIFIED 2026-10-17:** snapshot `19ed0226` passed a full-data-read repository check and a verified root-only staging restore. The restore recovered 307 files/directories totaling 231.557 KiB and verified all 116 files. Scope review found the documented reconstruction inputs and an empty private-material path scan. The restored public `authorized_keys` file is authorization data, not private key material. This closes repository readability, staged restoration, and documented-scope checks; it does not prove recovery of excluded credentials or a complete PVE host rebuild.
 
 **Credential-sensitive**
 **PVE — Jared executes**

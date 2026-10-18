@@ -492,7 +492,7 @@ The VM-local `/srv/rotom/backup-staging` path is absent. Historical references t
 | Staging | `/var/backups/pve-restic-recovery` |
 | Credential path | `/etc/restic/restic-repository-password` on PVE |
 
-The 2026-10-14 audit found ten snapshots and a successful `restic check`. Manual post-credential-path snapshot `b5af666b` completed successfully, and the timer was enabled and active.
+On 2026-10-17 the timer was enabled and active, the exact repository mount was read/write, and no failed systemd units were present. Snapshot `19ed0226` from 04:00:21 PDT was selected from ten retained snapshots. A full-data-read check read both repository packs without error. A root-only `0700` staging restore recovered 307 files/directories totaling 231.557 KiB, and Restic `--verify` verified all 116 restored files. The reviewed inventory contained the expected boot, network, package, public PVE configuration, VM configuration, service, worker, and reconstruction evidence; its private-material path scan was empty. Public `/root/.ssh/authorized_keys` data is reconstruction evidence, not a private key. The staging tree remains pending exact-target operator cleanup.
 
 PVE work remains Jared-executed where the RS labels it **PVE — Jared executes**.
 
@@ -507,7 +507,7 @@ Proxmox job `rotom-vm-daily` protects VMID `100` on storage `nas-rotom-vm-backup
 
 Manual execution uses `/usr/local/bin/backup-rotom-vm-to-nas`, `rotom-vm-vzdump-manual.service`, worker `/usr/local/sbin/rotom-vm-vzdump-manual`, and lock `/run/lock/rotom-vm-vzdump-manual.lock`. Systemd owns the long-running job so it survives SSH disconnect.
 
-The 2026-10-14 audit found eight retained VMID 100 archives. The newest listed archive passed full zstd decompression. Jared later confirmed current VMA verification or a disposable restore; the exact archive and transcript were not supplied. Archive availability changes under normal retention.
+On 2026-10-17 eight retained VMID 100 archives were present. The newest archive, `vzdump-qemu-100-2026_10_17-05_00_07.vma.zst` (40,777,108,083 bytes), passed a complete zstd stream test producing 75,669,850,112 decompressed bytes. Full streamed VMA verification reached 100 percent with pipeline status zero, found the expected VM configuration, 540,672-byte EFI disk, and 107,374,182,400-byte `scsi0`, and reported 107,374,772,224 total bytes with 29.5 percent sparse data. This proves the current archive structure, not guest boot or authenticated application behavior. Archive availability changes under normal retention.
 
 An earlier disposable restore proved that a selected VZDump archive could boot as isolated VMID `101` with no host attachments and its network link down. The disposable VM and temporary storage were removed after the test.
 
