@@ -3,14 +3,22 @@
 **Artifact class:** Supplementary RS architecture document; not a canonical operational source
 **Document role:** Newcomer-friendly map of Rotom's services, access paths, storage, and data protection
 **Evidence baseline:** Rotom Support plus read-only live inspection on 2026-10-17
-**Documentation updated:** 2026-10-17
+**Documentation updated:** 2026-10-17 — Improve orientation and correct diagram paths
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 
 This guide is for newcomers, administrators, and recovery operators who need to understand how Rotom's infrastructure and services fit together. Use it to learn the system and identify the right source; use the numbered Rotom Support (RS) documents for authoritative configuration, troubleshooting, and recovery procedures.
 
+## Quick orientation
+
+Rotom is a Debian VM on the Proxmox host `pve`. It runs five groups of applications and stores their configuration and other state on the VM. A separate UniFi NAS holds Libraries data and backup destinations. Web requests reach applications through Nginx Proxy Manager or selected direct LAN ports.
+
+The protection layers have different jobs: Rotom Restic covers selected guest-local data, PVE backs up the VM disk and its own host configuration separately, and NAS snapshots protect Libraries data. External NFS content is not inside the VM backup. The main backup destinations share a physical site; no off-site layer is documented.
+
+For a compact visual overview, see the [Rotom Architecture Diagram](Rotom-Architecture-Diagram.md). The sections below retain the dated inspection details and links needed to investigate each part of the system.
+
 ## Start here
 
-- For a quick orientation, read **System at a glance**, then **How requests reach Rotom** and **Service and storage relationships**.
+- For the visual overview, open the [architecture diagrams](Rotom-Architecture-Diagram.md). For context, read **System at a glance**, then the request and storage sections below.
 - For an active fault or planned change, use the [Server Inventory task and symptom router](../runbook/01-Rotom-Server-Inventory.md#start-by-task-or-symptom) instead of treating this overview as a procedure.
 - For replacement-hardware recovery after losing PVE and Rotom, begin with the [Total-Loss Recovery emergency path](../guide/PVE-and-Rotom-Total-Loss-Recovery.md#emergency-recovery-path).
 - When a status label shows uncertainty or a mismatch, follow the linked numbered source and verify live state before acting.
@@ -51,32 +59,29 @@ Important external dependencies are the UniFi router and LAN DNS/DHCP services, 
 
 ## How requests reach Rotom
 
+DNS answers a name lookup; it does not carry the application request. Solid arrows show request paths, and dotted arrows show DNS lookups or updates.
+
 ```mermaid
 flowchart LR
-    LAN["Trusted LAN users and devices"]
-    Internet["Internet users and external services"]
-    Router["UniFi gateway, LAN DNS, and WAN forwarding<br/>owner-confirmed working"]
-    Cloudflare["Cloudflare DNS<br/>updated outbound by cloudflare-ddns"]
-    NPM["Nginx Proxy Manager on Rotom<br/>ports 80 and 443"]
-    ACL["Trusted-LAN access list"]
-    Direct["Direct LAN listeners on Rotom<br/>selected application and status ports"]
-    PublicSites["Aloha Millworks and Jared Wines"]
-    Apps["Platform, Libraries, and Smart Home web apps"]
-    Support["Rotom Support portal and legacy docs redirect"]
-    PVE["Proxmox web interface on pve:8006"]
-    Game["Palworld UDP game ports"]
-
-    LAN --> Router
-    Internet --> Cloudflare
-    Cloudflare --> Router
-    Router --> NPM
-    LAN --> Direct
-    LAN --> Game
-    NPM --> PublicSites
-    NPM --> Apps
-    NPM --> ACL
-    ACL --> Support
-    ACL --> PVE
+    LAN["LAN users and devices"]
+    PUBLIC["Internet users"]
+    DNS["Cloudflare DNS"]
+    LOCALDNS["LAN DNS"]
+    GATEWAY["UniFi gateway"]
+    NPM["Nginx Proxy Manager<br/>on Rotom"]
+    WEB["Web applications<br/>and hosted websites"]
+    PRIVATE["Rotom Support and PVE UI<br/>trusted-LAN proxy routes"]
+    DIRECT["Selected direct LAN listeners<br/>and Palworld UDP ports"]
+    DDNS["Cloudflare DDNS<br/>on Rotom"]
+    PUBLIC -. "DNS lookup" .-> DNS
+    LAN -. "DNS lookup" .-> LOCALDNS
+    DDNS -. "updates DNS" .-> DNS
+    PUBLIC -->|"where forwarding allows"| GATEWAY
+    GATEWAY -->|"web requests"| NPM
+    LAN -->|"web requests"| NPM
+    LAN -->|"direct access"| DIRECT
+    NPM -->|"hostname routes"| WEB
+    NPM -->|"trusted-LAN access list"| PRIVATE
 ```
 
 In plain language: a named HTTPS request normally reaches NPM first. NPM chooses an upstream from the hostname and forwards the request. The support portal, its legacy redirect, and the PVE route have an NPM trusted-LAN boundary. Other NPM routes have no NPM access list; that fact alone does **not** prove Internet exposure because DNS and router forwarding are separate layers. Some applications also listen directly on the trusted LAN, and Palworld uses direct UDP ports rather than an HTTP hostname.
@@ -99,7 +104,7 @@ The following table combines current RS routes with the live NPM database, gener
 
 | Domain or subdomain | Purpose and service reached | Request path and access boundary | Status on 2026-10-17 |
 |---|---|---|---|
-| `rotom.casa` | Homepage dashboard | DNS/router -> NPM -> Homepage at `127.0.0.1:3001`; Homepage expects this host name. Direct LAN port `3001` also exists. | **Verified live**, local HTTPS `200` |
+| `rotom.casa` | Homepage dashboard | Web request -> NPM -> Homepage at `127.0.0.1:3001`; Homepage expects this host name. Direct LAN port `3001` also exists. | **Verified live**, local HTTPS `200` |
 | `arcane.rotom.casa` | Arcane Docker management UI | NPM -> loopback port `3552`; direct LAN port `3552` also exists. No NPM access list is assigned. | **Verified live**, `200` |
 | `home-assistant.rotom.casa` | Home Assistant | NPM -> `127.0.0.1:8123`; Home Assistant uses host networking and also listens on the LAN. | **Verified live**, `200` |
 | `homebridge.rotom.casa` | Homebridge | NPM -> `127.0.0.1:8581`; Homebridge uses host networking and discovery-related host ports. | **Verified live**, `200` |
@@ -113,9 +118,9 @@ The following table combines current RS routes with the live NPM database, gener
 | `sonarr.rotom.casa` | Sonarr TV management | NPM -> `127.0.0.1:8989`; direct LAN port `8989` also exists. | **Verified live**, `302` |
 | `support.rotom.casa` | Private Rotom Support portal | NPM host `27` -> loopback-only `127.0.0.1:8082`; generated configuration allows loopback and `192.168.1.0/24`, then denies all others. | **Verified live**, `200` |
 | `docs.rotom.casa` | Legacy private documentation name | NPM host `22` uses the same trusted-LAN boundary and returns a permanent redirect to `https://support.rotom.casa/runbook/`, preserving the requested path/query in its generated rule. | **Verified live**, `301` |
-| `pve.rotom.casa` | Proxmox web interface | DNS/router -> NPM on Rotom -> HTTPS `192.168.1.68:8006`; trusted-LAN NPM access list. The upstream is an external host, not a Rotom container. | Route **verified live**, `200`; backup status APIs verified, but host configuration itself **not freshly observed** |
-| `jaredwines.com` | Jared Wines website | Public/LAN DNS and router -> NPM -> loopback-only `127.0.0.1:7777` -> website container. RS records intentional public access. | **Verified live**, `200` |
-| `alohamillworks.com` | Aloha Millworks website | Public/LAN DNS and router -> NPM -> `127.0.0.1:7778` -> website container. | **Verified live**, local and external HTTPS `200`; canonical RS corrected to match the live route |
+| `pve.rotom.casa` | Proxmox web interface | LAN request -> NPM on Rotom -> HTTPS `192.168.1.68:8006`; trusted-LAN NPM access list. The upstream is an external host, not a Rotom container. | Route **verified live**, `200`; backup status APIs verified, but host configuration itself **not freshly observed** |
+| `jaredwines.com` | Jared Wines website | Public or LAN request -> NPM -> loopback-only `127.0.0.1:7777` -> website container. RS records intentional public access. | **Verified live**, `200` |
+| `alohamillworks.com` | Aloha Millworks website | Public or LAN request -> NPM -> `127.0.0.1:7778` -> website container. | **Verified live**, local and external HTTPS `200`; canonical RS corrected to match the live route |
 | `*.rotom.casa` | Wildcard DNS behavior, not an application by itself | Cloudflare unproxied wildcard CNAME -> `rotom.casa`; a working service still requires an NPM route, listener, and applicable access policy. | **Verified active** through Cloudflare API and public DNS; LAN apex has a separate local override |
 
 ### Historical, deleted, or otherwise non-current names
@@ -240,55 +245,29 @@ These guest paths are documented as absent and retired. Their absence on Rotom d
 
 ## Service and storage relationships
 
-```mermaid
-flowchart TB
-    Platform["Platform containers"]
-    Libraries["Libraries containers"]
-    Websites["Hosted Websites containers"]
-    Games["Palworld containers"]
-    Smart["Smart Home containers"]
-    Local["VM-local persistent state<br/>/srv/rotom/appdata"]
-    Definitions["Deployment and protected inputs<br/>/srv/rotom/stacks and /srv/rotom/secrets"]
-    LibNAS["Libraries NFS<br/>/mnt/nas-libraries"]
-    EmptyNAS["Empty service-boundary NFS mounts<br/>game-servers, smart-home, hosted-websites"]
-    RotomRestic["Rotom Restic backup<br/>selected guest-local paths; /mnt excluded"]
-    RotomRepo["Rotom Restic repository<br/>/mnt/nas-rotom-restic-backup"]
-    NASSnap["NAS snapshots and isolated restore<br/>owner-confirmed working"]
-    VMBackup["Rotom VM Backup<br/>Proxmox VZDump of VMID 100"]
-    VMRepo["Rotom VM Backup NAS storage<br/>/mnt/pve/nas-rotom-vm-backup"]
-    PVEState["PVE host configuration and recovery material"]
-    PVERestic["PVE Restic Backup"]
-    PVERepo["PVE Restic repository<br/>/mnt/nas-pve-restic-backup"]
+This view separates the protection paths. For application groups and their storage dependencies, see the [system diagram](Rotom-Architecture-Diagram.md#1-systems-and-services) and the storage table above.
 
-    Platform --> Local
-    Libraries --> Local
-    Websites --> Local
-    Games --> Local
-    Smart --> Local
-    Platform --> Definitions
-    Libraries --> Definitions
-    Websites --> Definitions
-    Games --> Definitions
-    Smart --> Definitions
-    Libraries --> LibNAS
-    Websites -. no current data dependency .-> EmptyNAS
-    Games -. no current data dependency .-> EmptyNAS
-    Smart -. no current data dependency .-> EmptyNAS
-    Local --> RotomRestic
-    Definitions --> RotomRestic
-    RotomRestic --> RotomRepo
-    LibNAS --> NASSnap
-    Local --> VMBackup
-    Definitions --> VMBackup
-    LibNAS -. external NFS data is not inside the VM disk .-> VMBackup
-    VMBackup --> VMRepo
-    PVEState --> PVERestic
-    PVERestic --> PVERepo
+```mermaid
+flowchart LR
+    LOCAL["Rotom VM-local data<br/>including /srv/rotom"]
+    LIB["NAS Libraries data<br/>including Paperless media"]
+    PVEHOST["PVE host configuration<br/>and recovery material"]
+    RESTIC["Rotom Restic Backup<br/>selected guest-local data"]
+    VM["Rotom VM Backup<br/>PVE VZDump · VM 100"]
+    PVER["PVE Restic Backup"]
+    SNAP["NAS snapshots"]
+    RREPO["NAS: Rotom Restic repository"]
+    VREPO["NAS: VM backup archives"]
+    PREPO["NAS: PVE Restic repository"]
+    LOCAL --> RESTIC --> RREPO
+    LOCAL -->|"VM disk"| VM --> VREPO
+    PVEHOST --> PVER --> PREPO
+    LIB --> SNAP
 ```
 
 In plain language: most application databases and configuration live on the VM under `/srv/rotom`, while large or authoritative Libraries payload lives on the NAS. Rotom Restic protects selected VM-local paths but deliberately excludes `/mnt`. Whole-VM backup protects the VM disk, not external NAS data. NAS snapshots are therefore essential for Libraries and Paperless media, and their recovery points must be paired thoughtfully with the corresponding VM-local databases and configuration.
 
-The dotted arrows to the empty service-boundary shares show naming/ownership boundaries, not data dependencies. The dotted arrow from Libraries NFS to VM Backup emphasizes an exclusion: a VM archive does not contain externally mounted NAS payload.
+The empty service-boundary shares are not current data dependencies for Palworld, Smart Home, or hosted websites. A VM archive does not contain externally mounted NAS payload.
 
 ## Data protection
 
