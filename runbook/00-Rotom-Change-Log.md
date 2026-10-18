@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Simplify the Docker Compose guide
+
+- **Files changed:** `guide/Editing-Docker-Compose.md`, `guide/README.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Documentation only**.
+- **Changes:** Replaced the long beginner guide with a compact map of Compose, appdata, and secrets paths, workload domains and services, and key website addresses; retained links to the authoritative runbooks.
+- **Evidence:** Current Docker and network runbooks and a read-only listing of Compose paths; container runtime was not independently verified.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Hide systemd unit files from the site
 
 - **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/sync`, `internals/publisher/test-publisher.py`, `internals/publisher/README.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
