@@ -1,4 +1,4 @@
-# Repository Internals
+# Rotom Repository Internals Overview
 
 This directory contains material that supports work on and publication of the repository. It is not itself an operational runbook collection, and its files are not Rotom Support members or Available Sources merely because they are tracked here.
 

@@ -1,4 +1,4 @@
-# Repository Tooling
+# Rotom Repository Tooling Overview
 
 This directory contains the guarded repository helper, compatibility entry points, and offline validation scripts. These are tooling and tests, not Rotom Support members or Available Sources.
 

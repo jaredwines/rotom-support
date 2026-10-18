@@ -1,4 +1,4 @@
-# Supplementary Guides
+# Rotom Guide Overview
 
 **Artifact class:** Supplementary repository guide; not a Rotom Support or Available Sources member
 

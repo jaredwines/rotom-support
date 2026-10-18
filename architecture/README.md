@@ -1,4 +1,4 @@
-# Architecture
+# Rotom Architecture Overview
 
 **Artifact class:** Supplementary repository navigation; not a Rotom Support or Available Sources member
 
