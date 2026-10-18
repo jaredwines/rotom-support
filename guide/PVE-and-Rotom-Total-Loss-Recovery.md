@@ -214,7 +214,7 @@ Complete this while the current systems still exist. A missing required item is 
 - [x] Retain a current VZDump compression/VMA verification transcript — passed 2026-10-17 for `vzdump-qemu-100-2026_10_17-05_00_07.vma.zst`.
 - [ ] Retain a current isolated-boot VZDump restore transcript.
 - [x] Rehearse a complete Rotom Restic staging restore and native database checks — passed 2026-10-17 for snapshot `aad4a52e`.
-- [x] Retain a current PVE Restic full-data-read and staging-restore transcript — passed 2026-10-17 for snapshot `19ed0226`; exact staging cleanup remains pending.
+- [x] Retain a current PVE Restic full-data-read and staging-restore transcript — passed 2026-10-17 for snapshot `19ed0226`; exact staging cleanup also passed.
 - [ ] Retain a current NAS snapshot isolated-restore transcript and application/NAS consistency result.
 - [ ] Retain current authenticated application-acceptance results.
 - [x] Keep evidence from a full-data-read Restic check separate from ordinary successful backup logs — all 1,077 packs passed 2026-10-17.
