@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Expand the Docker Compose editing guide
+
+- **Files changed:** `guide/Editing-Docker-Compose.md`, `guide/README.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Documentation only**.
+- **Changes:** Added a scoped editing walkthrough, validation example, recovery and verification guidance, and updated guide navigation. The numbered runbooks remain authoritative.
+- **Evidence:** Existing Docker and backup runbooks; no live service was changed or newly audited.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Improve the architecture system overview
 
 - **Files changed:** `architecture/Rotom-Architecture-System.md`, `00-Rotom-Change-Log.md`.
