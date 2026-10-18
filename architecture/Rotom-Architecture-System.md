@@ -162,7 +162,6 @@ The main path convention is:
 | `arcane` | Docker/Compose management | Port `3552`; VM-local state; Docker socket; writable Platform stack definitions and read-only Platform secrets. Accepted policy: update daily at midnight and heal every five minutes, both with empty exclusions; heal limit five restarts per 30 minutes; pruning off. | **Verified live**, healthy; policy accepted by owner |
 | `cloudflare-ddns` | Updates Cloudflare DNS from Rotom | Outbound-only; reads a protected token file from `/srv/rotom/secrets/platform`; explicit DNS `192.168.1.1`; no inbound listener | **Verified live** after resolver correction; reports apex record current |
 | `mkdocs-rr` | Serves the generated Rotom Support site | Loopback-only port `8082`; read-only generated site under `/srv/rotom/appdata/platform/mkdocs-rr/site` | **Verified live** |
-| `rotom-docs` | Retained previous documentation stack for rollback | Separate retained Compose/appdata and `rotom-docs_default` network; not the active portal | **Documented inactive**, exited normally |
 
 ### Libraries
 
@@ -287,9 +286,9 @@ All primary backup destinations and NAS snapshots are at the same physical site,
 
 The major topology matched current RS:
 
-- 23 running containers and one stopped rollback container;
-- 18 active Compose definitions plus the inactive rollback definition;
-- 19 Docker networks, including the unattached retained `rotom-docs_default` network;
+- 23 running containers;
+- 18 active Compose definitions;
+- 18 Docker networks after removal of the retired `rotom-docs_default` network on 2026-10-18;
 - two Arcane-related named volumes;
 - five configured Rotom NFSv3 automount contracts;
 - the documented host/loopback listener model; and

@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-18 — Remove retired Rotom Docs rollback stack
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `08-Rotom-Directory-Tree.txt`, `architecture/Rotom-Architecture-System.md`, `guide/Editing-Docker-Compose.md`, `guide/PVE-and-Rotom-Total-Loss-Recovery.md`, `internals/tooling/test-rr-runbooks`.
+- **Status:** **Implemented / Verified.**
+- **Changes:** At Jared's request, removed the stopped `rotom-docs` container, its unattached `rotom-docs_default` network, and its dedicated stack and appdata directories. Updated current topology and validation references; historical entries remain evidence of the prior state.
+- **Evidence:** Preflight confirmed the stopped container's read-only old-site bind and an unattached network. After removal, all 23 active containers remained running, the named directories and network were absent, 18 Docker networks remained, and the active `mkdocs-rr` listener and local HTTPS support route both returned HTTP 200.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Repair ACL-safe Rotom Support publication
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `06-Maintenance-and-Automation.md`, `internals/publisher/README.md`, `internals/publisher/build-input.py`, `internals/publisher/sync`, `internals/publisher/test-publisher.py`.

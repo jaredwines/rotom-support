@@ -75,7 +75,7 @@ Within each subject document, use the current-state sections first. Use historic
 
 Rotom is Debian 13 VMID 100 on Proxmox VE host `pve`. The guest uses reserved address `192.168.1.69`; PVE uses `192.168.1.68`; the UniFi NAS uses `192.168.1.70`.
 
-The verified application topology is **23 running Compose-managed containers, 19 Docker networks, two named volumes, and 18 active Compose definitions**. The nineteenth network is the unattached `rotom-docs_default` network retained with the inactive rollback stack; its existence is not cleanup authorization. The active definitions are grouped under five local domains:
+The verified application topology is **23 running Compose-managed containers, 18 Docker networks, two named volumes, and 18 active Compose definitions**. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. The active definitions are grouped under five local domains:
 
 | Domain | Identity | Active roots | Current services |
 |---|---:|---|---|

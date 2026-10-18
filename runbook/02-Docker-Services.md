@@ -214,7 +214,7 @@ Revalidate this runbook when a website's desired deployment state, Compose path,
 
 **Evidence date:** 2026-10-17.
 
-The final live topology contains 23 running containers, 19 Docker networks, two named volumes, and 18 active Compose definitions. The extra network is the unattached `rotom-docs_default` network retained with the inactive rollback stack; its existence is not cleanup authorization. Every supported application is Compose-managed under `/srv/rotom/stacks`.
+The current topology contains 23 running containers, 18 Docker networks, two named volumes, and 18 active Compose definitions. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. Every supported application is Compose-managed under `/srv/rotom/stacks`.
 
 | Domain | Compose definitions | Supported services |
 |---|---:|---|

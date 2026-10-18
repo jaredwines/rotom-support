@@ -36,7 +36,7 @@ These domains are folders that group related applications. For each project belo
 | `game-servers` | `palworld-jared`, `palworld-fran` | Run the two Palworld servers. |
 | `smart-home` | `home-assistant`, `homebridge` | Provide home automation and smart-home integrations. |
 
-The `platform/rotom-docs` Compose file is an inactive rollback stack, not an active service.
+The former `platform/rotom-docs` rollback stack was removed on 2026-10-18; `platform/mkdocs-rr` serves Rotom Support.
 
 ## Website addresses
 

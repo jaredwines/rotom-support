@@ -1187,7 +1187,7 @@ Never retain credential values, private keys, cookies, protected environment con
 - Current recovery layers share the local site/NAS failure domain; no off-site layer is documented.
 - A VZDump verification, Restic check, successful boot, or NAS snapshot listing proves only its own assurance level.
 - The raw image is crash-consistent and has not been rehearsed as a bare-metal restore.
-- The live 2026-10-16 Rotom audit found 19 Docker networks because the retained inactive `rotom-docs_default` network still exists; this is not cleanup authorization.
+- The 2026-10-16 audit found 19 Docker networks; the retired `rotom-docs_default` network was removed on 2026-10-18, leaving 18.
 - This guide is intentionally outside the Core Numbered Reference Set and is not a canonical operational fact owner. It is published with the tracked repository mirror; Available Sources remains a separate manually maintained destination, and adding or replacing it there is Jared's decision.
 
 ### Gap-Closure Register
