@@ -4,18 +4,25 @@ This repository is the Git working copy for the Rotom Support (RS).
 
 ## Documentation authority
 
+- Rotom Support (RS) is all intentionally tracked content in this repository. Local untracked files, ignored files, temporary artifacts, generated output, and Git's internal metadata are not part of RS merely because they exist inside the checkout.
+- `runbook/` is the primary authority for Rotom's documented current state, operation, troubleshooting, configuration, maintenance, migration, recovery, Docker, networking, storage, backups, permissions, and services.
 - `runbook/00-Rotom-Change-Log.md` is the canonical RS maintenance contract.
 - `runbook/01-Rotom-Server-Inventory.md` is the starting index when unsure which RS document applies.
 - Follow the current RS rather than duplicating its detailed procedures in this file.
 - Preserve historical entries as historical evidence. Do not silently rewrite old records to match current state.
 
-Repository-internal files such as root `AGENTS.md`, `.gitignore`, `README.md`, and files under `internals/` are not RS members merely because they are stored in this Git repository. Available Sources remains the RS membership boundary.
+The current numbered runbook files `00`–`08` live under `runbook/` in the checkout resolved by `rs path`. They are the Core Numbered Reference Set within RS. Relative links between these files remain within that directory.
 
-The current numbered RS files `00`–`08` live under `runbook/` in the checkout resolved by `rs path`. Relative links between these files remain within that directory.
+Other tracked repository areas are RS components with narrower roles:
 
-## Supplementary guides
+- `architecture/` explains system relationships and orientation; it does not replace current runbook facts or procedures.
+- `guide/` contains supplementary task and recovery guidance; it is outside the Core Numbered Reference Set and does not become a canonical operational fact owner. Validate it with `internals/tooling/test-guides`.
+- `internals/` contains agent support, repository tooling, validation, and publication implementation; it is not an operational runbook collection.
+- Root-level tracked files provide repository governance, navigation, and Git metadata or configuration appropriate to their individual purpose.
 
-Every file under `guide/` is separate from Rotom Support. Files in that directory are not RS members, are not part of the Core Numbered Reference Set, must not be added to Available Sources, and must not be required by RS-only validation or publication. Validate guide content with `internals/tooling/test-guides`, not by expanding RS membership. A guide may link to RS fact owners; if a guide change also changes an RS-owned fact or procedure, update that RS owner separately under the maintenance contract.
+Do not infer authority from RS membership alone. If another RS component conflicts with the applicable current runbook about Rotom's operation or documented current state, preserve and report the discrepancy, investigate it, and resolve the current guidance in favor of the runbook authority rather than silently rewriting either source.
+
+Available Sources is a separate, manually maintained publication or reference destination. It does not define RS membership and must not be treated as the complete repository. Jared remains responsible for manually replacing its contents.
 
 ## RS Git workflow
 

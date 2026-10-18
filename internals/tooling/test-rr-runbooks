@@ -65,8 +65,12 @@ require_text 00-Rotom-Change-Log.md "internals/tooling/test-rr-runbooks"
 require_text 00-Rotom-Change-Log.md 'The sole canonical documentation-update command is **`Update the RS`**'
 require_text README.md "# Rotom Support"
 require_text AGENTS.md "## RS Git workflow"
-require_text AGENTS.md 'Every file under `guide/` is separate from Rotom Support'
-require_text README.md 'Every file under `guide/` is a repository guide that remains separate from the RS'
+require_text AGENTS.md 'Rotom Support (RS) is all intentionally tracked content in this repository'
+require_text AGENTS.md '`runbook/` is the primary authority for Rotom'
+require_text AGENTS.md 'Available Sources is a separate, manually maintained publication or reference destination'
+require_text README.md 'Every tracked file under `guide/` is an RS component but remains outside the Core Numbered Reference Set'
+require_text 01-Rotom-Server-Inventory.md 'Rotom Support is all intentionally tracked content in the Rotom-Support repository'
+require_text 01-Rotom-Server-Inventory.md 'If another RS component conflicts with the applicable current runbook'
 require_file internals/tooling/rs
 require_file internals/tooling/rr
 require_file internals/tooling/test-rs-cli
@@ -130,6 +134,14 @@ reject_text '| Jared Wines | **Needs Verification** |' "$REPO_ROOT/runbook"/0[1-
 reject_text '**Jared Wines `502`:** expected under the unresolved current design.' "$REPO_ROOT/runbook"/0[1-8]-*
 reject_text "Arcane's live 2026-10-15 settings have automatic updates, auto-heal, and scheduled pruning disabled" "$REPO_ROOT/runbook"/0[1-8]-*
 reject_text '**Current live verification — 2026-10-15:** Arcane automatic updates are disabled' "$REPO_ROOT/runbook"/0[1-8]-*
+reject_text 'Available Sources remains the RS membership boundary' \
+    "$REPO_ROOT/AGENTS.md" "$REPO_ROOT/README.md" "$REPO_ROOT/runbook"/0[1-8]-* \
+    "$REPO_ROOT/architecture"/*.md "$REPO_ROOT/guide"/*.md "$REPO_ROOT/internals"/*.md \
+    "$REPO_ROOT/internals/codex"/*.md "$REPO_ROOT/internals/tooling/README.md"
+reject_text 'not an RS member' \
+    "$REPO_ROOT/AGENTS.md" "$REPO_ROOT/README.md" "$REPO_ROOT/runbook"/0[1-8]-* \
+    "$REPO_ROOT/architecture"/*.md "$REPO_ROOT/guide"/*.md "$REPO_ROOT/internals"/*.md \
+    "$REPO_ROOT/internals/codex"/*.md "$REPO_ROOT/internals/tooling/README.md"
 
 if grep -nE 'JAR-[0-9]+' "$REPO_ROOT/runbook"/0[1-8]-* >/dev/null 2>&1; then
     fail "operational references contain non-literal uppercase ticket labels"

@@ -16,4 +16,4 @@ The numbered `00`–`08` files in this directory are the nine-file **Core Number
 
 Maintain these sources under the [Runbook-First Maintenance Standard](00-Rotom-Change-Log.md#runbook-first-maintenance-standard) and validate them with [`internals/tooling/test-rr-runbooks`](../internals/tooling/README.md) plus `rs lint`. Detailed procedures and configuration facts belong in their numbered owners, not in this index.
 
-This README is repository navigation. It is **not** a numbered runbook, part of the Core Numbered Reference Set, or an Available Source, and it does not become a Rotom Support member merely by residing in this directory.
+This tracked README is an RS navigation file. It is **not** a numbered runbook, part of the Core Numbered Reference Set, or a canonical operational fact owner. Available Sources is a separate manually maintained destination and does not define this file's RS membership.

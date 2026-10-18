@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Remove retired website input reference
+**Documentation updated:** 2026-10-17 — Define RS repository membership and authority
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -137,15 +137,29 @@ The alerting worker, units, timers, scripts, Homepage integration, and delivery 
 
 ## 7. Rotom Support Model
 
-Rotom Support is every file intentionally kept in the project's Available Sources. The numbered files `00`–`08` in the checkout's `runbook/` directory are the complete current nine-file Core Numbered Reference Set. Every file under `guide/` is a separate repository guide, not an RS member, and must remain outside Available Sources, RS-only validation, and RS publication. Repository-internal files such as `AGENTS.md`, `README.md`, and `internals/tooling/*` are likewise not RS members merely because they are tracked. Available Sources replacement remains manual by Jared.
+Rotom Support is all intentionally tracked content in the Rotom-Support repository. Local untracked files, ignored files, temporary artifacts, generated output, and Git's internal metadata are not part of RS merely because they exist inside the checkout. The numbered files `00`–`08` in `runbook/` are the current nine-file Core Numbered Reference Set, and the runbook is RS's primary authority for Rotom's documented current state, operation, troubleshooting, configuration, maintenance, migration, recovery, Docker, networking, storage, backups, permissions, and services.
 
-The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Documents/ChatGPT/rotom-support` on the Mac. On Rotom, `rs path` resolves the checkout using the existing `~/.config/rr/repository` compatibility fallback; append `runbook/` to locate the numbered files. The Mac resolver configuration points to its checkout; `/usr/local/bin/rs` was independently installed and verified there. Its `/usr/local/bin/rr` is a verified compatibility wrapper for `rs`. Available Sources replacement remains manual by Jared.
+Other tracked areas are RS components with narrower purposes: `architecture/` explains system relationships and orientation; `guide/` supplies supplementary task and recovery guidance; `internals/` supports agents, tooling, validation, and publication; and root-level files govern or navigate the repository and provide Git configuration or metadata according to their individual purpose. RS membership does not make these areas canonical operational procedure or allow them to override the runbook.
 
-The checkout also has an `architecture/` directory containing the supplementary repository architecture overview. That overview is not an RS member or Available Source. Its canonical repository file is `architecture/Rotom-Architecture-System.md`, published alongside the other tracked repository files.
+The RS checkout is `/home/jared/rotom-support` on Rotom and `/Users/jared/Documents/ChatGPT/rotom-support` on the Mac. On Rotom, `rs path` resolves the checkout using the existing `~/.config/rr/repository` compatibility fallback; append `runbook/` to locate the numbered files. The Mac resolver configuration points to its checkout; `/usr/local/bin/rs` was independently installed and verified there. Its `/usr/local/bin/rr` is a verified compatibility wrapper for `rs`.
 
-The private **Rotom Support** portal mirrors every tracked file on GitHub `main`, including repository internals and supplementary guides, with the repository README as its home page. Original bytes are available under `/raw/`; publication does not change RS membership, Available Sources, or canonical authority. The publisher checks for changes every five minutes and retains a previous site before each replacement. See [06 — Documentation and Synchronization Workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow).
+Available Sources is a separate, manually maintained publication or reference destination. It does not define RS membership and must not be treated as the complete repository; replacement remains manual by Jared.
+
+The private **Rotom Support** portal mirrors every tracked file on GitHub `main`, including repository internals and supplementary guides, with the repository README as its home page. Original bytes are available under `/raw/`; publication does not alter repository membership, the distinct purpose and authority of each area, or the contents of Available Sources. The publisher checks for changes every five minutes and retains a previous site before each replacement. See [06 — Documentation and Synchronization Workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow).
 
 ## 8. Current Source Map
+
+| Repository area | Role and authority |
+|---|---|
+| `runbook/` | Primary operational documentation and documented-current-state authority; numbered fact and procedure ownership is listed below |
+| `architecture/` | Explanatory architecture and orientation; must defer to applicable current runbook facts and procedures |
+| `guide/` | Supplementary task and recovery orchestration; separately validated and not a canonical operational fact owner |
+| `internals/` | Agent support, guarded tooling, tests, and publication implementation; not an operational runbook collection |
+| Root-level tracked files | Repository governance, navigation, and Git configuration or metadata according to each file's purpose |
+
+If another RS component conflicts with the applicable current runbook about Rotom's operation or documented current state, preserve and report the discrepancy, investigate the evidence, and resolve current guidance in favor of the runbook authority rather than silently rewriting either source.
+
+### Core Numbered Reference Set
 
 | File | Canonical subject |
 |---|---|

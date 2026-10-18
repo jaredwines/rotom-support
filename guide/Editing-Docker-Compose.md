@@ -1,6 +1,6 @@
 # Editing Docker Compose on Rotom
 
-**Artifact class:** Supplementary repository guide; not a Rotom Support or Available Sources member
+**Artifact class:** Supplementary RS guide; outside the Core Numbered Reference Set
 **Document role:** Beginner's companion to the authoritative Docker, storage, and identity runbooks
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 **Docker authority:** [02 - Docker Services](../runbook/02-Docker-Services.md)

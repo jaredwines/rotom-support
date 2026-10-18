@@ -1,6 +1,6 @@
 # Rotom Repository Internals Overview
 
-This directory contains material that supports work on and publication of the repository. It is not itself an operational runbook collection, and its files are not Rotom Support members or Available Sources merely because they are tracked here.
+This directory is an RS component containing material that supports work on and publication of the repository. It is not an operational runbook collection, and its tracked files do not override current runbook facts or procedures.
 
 ## Areas
 

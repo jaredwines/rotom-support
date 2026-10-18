@@ -12,7 +12,7 @@ Resolve the local RS checkout with:
 
 `rs path`
 
-The numbered RS documents `00`–`08` are in the checkout's `runbook/` directory. Files in `guide/` are separate from the RS.
+RS is all intentionally tracked content in the repository. The numbered documents `00`–`08` in the checkout's `runbook/` directory are the primary authority for Rotom's documented current state and operations. Other tracked areas, including `guide/`, are RS components with narrower roles and do not override the runbook.
 
 Before changing Rotom:
 

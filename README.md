@@ -1,6 +1,6 @@
 # Rotom Support Overview
 
-This repository is the Git working copy for the **Rotom Support** (**RS**): a nine-file, runbook-first operating manual and evidence-based reference for Rotom.
+This repository is the Git working copy for **Rotom Support** (**RS**). RS is all intentionally tracked repository content; local untracked files, ignored files, temporary artifacts, generated output, and Git's internal metadata are not RS merely because they exist inside the checkout.
 
 The RS describes supported state. It distinguishes **Current**, **Historical**, **Retired**, **Proposed**, and **Needs Verification** information so that plans and old evidence are not mistaken for live configuration.
 
@@ -17,7 +17,7 @@ Use this reading order for administration or recovery:
 
 ## Documentation map
 
-The current RS consists of the Core Numbered Reference Set in `runbook/`:
+The primary operational authority within RS is the Core Numbered Reference Set in `runbook/`:
 
 | Document | Purpose |
 | --- | --- |
@@ -31,32 +31,35 @@ The current RS consists of the Core Numbered Reference Set in `runbook/`:
 | [07 - Users and Permissions](runbook/07-Users-and-Permissions.md) | Identity, ownership, permission, privilege, and access operations |
 | [08 - Rotom Directory Tree](runbook/08-Rotom-Directory-Tree.txt) | Current filesystem reference with historical paths clearly separated |
 
-Available Sources defines the RS membership boundary. Repository-internal files, including this README, are not RS members unless intentionally added to Available Sources. The current source map and membership details live in [01 - Rotom Server Inventory](runbook/01-Rotom-Server-Inventory.md).
+The runbook is RS's primary authority for Rotom's documented current state, operation, troubleshooting, configuration, maintenance, migration, recovery, Docker, networking, storage, backups, permissions, and services. The current repository-area model and source map live in [01 - Rotom Server Inventory](runbook/01-Rotom-Server-Inventory.md).
 
 ## Repository map
 
-- [`runbook/`](runbook/README.md) contains the authoritative Core Numbered Reference Set.
-- [`guide/`](guide/README.md) contains supplementary guides that remain separate from Rotom Support.
-- [`architecture/`](architecture/README.md) contains supplementary architecture material.
-- [`internals/`](internals/README.md) contains agent-facing material and repository tooling.
+- [`runbook/`](runbook/README.md) contains the authoritative Core Numbered Reference Set and primary operational documentation.
+- [`architecture/`](architecture/README.md) contains explanatory system architecture and orientation.
+- [`guide/`](guide/README.md) contains supplementary task and recovery guides that do not replace runbook authority.
+- [`internals/`](internals/README.md) contains agent support, repository tooling, validation, and publication implementation.
+- Root-level tracked files provide repository governance, navigation, and Git configuration or metadata according to each file's purpose.
 
-These README files are repository navigation only. Their presence does not make them Rotom Support members or Available Sources.
+All intentionally tracked files in these areas are RS components. Membership does not give supplementary, internal, or navigational material authority over the applicable current runbook.
 
 ## Supplementary guides
 
-Every file under `guide/` is a repository guide that remains separate from the RS, Core Numbered Reference Set, Available Sources, RS-only validation, and RS publication. Use [PVE and Rotom Total-Loss Recovery](guide/PVE-and-Rotom-Total-Loss-Recovery.md) for blank-hardware disaster-recovery orchestration and acceptance. The repository mirror also publishes that guide without changing its authority or membership.
+Every tracked file under `guide/` is an RS component but remains outside the Core Numbered Reference Set and is validated separately. Use [PVE and Rotom Total-Loss Recovery](guide/PVE-and-Rotom-Total-Loss-Recovery.md) for blank-hardware disaster-recovery orchestration and acceptance. The repository mirror publishes the guide without making it a canonical operational fact owner.
 
-The [Rotom Architecture System](architecture/Rotom-Architecture-System.md) is also supplementary repository material, not an RS member or Available Source. It is published in the repository mirror under the same boundary.
+The [Rotom Architecture System](architecture/Rotom-Architecture-System.md) is an explanatory RS component. It helps readers understand the system but does not override current runbook facts or procedures.
+
+Available Sources is a separate, manually maintained publication or reference destination. It is not the RS membership boundary or a complete copy of the repository; Jared manually replaces its contents.
 
 ## Using this repository
 
 - Treat dated evidence and explicit state labels as more authoritative than unstated assumptions.
-- Use the current RS documents for operational reference; do not use older change-log entries as instructions to recreate prior state.
+- Use the current runbook documents for operational reference; do not use older change-log entries as instructions to recreate prior state.
 - Read the canonical maintenance contract in [00 - Rotom Change Log](runbook/00-Rotom-Change-Log.md) before preparing an RS change.
 - Use the guarded `rs` helper for normal repository operations. `rs path` resolves the active checkout.
 - Run the repository's offline `internals/tooling/rs lint` validation before synchronization checks. After the matching helper version is installed, `rs lint` is equivalent.
-- From any directory, run `bash "$(rs path)/internals/tooling/test-rr-runbooks"` to validate only the numbered runbook-first RS's permanent structure and nine-file membership.
-- Run `bash "$(rs path)/internals/tooling/test-guides"` separately to validate files under `guide/` without changing RS membership.
+- From any directory, run `bash "$(rs path)/internals/tooling/test-rr-runbooks"` to validate the numbered runbook's permanent structure, authority model, and nine-file Core Numbered Reference Set.
+- Run `bash "$(rs path)/internals/tooling/test-guides"` separately to validate the guide area under its narrower role.
 
 ## Safety
 

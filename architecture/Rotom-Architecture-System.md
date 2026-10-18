@@ -1,6 +1,6 @@
 # Rotom Architecture System
 
-**Artifact class:** Supplementary repository architecture document; not a Rotom Support or Available Sources member
+**Artifact class:** Supplementary RS architecture document; not a canonical operational source
 **Document role:** Newcomer-friendly map of Rotom's services, access paths, storage, and data protection
 **Evidence baseline:** Rotom Support plus read-only live inspection on 2026-10-17
 **Documentation updated:** 2026-10-17

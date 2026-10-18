@@ -1,6 +1,6 @@
 # PVE and Rotom Total-Loss Recovery
 
-**Artifact class:** Supplementary repository guide; not a Rotom Support or Available Sources member
+**Artifact class:** Supplementary RS guide; outside the Core Numbered Reference Set
 **Document role:** Orchestration guide for rebuilding PVE and Rotom after complete loss of the original computer
 **Scenario:** Replacement hardware; original PVE installation, local disks, and running Rotom VM are unavailable
 **Evidence baseline:** PVE and Rotom read-only inspection on 2026-10-16
@@ -9,7 +9,7 @@
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 **RS dependency governance:** [00 - Rotom Change Log](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules)
 
-This supplementary guide provides **total-loss recovery orchestration** without becoming part of the RS. RS document 05 retains ownership of backup architecture, schedules, retention, assurance levels, routine checks, and ordinary restores; the other numbered RS documents retain their existing subject ownership. Commands in this guide are examples only where their syntax and current Rotom context were verified. Every selected snapshot, archive, device, interface, storage target, and recovery point must still be recorded and checked at incident time.
+This supplementary RS guide provides **total-loss recovery orchestration** without becoming a canonical operational fact owner. Runbook document 05 retains ownership of backup architecture, schedules, retention, assurance levels, routine checks, and ordinary restores; the other numbered runbook documents retain their existing subject ownership. Commands in this guide are examples only where their syntax and current Rotom context were verified. Every selected snapshot, archive, device, interface, storage target, and recovery point must still be recorded and checked at incident time.
 
 ## Emergency Recovery Path
 
@@ -199,7 +199,7 @@ flowchart TD
 
 Complete this while the current systems still exist. A missing required item is **CRITICAL PRE-DISASTER GAP**.
 
-- [ ] Keep an offline, printable copy of the complete RS and this guide.
+- [ ] Keep an offline, printable copy of the complete tracked RS, including this guide.
 - [ ] Keep a verified PVE installer compatible with the protected system; current evidence is PVE `9.2.0`, manager `9.2.21`, kernel `7.0.14-19-pve`.
 - [ ] Record installer checksum verification and boot mode.
 - [ ] Store approved retrieval locations for both Restic passwords outside PVE and Rotom.
@@ -223,7 +223,7 @@ Complete this while the current systems still exist. A missing required item is 
 | Rotom Restic password |  |  | Password manager/emergency escrow location only |
 | NAS and router/UniFi administration |  |  | **CRITICAL PRE-DISASTER GAP** if host-dependent |
 | SSH access |  |  | Secure private-key location plus public-key authorization record |
-| RS and this guide |  |  | Include all numbered sources and an offline printable copy |
+| Tracked RS repository |  |  | Include all tracked sources, including the numbered runbook and an offline printable copy of this guide |
 | NAS export discovery |  |  | Sanitized export/path record and appliance procedure |
 | IP/MAC decisions |  |  | Prove old identities cannot return |
 | DNS/domain access |  |  | Registrar/DNS provider recovery location plus MFA recovery |
@@ -1045,7 +1045,7 @@ Never retain credential values, private keys, cookies, protected environment con
 - A VZDump verification, Restic check, successful boot, or NAS snapshot listing proves only its own assurance level.
 - The raw image is crash-consistent and has not been rehearsed as a bare-metal restore.
 - The live 2026-10-16 Rotom audit found 19 Docker networks because the retained inactive `rotom-docs_default` network still exists; this is not cleanup authorization.
-- This guide is intentionally outside Available Sources and the numbered RS publication set. Publishing it anywhere requires a separate explicit decision; do not add it to the RS allowlist merely because it is tracked in this repository.
+- This guide is intentionally outside the Core Numbered Reference Set and is not a canonical operational fact owner. It is published with the tracked repository mirror; Available Sources remains a separate manually maintained destination, and adding or replacing it there is Jared's decision.
 
 ### Gap-Closure Register
 
@@ -1062,14 +1062,14 @@ An unresolved row does not make the guide unsafe; it deliberately blocks the dep
 | Application databases | Record version-specific offline checks and export/import rehearsal per application | Native check output and isolated import result | Blocks promotion of affected mutable state |  |
 | Hardware inventory | Update device IDs, purpose, physical ports, photos, and accepted degraded modes | Host/guest/app test record | Blocks only the affected passthrough dependency |  |
 | Off-site protection | Decide and implement an independently administered off-site layer | Successful backup, integrity check, and isolated restore | Site/NAS loss remains unrecoverable |  |
-| RS and guide distribution | Store the current `00`–`08` RS set plus this separate guide offline; print the emergency/control/checklist pages | File comparison and physical-copy location | Slows or blocks guided recovery without GitHub |  |
+| RS distribution | Store the tracked RS repository offline, including the current `00`–`08` runbook set and this supplementary guide; print the emergency/control/checklist pages | File comparison and physical-copy location | Slows or blocks guided recovery without GitHub |  |
 
 ## 34. Printable Final Checklist
 
 ### Prepare now
 
 - [ ] Offline PVE installer and checksum verified.
-- [ ] Complete offline/printed `00`–`08` RS and this separate guide are both available.
+- [ ] Complete tracked RS is available offline, including printed `00`–`08` runbooks and this supplementary guide.
 - [ ] Both Restic password retrieval locations verified.
 - [ ] NAS/router, SSH, DNS/domain, and application-key recovery verified.
 - [ ] PVE, Rotom, NAS, reservation, MAC, and export records current.
@@ -1099,8 +1099,8 @@ An unresolved row does not make the guide unsafe; it deliberately blocks the dep
 - [ ] Final PVE reboot and every acceptance row pass.
 - [ ] Fresh PVE Restic, VZDump, Rotom Restic, and NAS snapshot created.
 - [ ] New backups listed, checked at the required assurance level, and restore-tested.
-- [ ] Evidence retained; unresolved risks and separate guide-distribution status recorded.
+- [ ] Evidence retained; unresolved risks and supplementary guide-distribution status recorded.
 
 ## Maintenance and Revalidation Triggers
 
-This file is a supplementary guide, not an RS member. Revalidate it after any PVE/Rotom version, VM hardware, VMID, address/MAC, storage/export, repository, staging path, backup scope, schedule/retention, credential location, NAS snapshot procedure, application persistence/database, UID/GID/ACL, Compose path, proxy/DNS/TLS, hardware passthrough, acceptance test, or official restore-command change. If a guide update changes an RS-owned fact or procedure, update the owning RS document under the [Runbook-First Maintenance Standard](../runbook/00-Rotom-Change-Log.md#runbook-first-maintenance-standard). Re-run the complete guide structure, link, secret-pattern, and Mermaid checks whenever headings, anchors, labels, or diagrams change.
+This file is a supplementary RS guide, not a canonical operational fact owner. Revalidate it after any PVE/Rotom version, VM hardware, VMID, address/MAC, storage/export, repository, staging path, backup scope, schedule/retention, credential location, NAS snapshot procedure, application persistence/database, UID/GID/ACL, Compose path, proxy/DNS/TLS, hardware passthrough, acceptance test, or official restore-command change. If a guide update changes a runbook-owned fact or procedure, update the owning runbook document under the [Runbook-First Maintenance Standard](../runbook/00-Rotom-Change-Log.md#runbook-first-maintenance-standard). Re-run the complete guide structure, link, secret-pattern, and Mermaid checks whenever headings, anchors, labels, or diagrams change.

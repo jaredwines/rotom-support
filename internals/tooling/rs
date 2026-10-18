@@ -302,7 +302,7 @@ run_check() {
 
     for file in "${required_files[@]}"; do
         if [[ ! -f "$RS_DIR/$file" ]]; then
-            echo "FAIL  Missing RS file: $file"
+            echo "FAIL  Missing core numbered runbook file: $file"
             missing=1
             continue
         fi
@@ -311,13 +311,13 @@ run_check() {
             --error-unmatch \
             -- "$file" >/dev/null 2>&1; then
 
-            echo "FAIL  RS file exists but is not tracked: $file"
+            echo "FAIL  Core numbered runbook file exists but is not tracked: $file"
             untracked=1
         fi
     done
 
     if (( missing == 0 && untracked == 0 )); then
-        echo "PASS  Core RS set: all 00-08 files exist and are tracked"
+        echo "PASS  Core numbered runbook set: all 00-08 files exist and are tracked"
     else
         problems=$((problems + 1))
     fi

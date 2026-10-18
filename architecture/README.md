@@ -1,8 +1,8 @@
 # Rotom Architecture Overview
 
-**Artifact class:** Supplementary repository navigation; not a Rotom Support or Available Sources member
+**Artifact class:** Supplementary RS architecture navigation; not a canonical operational source
 
-This directory contains supplementary architecture material that helps readers understand Rotom without replacing the authoritative numbered Rotom Support (RS) documents.
+This directory is an RS component containing supplementary architecture material that helps readers understand Rotom without replacing the authoritative numbered runbook documents.
 
 ## Contents
 
@@ -10,4 +10,4 @@ This directory contains supplementary architecture material that helps readers u
 
 The current high-level authoritative system map remains owned by the [Server Inventory](../runbook/01-Rotom-Server-Inventory.md).
 
-If architecture material changes an RS-owned fact or procedure, update its canonical numbered owner under the [RS maintenance contract](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules). Repository navigation changes alone must remain honest about authority and Available Sources membership.
+If architecture material changes a runbook-owned fact or procedure, update its canonical numbered owner under the [RS maintenance contract](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules). Repository navigation changes alone must remain honest about authority, intended use, and the separate manually maintained Available Sources destination.
