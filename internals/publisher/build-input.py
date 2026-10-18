@@ -15,7 +15,9 @@ paths = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '-z']).spli
 tracked = [p.decode('utf-8') for p in paths if p]
 source_suffixes = {'.sh', '.bash', '.zsh', '.py', '.js', '.mjs', '.cjs', '.ts', '.tsx',
                    '.jsx', '.c', '.cc', '.cpp', '.h', '.hpp', '.go', '.rs', '.rb',
-                   '.pl', '.php', '.java', '.sql', '.ps1', '.lua'}
+                   '.pl', '.php', '.java', '.sql', '.ps1', '.lua',
+                   '.service', '.timer', '.socket', '.target', '.path', '.mount',
+                   '.automount', '.swap', '.device', '.slice', '.scope'}
 paths = []
 excluded = set()
 for name in tracked:

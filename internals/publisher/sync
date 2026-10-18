@@ -32,7 +32,9 @@ repo, config, site = map(pathlib.Path, sys.argv[1:])
 tracked = [x.decode() for x in subprocess.check_output(['git','-C',str(repo),'ls-files','-z']).split(b'\0') if x]
 source_suffixes = {'.sh', '.bash', '.zsh', '.py', '.js', '.mjs', '.cjs', '.ts', '.tsx',
                    '.jsx', '.c', '.cc', '.cpp', '.h', '.hpp', '.go', '.rs', '.rb',
-                   '.pl', '.php', '.java', '.sql', '.ps1', '.lua'}
+                   '.pl', '.php', '.java', '.sql', '.ps1', '.lua',
+                   '.service', '.timer', '.socket', '.target', '.path', '.mount',
+                   '.automount', '.swap', '.device', '.slice', '.scope'}
 def excluded(name):
     path = pathlib.PurePosixPath(name)
     source = repo.joinpath(*path.parts)

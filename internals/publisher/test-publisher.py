@@ -14,7 +14,9 @@ with tempfile.TemporaryDirectory() as directory:
              'section/README.md': '# Section\n', 'section/index.md': '# Index\n',
              'section/topic.md': '# Topic Title\n[Script](../tools/script)\n', 'section/untitled.md': 'No heading\n',
              'tools/script': '#!/bin/sh\nscript\n', 'tools/check.py': 'print(1)\n',
-             'tools/run.sh': 'echo ok\n', 'tools/executable': 'data\n', 'binary.bin': b'\x00\xff',
+             'tools/run.sh': 'echo ok\n', 'tools/executable': 'data\n',
+             'tools/update.service': '[Service]\n', 'tools/update.timer': '[Timer]\n',
+             'tools/update.socket': '[Socket]\n', 'binary.bin': b'\x00\xff',
              '.gitignore': 'ignored rule\n', 'section/.gitattributes': 'attributes\n',
              '.github/workflows/check.yml': 'workflow\n'}
     for name, contents in files.items():
@@ -27,7 +29,8 @@ with tempfile.TemporaryDirectory() as directory:
     nav = json.loads((stage / 'mkdocs.yml').read_text())['nav']
     views = json.loads((stage / 'manifest.json').read_text())
     excluded = {'.gitignore', 'section/.gitattributes', '.github/workflows/check.yml',
-                'tools/script', 'tools/check.py', 'tools/run.sh', 'tools/executable'}
+                'tools/script', 'tools/check.py', 'tools/run.sh', 'tools/executable',
+                'tools/update.service', 'tools/update.timer', 'tools/update.socket'}
     assert set(views) == set(files) - excluded
     assert all(not (stage / 'docs' / name).exists() for name in excluded)
     def leaves(items):
