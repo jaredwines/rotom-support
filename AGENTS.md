@@ -1,4 +1,4 @@
-# Rotom Support
+# Rotom Support Agent
 
 This repository is the Git working copy for the Rotom Support (RS).
 
