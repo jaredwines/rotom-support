@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Remove retired website inputs
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`; repository navigation, publisher, and test files; removed `internals/website/`.
+- **Status:** **Documentation only.**
+- **Changes:** Removed the former website landing-page inputs and their obsolete repository references; the private site continues to mirror tracked repository files.
+- **Evidence:** The retained inputs identified themselves as former landing pages; runbook and publisher source-selection tests passed after removal. No live publication was performed.
+- **Outstanding:** Available Sources replacement remains manual by Jared; verify repository publication after the push.
+
 ## 2026-10-17 — Organize repository site navigation
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `06-Maintenance-and-Automation.md`, and `internals/publisher/` builder, publisher, and test.

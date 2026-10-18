@@ -36,15 +36,6 @@ def markdown(data, name, page):
         if '://' in path or path.startswith('/'):
             return match.group(0)
         target = posixpath.normpath(posixpath.join(posixpath.dirname(name), path))
-        site_targets = {
-            ('internals/website/home.md', 'runbook/index.md'): 'runbook/README.md',
-            ('internals/website/home.md', 'runbook/00-Rotom-Change-Log.md'): 'runbook/00-Rotom-Change-Log.md',
-            ('internals/website/architecture/index.md', 'rotom-architecture-system.md'): 'architecture/Rotom-Architecture-System.md',
-            ('internals/website/architecture/index.md', '../runbook/index.md'): 'runbook/README.md',
-            ('internals/website/guides/index.md', 'pve-and-rotom-total-loss-recovery.md'): 'guide/PVE-and-Rotom-Total-Loss-Recovery.md',
-            ('internals/website/guides/index.md', '../runbook/index.md'): 'runbook/README.md',
-        }
-        target = site_targets.get((name, path), target)
         if target not in aliases:
             return match.group(0)
         relative = posixpath.relpath(aliases[target], posixpath.dirname(page) or '.')

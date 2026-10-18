@@ -8,6 +8,6 @@ This directory contains supplementary architecture material that helps readers u
 
 - [Rotom Architecture System](Rotom-Architecture-System.md) is a newcomer-friendly map of Rotom's services, access paths, storage, and data protection. It is also published in the private repository mirror.
 
-The current high-level authoritative system map remains owned by the [Server Inventory](../runbook/01-Rotom-Server-Inventory.md). This directory remains distinct from the separate [website architecture landing-page input](../internals/website/architecture/README.md); the publisher renders both tracked files without changing their canonical sources.
+The current high-level authoritative system map remains owned by the [Server Inventory](../runbook/01-Rotom-Server-Inventory.md).
 
 If architecture material changes an RS-owned fact or procedure, update its canonical numbered owner under the [RS maintenance contract](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules). Repository navigation changes alone must remain honest about authority and Available Sources membership.

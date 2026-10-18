@@ -37,8 +37,8 @@ Available Sources defines the RS membership boundary. Repository-internal files,
 
 - [`runbook/`](runbook/README.md) contains the authoritative Core Numbered Reference Set.
 - [`guide/`](guide/README.md) contains supplementary guides that remain separate from Rotom Support.
-- [`architecture/`](architecture/README.md) contains supplementary architecture material, distinct from the website architecture input.
-- [`internals/`](internals/README.md) contains agent-facing material, repository tooling, and supplementary website inputs.
+- [`architecture/`](architecture/README.md) contains supplementary architecture material.
+- [`internals/`](internals/README.md) contains agent-facing material and repository tooling.
 
 These README files are repository navigation only. Their presence does not make them Rotom Support members or Available Sources.
 

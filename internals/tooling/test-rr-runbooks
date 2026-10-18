@@ -76,33 +76,6 @@ require_file internals/publisher/build-input.py
 require_file internals/publisher/sync
 require_file internals/publisher/test-publisher.py
 require_file internals/publisher/rotom-support-sync.timer
-require_file internals/website/home.md
-require_file internals/website/architecture/index.md
-require_file internals/website/guides/index.md
-require_file internals/website/README.md
-require_file internals/website/architecture/README.md
-require_file internals/website/guides/README.md
-
-expected_website_sources='architecture/index.md
-guides/index.md
-home.md'
-actual_website_sources=$(cd "$REPO_ROOT/internals/website" && find . -type f ! -name README.md | sed 's|^\./||' | LC_ALL=C sort)
-if [[ "$actual_website_sources" == "$expected_website_sources" ]]; then
-    pass "supplementary website sources are explicitly bounded"
-else
-    fail "supplementary website sources differ from the approved publication inputs"
-fi
-
-expected_website_readmes='README.md
-architecture/README.md
-guides/README.md'
-actual_website_readmes=$(cd "$REPO_ROOT/internals/website" && find . -type f -name README.md | sed 's|^\./||' | LC_ALL=C sort)
-if [[ "$actual_website_readmes" == "$expected_website_readmes" ]]; then
-    pass "website navigation READMEs are explicitly bounded"
-else
-    fail "website navigation READMEs differ from the approved repository navigation files"
-fi
-
 require_text 01-Rotom-Server-Inventory.md "## Start by Task or Symptom"
 require_text 01-Rotom-Server-Inventory.md "### Maintaining the Runbook-First Model"
 require_text 01-Rotom-Server-Inventory.md "00-Rotom-Change-Log.md#runbook-first-maintenance-standard"
