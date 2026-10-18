@@ -25,6 +25,10 @@ with tempfile.TemporaryDirectory() as directory:
         path.write_bytes(contents if isinstance(contents, bytes) else contents.encode())
     (repo / 'tools/executable').chmod(0o755)
     subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
+    for asset in ('diagram-expand.js', 'diagram-expand.css.js'):
+        target = repo / 'internals/publisher' / asset
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((builder.parent / asset).read_bytes())
     subprocess.run(['python3', str(builder), str(repo), str(stage)], check=True)
     nav = json.loads((stage / 'mkdocs.yml').read_text())['nav']
     views = json.loads((stage / 'manifest.json').read_text())
@@ -40,6 +44,9 @@ with tempfile.TemporaryDirectory() as directory:
     assert sorted(leaves(nav)) == sorted(views.values())
     config = json.loads((stage / 'mkdocs.yml').read_text())
     assert {'name': 'mermaid', 'class': 'mermaid'} in config['markdown_extensions'][0]['pymdownx.superfences']['custom_fences']
+    assert config['extra_javascript'] == ['assets/rotom-diagrams/diagram-expand.js']
+    assert config['extra_css'] == ['assets/rotom-diagrams/diagram-expand.css']
+    assert (stage / 'docs/assets/rotom-diagrams/diagram-expand.js').is_file()
     features = config['theme']['features']
     assert 'navigation.tabs' in features and 'toc.follow' in features
     assert [next(iter(entry)) for entry in nav] == ['Home', 'Repository']

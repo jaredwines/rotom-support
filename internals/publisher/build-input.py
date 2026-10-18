@@ -150,10 +150,20 @@ def nav_items(tree):
             for name, value in sorted(tree.items(), key=lambda item: (item[0] != 'README.md', item[0].lower()))]
 
 nav = [{markdown_titles['index.md']: 'index.md'}] + [{name: nav_items(group)} for name, group in groups.items() if group]
+# Explicitly selected site assets are built from the tracked publisher sources.
+assets = docs / 'assets' / 'rotom-diagrams'
+if assets.exists():
+    raise ValueError('Reserved diagram asset path already exists')
+assets.mkdir(parents=True)
+for source, target in (('diagram-expand.js', 'diagram-expand.js'), ('diagram-expand.css.js', 'diagram-expand.css')):
+    shutil.copyfile(repo / 'internals' / 'publisher' / source, assets / target)
+
 config = {'site_name': 'Rotom Support', 'docs_dir': '/docs', 'site_dir': '/site',
           'theme': {'name': 'material', 'language': 'en', 'features': ['navigation.tabs', 'navigation.tabs.sticky', 'navigation.sections', 'navigation.top', 'toc.follow', 'search.suggest', 'search.highlight'],
                     'palette': [{'scheme': 'slate', 'primary': 'deep purple', 'accent': 'purple'}]},
           'markdown_extensions': [{'pymdownx.superfences': {'custom_fences': [{'name': 'mermaid', 'class': 'mermaid'}]}}],
+          'extra_javascript': ['assets/rotom-diagrams/diagram-expand.js'],
+          'extra_css': ['assets/rotom-diagrams/diagram-expand.css'],
           'extra': {'generator': False}, 'nav': nav}
 (stage / 'mkdocs.yml').write_text(json.dumps(config), encoding='utf-8')
 (stage / 'manifest.json').write_text(json.dumps(manifest), encoding='utf-8')
