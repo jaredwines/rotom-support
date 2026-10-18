@@ -80,6 +80,8 @@ Retain the exact path, numeric and named identity, parent traversal result, prio
 | PVE | `jared` | Primary administrator |
 | PVE | `fran` (`1001:1001`) | Sudo, `users`, `systemd-journal`, and propagated PVE Administrator role |
 
+On 2026-10-18, Jared verified key-authenticated SSH from Windows workstation Blastiorse: `ssh rotom` connects as `jared`, `ssh pve` as `jared`, and `ssh nas` and `ssh gateway` as appliance `root`. The gateway and NAS root consoles are for targeted troubleshooting; routine appliance administration uses UniFi roles. These tests did not establish key persistence across appliance updates or reboots. A Blastiorse key was initially authorized for PVE root in error; its subsequent removal was not confirmed. Inspect and resolve that specific authorization through the Jared-executed PVE workflow without removing unrelated keys.
+
 Docker group membership is root-equivalent. Fran is the sole listed human Docker-group member; Jared and service identities remain outside it.
 
 ### Current service identities

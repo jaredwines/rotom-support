@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-18 — Record Blastiorse SSH access
+
+- **Files changed:** `07-Users-and-Permissions.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Verified / Documentation update.**
+- **Changes:** Recorded Windows workstation Blastiorse SSH aliases, their target accounts, and the unresolved PVE root authorization. Appliance console access remains for targeted troubleshooting.
+- **Evidence:** Jared tested all four aliases with batch-mode SSH: Rotom and PVE returned `jared`; NAS and gateway returned `root`. An attempted removal of the mistakenly added PVE root key produced no confirmation.
+- **Outstanding:** Verify and, if still present, remove only the Blastiorse PVE root authorization; verify gateway and NAS key persistence after appliance updates or reboots. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-18 — Remove retired Rotom Docs rollback stack
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `08-Rotom-Directory-Tree.txt`, `architecture/Rotom-Architecture-System.md`, `guide/Editing-Docker-Compose.md`, `guide/PVE-and-Rotom-Total-Loss-Recovery.md`, `internals/tooling/test-rr-runbooks`.
