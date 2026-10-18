@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Name README pages in site navigation
+
+- **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/test-publisher.py`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented / Verified** for the installed builder and non-publishing build; published labels remain to be verified.
+- **Changes:** Use each README's level-one title as its site navigation label while retaining its filename and raw content.
+- **Evidence:** Publisher source-selection test and non-publishing build passed. The installed builder retains legacy website link mappings absent from the tracked builder; those mappings were preserved and require separate investigation.
+- **Outstanding:** Verify publication and displayed labels; Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Add publisher overview
 
 - **Files changed:** `internals/publisher/README.md`, `internals/README.md`, `00-Rotom-Change-Log.md`.

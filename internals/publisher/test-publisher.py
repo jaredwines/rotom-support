@@ -30,6 +30,7 @@ with tempfile.TemporaryDirectory() as directory:
     features = json.loads((stage / 'mkdocs.yml').read_text())['theme']['features']
     assert 'navigation.tabs' in features and 'toc.follow' in features
     assert [next(iter(entry)) for entry in nav] == ['Home', 'Repository']
+    assert nav[1]['Repository'][2]['section'][0] == {'Section': views['section/README.md']}
     assert (stage / 'docs/index.md').read_text() == files['README.md']
     assert (stage / 'docs' / views['section/README.md']).read_text() == files['section/README.md']
     assert 'hidden text' in (stage / 'docs' / views['.hidden']).read_text()

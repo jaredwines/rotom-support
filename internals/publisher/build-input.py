@@ -102,11 +102,20 @@ for name, page in manifest.items():
         node = node.setdefault(part, {})
     node[remaining[-1]] = page
 
+def readme_title(name):
+    text = repo.joinpath(*pathlib.PurePosixPath(name).parts).read_text(encoding='utf-8')
+    match = re.search(r'^#\s+(.+?)\s*$', text, re.MULTILINE)
+    return match.group(1) if match else name
+
+readme_titles = {page: readme_title(name) for name, page in manifest.items()
+                 if pathlib.PurePosixPath(name).name == 'README.md'}
+
 def nav_items(tree):
-    return [{name: nav_items(value) if isinstance(value, dict) else value}
+    return [{(readme_titles.get(value, name) if not isinstance(value, dict) else name):
+             nav_items(value) if isinstance(value, dict) else value}
             for name, value in sorted(tree.items(), key=lambda item: (item[0] != 'README.md', item[0].lower()))]
 
-nav = [{'Home': 'index.md'}] + [{name: nav_items(group)} for name, group in groups.items() if group]
+nav = [{readme_titles['index.md']: 'index.md'}] + [{name: nav_items(group)} for name, group in groups.items() if group]
 config = {'site_name': 'Rotom Support', 'docs_dir': '/docs', 'site_dir': '/site',
           'theme': {'name': 'material', 'language': 'en', 'features': ['navigation.tabs', 'navigation.tabs.sticky', 'navigation.sections', 'navigation.top', 'toc.follow', 'search.suggest', 'search.highlight'],
                     'palette': [{'scheme': 'slate', 'primary': 'deep purple', 'accent': 'purple'}]},
