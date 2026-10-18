@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Capitalize site folder labels
+
+- **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/test-publisher.py`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Implemented / Verified** for the installed builder and non-publishing build; publication remains to be verified.
+- **Changes:** Capitalize the first letter of nested folder labels in site navigation without changing repository paths.
+- **Evidence:** Jared's request; publisher fixture tests and a non-publishing build passed after installation.
+- **Outstanding:** Verify installation and site labels; Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Use Markdown titles in site navigation
 
 - **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/test-publisher.py`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.

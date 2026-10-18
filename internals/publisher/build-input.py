@@ -117,7 +117,7 @@ markdown_titles = {page: markdown_title(name) for name, page in manifest.items()
                    if pathlib.PurePosixPath(name).suffix.lower() == '.md'}
 
 def nav_items(tree):
-    return [{(markdown_titles.get(value, name) if not isinstance(value, dict) else name):
+    return [{(markdown_titles.get(value, name) if not isinstance(value, dict) else name[:1].upper() + name[1:]):
              nav_items(value) if isinstance(value, dict) else value}
             for name, value in sorted(tree.items(), key=lambda item: (item[0] != 'README.md', item[0].lower()))]
 
