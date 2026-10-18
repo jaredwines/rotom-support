@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Clarify supplementary guide authority
+**Documentation updated:** 2026-10-17 — Record current Rotom integrity and isolated-restore evidence
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -237,7 +237,9 @@ Select and verify an incident-appropriate recovery point before use. A successfu
 
 The current source scope includes `/etc`, `/home`, `/root`, `/opt`, `/srv`, `/usr/local`, `/var/lib/docker/volumes`, and `/var/backups/system-info`, subject to the installed include/exclude files. `/mnt` remains excluded.
 
-The latest documented automatic observation is snapshot `1fd623ca` from 2026-10-15 around 03:00 PDT, approximately 20.282 GiB, with a successful service result. Manual post-credential-path snapshot `333c87b3` also completed successfully. Jared confirmed current full data-read verification and a restore rehearsal, but the selected snapshot and detailed transcript were not supplied here.
+The latest documented automatic observation is snapshot `aad4a52e` from 2026-10-17 at 03:05 PDT, approximately 18.600 GiB. The service exited successfully after retention and prune. A same-day read-only preflight found the timer enabled and active, the exact NAS export mounted read/write, no concurrent Restic process, protected control-file permissions, readable snapshot metadata, and no failed systemd units. A standard `restic check` completed across all 22 snapshots with no errors. A representative isolated restore from `aad4a52e` recovered the selected `/var/backups/system-info` subset—six files totaling 29.503 MiB—into a restricted temporary target; file count, size, and restored directory metadata were checked before the temporary target was removed. This representative restore does not replace a full-data-read check or application-level restore rehearsal.
+
+Manual post-credential-path snapshot `333c87b3` also completed successfully. Jared confirmed current full data-read verification and a broader restore rehearsal, but the selected snapshot and detailed transcript were not supplied here.
 
 The VM-local `/srv/rotom/backup-staging` path is absent. Historical references to local fast-rollback archives below that root do not establish current availability.
 

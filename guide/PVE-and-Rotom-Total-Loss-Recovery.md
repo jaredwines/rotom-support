@@ -3,8 +3,8 @@
 **Artifact class:** Supplementary RS guide; outside the Core Numbered Reference Set
 **Document role:** Orchestration guide for rebuilding PVE and Rotom after complete loss of the original computer
 **Scenario:** Replacement hardware; original PVE installation, local disks, and running Rotom VM are unavailable
-**Evidence baseline:** PVE and Rotom read-only inspection on 2026-10-16
-**Documentation updated:** 2026-10-16 — Harden emergency execution and evidence controls
+**Evidence baseline:** PVE inspection on 2026-10-16 and Rotom recovery verification on 2026-10-17
+**Documentation updated:** 2026-10-17 — Record current Rotom restore evidence and maximum-readiness gate
 **Routine backup authority:** [05 - Backup and Restore](../runbook/05-Backup-and-Restore.md)
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 **RS dependency governance:** [00 - Rotom Change Log](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules)
@@ -213,6 +213,21 @@ Complete this while the current systems still exist. A missing required item is 
 - [ ] Record current NAS export discovery and snapshot policy, including isolated restore steps.
 - [ ] Rehearse VZDump verification/isolated restore, Rotom Restic staging restore, PVE Restic staging restore, NAS snapshot restore, and application acceptance.
 - [ ] Keep evidence from a full data-read Restic check separate from ordinary successful backup logs.
+
+### Demonstrated readiness and maximum-readiness gate
+
+Runbook document 05 owns the current backup and restore evidence. On 2026-10-17, the current Rotom automatic snapshot completed successfully, the exact repository mount and timer passed preflight, a standard Restic repository check found no errors across 22 snapshots, and a representative subset from the newest snapshot was restored into an isolated restricted target and verified before cleanup. Earlier evidence includes an isolated VZDump restore that booted with its network disconnected, a documented historical full-data-read Restic check and representative application-state restore, and owner-confirmed current VMA/disposable-restore, Rotom Restic, and Libraries NAS exercises whose detailed transcripts were not supplied.
+
+Do not describe readiness as complete merely because the written plan is complete. **Maximum demonstrated readiness** requires all of the following evidence to be current and retained:
+
+- every **CRITICAL PRE-DISASTER GAP** and blocking row in the Gap-Closure Register is closed;
+- one blank-replacement-hardware rehearsal passes Phases 0–20, including the final reboot and fresh verified backups;
+- PVE Restic staging, VZDump verification and isolated boot, Rotom Restic staging, NAS snapshot isolation, and application-native database recovery each have exact identifiers and sanitized transcripts;
+- credential, NAS/router, DNS/domain, SSH, and application-key recovery is rehearsed from a device independent of PVE and Rotom;
+- the tracked RS and verified PVE installer are available independently of the destroyed host; and
+- an independently administered off-site recovery layer passes backup, integrity, and isolated-restore checks.
+
+Until every row passes, preserve the achieved evidence and report the remaining blockers rather than assigning a completion label.
 
 ## 4. Offline Recovery Kit
 

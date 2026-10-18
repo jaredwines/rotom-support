@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Refresh total-loss recovery readiness evidence
+
+- **Files changed:** `05-Backup-and-Restore.md`, `guide/PVE-and-Rotom-Total-Loss-Recovery.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Verified / Documentation only.** No production data, backup policy, retention, repository contents, PVE state, NAS configuration, or external service was changed.
+- **Changes:** Recorded the current Rotom Restic preflight, repository check, and representative isolated-restore result. Added an objective maximum-readiness gate so plan completeness cannot be mistaken for demonstrated end-to-end recoverability.
+- **Evidence:** On 2026-10-17 automatic snapshot `aad4a52e` completed at 03:05 PDT with service exit zero after retention/prune; the exact NAS export, timer, protected file metadata, recent snapshots, and failed-unit state passed preflight; standard `restic check` found no errors across 22 snapshots; and an isolated restore recovered six selected system-information files totaling 29.503 MiB before the restricted temporary target was removed.
+- **Outstanding:** A retained blank-hardware Phases 0–20 rehearsal, exact current PVE/NAS/application drill transcripts, independently tested recovery access and media, and a verified off-site layer remain necessary for maximum demonstrated readiness. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Expand the Docker Compose editing guide
 
 - **Files changed:** `guide/Editing-Docker-Compose.md`, `guide/README.md`, `00-Rotom-Change-Log.md`.
