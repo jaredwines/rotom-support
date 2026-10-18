@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Add publisher overview
+
+- **Files changed:** `internals/publisher/README.md`, `internals/README.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Documentation only.**
+- **Changes:** Added an overview of publisher files and a link from the internals index, with the runbook retaining ownership of publication operations.
+- **Evidence:** Reviewed the publisher implementation and the current maintenance runbook.
+- **Outstanding:** Available Sources replacement remains manual by Jared; verify the repository mirror after the pushed revision is published.
+
 ## 2026-10-17 — Define Rotom Support by tracked repository content
 
 - **Files changed:** `AGENTS.md`, `README.md`; current navigation and classification files under `architecture/`, `guide/`, `internals/`, and `runbook/`; `internals/tooling/rs`, `internals/tooling/test-rr-runbooks`, and `internals/tooling/test-guides`.
