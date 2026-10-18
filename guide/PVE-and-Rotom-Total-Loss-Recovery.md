@@ -215,7 +215,7 @@ Complete this while the current systems still exist. A missing required item is 
 - [x] Retain a current isolated-boot VZDump restore transcript — passed 2026-10-17 for the same current archive; disposable VM, disks, storage definition, and path were removed.
 - [x] Rehearse a complete Rotom Restic staging restore and native database checks — passed 2026-10-17 for snapshot `aad4a52e`.
 - [x] Retain a current PVE Restic full-data-read and staging-restore transcript — passed 2026-10-17 for snapshot `19ed0226`; exact staging cleanup also passed.
-- [ ] Retain a current NAS snapshot isolated-restore transcript and application/NAS consistency result.
+- [ ] Retain a current NAS snapshot isolated-restore transcript and application/NAS consistency result — owner declined a repeat rehearsal on 2026-10-17; existing operation is accepted without new transcript evidence.
 - [ ] Retain current authenticated application-acceptance results.
 - [x] Keep evidence from a full-data-read Restic check separate from ordinary successful backup logs — all 1,077 packs passed 2026-10-17.
 
@@ -1082,7 +1082,7 @@ An unresolved row does not make the guide unsafe; it deliberately blocks the dep
 | NAS/router access | Test recovery account and MFA recovery independently of Rotom/PVE | Successful separate-device login record | Blocks export verification and NAS recovery |  |
 | DNS/domain access | Test registrar/provider recovery and MFA escrow | Successful recovery-path rehearsal | Blocks external route repair if current state is lost |  |
 | SSH/application keys | Inventory required public authorization and secret locators | Sanitized inventory and application recovery test | May block administration or encrypted application state |  |
-| NAS snapshot procedure | Record current schedule/retention and rehearse an isolated appliance-native restore | Snapshot ID, isolated target, comparison, and cleanup record | Blocks snapshot promotion; current NAS remains read-only authority |  |
+| NAS snapshot procedure | Record current schedule/retention and rehearse an isolated appliance-native restore | Snapshot ID, isolated target, comparison, and cleanup record | Blocks snapshot promotion; current NAS remains read-only authority | **OWNER ACCEPTED / NOT REVERIFIED 2026-10-17**; repeat rehearsal declined |
 | Application databases | Record version-specific offline checks and restore/export rehearsal per application | Native check output and isolated recovery/dump result | Blocks promotion of affected mutable state | **PASS 2026-10-17** for restored SQLite, Paperless PostgreSQL 18, and RomM MariaDB 11.8.9; revalidate after upgrades |
 | Hardware inventory | Update device IDs, purpose, physical ports, photos, and accepted degraded modes | Host/guest/app test record | Blocks only the affected passthrough dependency |  |
 | Off-site protection | Decide and implement an independently administered off-site layer | Successful backup, integrity check, and isolated restore | Site/NAS loss remains unrecoverable |  |

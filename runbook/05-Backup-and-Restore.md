@@ -519,6 +519,8 @@ Rotom Restic excludes `/mnt`. Authoritative Libraries data, including Paperless 
 
 Paperless VM-local database, broker, configuration, search data, consume/export paths, and protected inputs are under `/srv/rotom/{appdata,secrets}/libraries/paperless`. Authoritative media is `/mnt/nas-libraries/paperless`. The restored five-file media set matched its retained manifest. Jared confirmed Libraries snapshot retention and an isolated restore outcome; exact policy values and the selected recovery point were not supplied.
 
+On 2026-10-17 Jared declined a repeat NAS snapshot rehearsal because the existing workflow is accepted as working. Treat this as an owner acceptance decision, not as a new retained snapshot identifier, isolated-restore transcript, or application/NAS consistency proof.
+
 Game Servers, Smart Home, and Hosted Websites NAS shares are empty service boundaries. Their application state remains VM-local and depends on Rotom Restic and, at a broader layer, whole-VM backup.
 
 ## 6. Recovery-Critical Historical Evidence
