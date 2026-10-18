@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Clarify the Rotom architecture diagrams
+
+- **Files changed:** `architecture/Rotom-Architecture-Diagram.md`, `00-Rotom-Change-Log.md`.
+- **Status:** **Documentation only**.
+- **Changes:** Reorganized the architecture into separate system, access, and protection diagrams; distinguished DNS lookups from request traffic and the three backup paths.
+- **Evidence:** Current inventory, network, storage, backup, and architecture documents; no new live audit.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Fix diagram expand controls after rendering
 
 - **Files changed:** `internals/publisher/diagram-expand.js`, `internals/publisher/diagram-expand.css.js`, `00-Rotom-Change-Log.md`.
