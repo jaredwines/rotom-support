@@ -109,6 +109,7 @@ require_text 04-NAS-and-Storage.md "## Diagnose and Recover a Configured NAS Mou
 require_text 04-NAS-and-Storage.md "mnt-nas\\x2dlibraries.automount"
 require_text 04-NAS-and-Storage.md "rotom-nas-docker-recovery.service"
 require_text 05-Backup-and-Restore.md "## Run and Verify Rotom Restic Backup"
+require_text 05-Backup-and-Restore.md "## Rehearse a Complete Rotom Restic Restore in Isolation"
 require_text 05-Backup-and-Restore.md "rotom-restic-backup.service"
 require_text 05-Backup-and-Restore.md "Changes Rotom and protected storage/repository state"
 require_text 06-Maintenance-and-Automation.md "## Investigate a Failed Timer or Automation"

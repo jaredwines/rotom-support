@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Record current Rotom integrity and isolated-restore evidence
+**Documentation updated:** 2026-10-17 — Add and verify complete isolated Rotom restore rehearsal
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -25,6 +25,7 @@ Record substantive changes to this document in the change log as part of the sam
 | Task | Procedure |
 |---|---|
 | Run or verify Rotom Restic Backup | [Run and Verify Rotom Restic Backup](#run-and-verify-rotom-restic-backup) |
+| Prove a complete Rotom Restic snapshot can be restored and its databases opened | [Rehearse a Complete Rotom Restic Restore in Isolation](#rehearse-a-complete-rotom-restic-restore-in-isolation) |
 | Investigate a failed scheduled backup | Perform the runbook preflight, then inspect the owning timer/service in [document 06](06-Maintenance-and-Automation.md#investigate-a-failed-timer-or-automation) |
 | Verify repository structure or full pack readability | Use the assurance-level guidance in this document; do not confuse snapshot creation with `restic check` or `restic check --read-data` |
 | Restore data | Select a known recovery point and restore to an isolated restricted staging location before planning live replacement |
@@ -210,6 +211,240 @@ Record the run time in `America/Los_Angeles`, launch method, mount source, servi
 Revalidate this runbook whenever the service/timer, launcher, worker, repository, mount, password-file path, include/exclude policy, SQLite staging set, retention, or backup scope changes.
 
 
+## Rehearse a Complete Rotom Restic Restore in Isolation
+
+### 1. Outcome and scope
+
+Restore one exact Rotom snapshot into a new root-only staging tree, make Restic verify every restored file, run offline SQLite checks, and prove that restored Paperless PostgreSQL and RomM MariaDB state can recover, pass native checks, and produce logical dumps without exposing a network or touching production data.
+
+Use this after important persistence, database-image, backup-scope, or Restic changes and whenever current end-to-end Rotom Restic evidence is required. It does not promote data, test NAS-resident `/mnt` payload, change repository policy, repair a repository, or replace VZDump, PVE, NAS snapshot, credential-retrieval, or authenticated application testing.
+
+### 2. Impact and current inputs
+
+The rehearsal reads the complete selected snapshot and creates a large temporary tree under `/var/backups`. It can consume substantial root-disk space, NAS I/O, CPU, and time. Database containers start only against the restored copy with `--network none`, no published ports, and restart disabled. Database crash recovery and integrity tooling may modify only that disposable copy.
+
+The restored tree contains credentials, keys, personal data, databases, and application state. Keep it owned by root with mode `0700`, never copy contents into evidence, and remove it promptly after validation.
+
+Current database inputs are:
+
+- PostgreSQL data at `/srv/rotom/appdata/libraries/paperless/database`, image from `paperless-db`, and the non-secret `POSTGRES_USER` locator in restored `postgres.env`;
+- MariaDB data at `/srv/rotom/appdata/libraries/romm/database`, image from `romm-db`, and restored `mariadb.env`, whose values must never be printed;
+- transactionally consistent SQLite copies under restored `/var/backups/system-info/sqlite`.
+
+### 3. Read-only preflight and stop conditions
+
+**Read-only**
+
+```bash
+systemctl is-active rotom-restic-backup.service
+systemctl list-timers rotom-restic-backup.timer --all --no-pager
+pgrep -a -x restic || true
+findmnt -M /mnt/nas-rotom-restic-backup -t nfs,nfs4 \
+  -o TARGET,SOURCE,FSTYPE,OPTIONS
+df -h / /var/backups
+sudo docker ps -a --format '{{.Names}}' | \
+  rg '^recovery-(paperless|romm)-restore$' || true
+sudo env \
+  RESTIC_REPOSITORY=/mnt/nas-rotom-restic-backup/rotom-restic-backup \
+  RESTIC_PASSWORD_FILE=/etc/restic/restic-repository-password \
+  restic snapshots --host rotom --tag automatic --latest 3
+```
+
+Proceed only when the backup service is inactive, no Restic process exists, the exact repository export is mounted, the next timer run leaves a safe window, the selected snapshot is unambiguous, and free root space exceeds its logical size with safe operating margin. Both current database images must already exist locally.
+
+Stop on an unexpected mount or repository, active writer/lock, insufficient capacity, existing recovery-container name, missing restored secret locator, unavailable current image, or target that is not a new exact child of `/var/backups`.
+
+### 4. Restore and verify every file
+
+Choose and record an exact new staging path. The example prefix is a safety contract; replace its date and snapshot suffix deliberately.
+
+**Changes Rotom**
+
+**Credential-sensitive**
+
+```bash
+read -r -p 'Exact selected snapshot ID: ' ROTOM_SNAPSHOT
+read -r -p 'Exact new /var/backups/rotom-restic-rehearsal-* path: ' ROTOM_STAGE
+case "$ROTOM_STAGE" in
+  /var/backups/rotom-restic-rehearsal-*) ;;
+  *) echo 'Unsafe staging path' >&2; exit 1 ;;
+esac
+sudo test ! -e "$ROTOM_STAGE"
+sudo install -d -o root -g root -m 0700 "$ROTOM_STAGE"
+sudo env \
+  RESTIC_REPOSITORY=/mnt/nas-rotom-restic-backup/rotom-restic-backup \
+  RESTIC_PASSWORD_FILE=/etc/restic/restic-repository-password \
+  restic restore "$ROTOM_SNAPSHOT" \
+  --target "$ROTOM_STAGE" \
+  --verify
+sudo stat -c '%u:%g %a %n' "$ROTOM_STAGE"
+sudo du -sh "$ROTOM_STAGE"
+```
+
+Success requires restore exit zero and completed `--verify`. Record the snapshot ID/time/size, restored object count, verified file count, durations, target metadata, and remaining space without listing restored contents.
+
+### 5. Check restored SQLite databases
+
+Run full integrity checks against the consistent backup copies and every restored application SQLite file. Output only status and relative path.
+
+**Read-only**
+
+```bash
+sudo bash -c 'rehearsal_root=$1
+while IFS= read -r -d "" db_path; do
+  db_result=$(sqlite3 -readonly "$db_path" "PRAGMA integrity_check;" 2>&1)
+  db_status=$?
+  db_relative=${db_path#"$rehearsal_root"}
+  if [ "$db_status" -eq 0 ] && [ "$db_result" = ok ]; then
+    printf "PASS\t%s\n" "$db_relative"
+  else
+    printf "FAIL(%s)\t%s\t%s\n" \
+      "$db_status" "$db_relative" "$db_result"
+  fi
+done < <(find \
+  "$rehearsal_root/var/backups/system-info/sqlite" \
+  "$rehearsal_root/srv/rotom/appdata" \
+  -type f \( -iname "*.db" -o -iname "*.sqlite" \) \
+  -print0 | sort -z)' _ "$ROTOM_STAGE"
+```
+
+Every selected database must report `PASS`. Treat a failed live-copy database separately from a failed transactionally consistent copy; never promote a failed database.
+
+### 6. Validate restored Paperless PostgreSQL
+
+These commands use the existing local image, restored data, and only the non-secret restored role name. They do not publish a port or join a Docker network.
+
+**Changes Rotom**
+
+**Credential-sensitive**
+
+```bash
+PAPERLESS_IMAGE="$(sudo docker inspect paperless-db \
+  --format '{{.Config.Image}}')"
+PAPERLESS_DB_USER="$(sudo awk -F= \
+  '$1 == "POSTGRES_USER" {print $2}' \
+  "$ROTOM_STAGE/srv/rotom/secrets/libraries/paperless/postgres.env")"
+test -n "$PAPERLESS_DB_USER"
+sudo docker image inspect "$PAPERLESS_IMAGE" >/dev/null
+sudo docker run -d \
+  --name recovery-paperless-restore \
+  --network none \
+  --restart no \
+  --mount \
+  type=bind,src="$ROTOM_STAGE/srv/rotom/appdata/libraries/paperless/database",dst=/var/lib/postgresql \
+  "$PAPERLESS_IMAGE"
+for readiness_try in $(seq 1 60); do
+  if sudo docker exec -u postgres recovery-paperless-restore \
+    pg_isready -q -U "$PAPERLESS_DB_USER"; then
+    break
+  fi
+  sudo docker inspect -f '{{.State.Running}}' \
+    recovery-paperless-restore | rg -qx true || exit 1
+  sleep 1
+done
+sudo docker exec -u postgres recovery-paperless-restore \
+  pg_isready -q -U "$PAPERLESS_DB_USER"
+sudo docker exec -e PGUSER="$PAPERLESS_DB_USER" -u postgres \
+  recovery-paperless-restore sh -c '
+set -e
+set -o pipefail
+for restored_db in paperless postgres; do
+  pg_dump --format=custom "$restored_db" | sha256sum >/dev/null
+  printf "PG_DUMP_PASS %s\n" "$restored_db"
+done
+pg_amcheck --all --install-missing --on-error-stop
+printf "PG_AMCHECK_PASS all\n"'
+sudo docker inspect recovery-paperless-restore \
+  --format 'STATUS={{.State.Status}} NETWORK={{.HostConfig.NetworkMode}} RESTART={{.HostConfig.RestartPolicy.Name}} PORTS={{json .NetworkSettings.Ports}}'
+```
+
+If readiness is not immediate, wait only while the container remains running and inspect sanitized logs. Success requires expected crash recovery if the backup captured a running database, logical dump passes for `paperless` and `postgres`, `pg_amcheck` success, `NETWORK=none`, `RESTART=no`, and no published ports.
+
+### 7. Validate restored RomM MariaDB
+
+The restored environment file is passed directly to the disposable container and must never be printed or included in evidence.
+
+**Changes Rotom**
+
+**Credential-sensitive**
+
+```bash
+ROMM_DB_IMAGE="$(sudo docker inspect romm-db \
+  --format '{{.Config.Image}}')"
+sudo docker image inspect "$ROMM_DB_IMAGE" >/dev/null
+sudo docker run -d \
+  --name recovery-romm-restore \
+  --network none \
+  --restart no \
+  --env-file \
+  "$ROTOM_STAGE/srv/rotom/secrets/libraries/romm/mariadb.env" \
+  --mount \
+  type=bind,src="$ROTOM_STAGE/srv/rotom/appdata/libraries/romm/database",dst=/var/lib/mysql \
+  "$ROMM_DB_IMAGE"
+for readiness_try in $(seq 1 60); do
+  if sudo docker exec recovery-romm-restore \
+    healthcheck.sh --connect --innodb_initialized >/dev/null 2>&1; then
+    break
+  fi
+  sudo docker inspect -f '{{.State.Running}}' \
+    recovery-romm-restore | rg -qx true || exit 1
+  sleep 1
+done
+sudo docker exec recovery-romm-restore \
+  healthcheck.sh --connect --innodb_initialized
+sudo docker exec recovery-romm-restore bash -c '
+set -euo pipefail
+if ! MYSQL_PWD="$MARIADB_ROOT_PASSWORD" \
+  mariadb-check --all-databases --check --extended --user=root \
+  >/tmp/recovery-mariadb-check.log 2>&1; then
+  tail -200 /tmp/recovery-mariadb-check.log
+  exit 1
+fi
+printf "MARIADB_CHECK_PASS all\n"
+MYSQL_PWD="$MARIADB_ROOT_PASSWORD" \
+  mariadb-dump --all-databases --single-transaction \
+  --routines --events --triggers \
+  --user=root |
+  sha256sum >/dev/null
+printf "MARIADB_DUMP_PASS all\n"'
+sudo docker inspect recovery-romm-restore \
+  --format 'STATUS={{.State.Status}} NETWORK={{.HostConfig.NetworkMode}} RESTART={{.HostConfig.RestartPolicy.Name}} PORTS={{json .NetworkSettings.Ports}}'
+```
+
+Success requires expected crash recovery, native readiness, extended table checks, a complete streamed logical dump, `NETWORK=none`, `RESTART=no`, and no published ports.
+
+### 8. Safe stop, cleanup, and evidence
+
+On failure, preserve sanitized logs and keep production untouched. Stop and remove only the exact disposable container names after retaining evidence.
+
+**Changes Rotom**
+
+```bash
+for recovery_container in \
+  recovery-paperless-restore recovery-romm-restore
+do
+  if sudo docker inspect "$recovery_container" >/dev/null 2>&1; then
+    sudo docker stop -t 30 "$recovery_container"
+    sudo docker rm "$recovery_container"
+  fi
+done
+```
+
+Review the exact staging path, confirm it is the disposable root-only tree created by this rehearsal, and obtain explicit approval before removing it. Type the complete literal path; do not use a variable, glob, shell substitution, or broad parent directory.
+
+**Destructive — explicit approval required**
+
+```bash
+sudo rm -rf -- /var/backups/rotom-restic-rehearsal-EXACT-DATE-AND-SNAPSHOT
+```
+
+Confirm the exact tree and containers are absent, root capacity returned, the backup timer remains active, the repository mount remains exact, and no unit failed.
+
+Retain snapshot ID/time/size, repository identity, restore and verify counts/durations, target metadata, SQLite relative-path results, database image IDs/versions, PostgreSQL and MariaDB recovery/readiness/check/dump results, isolation proof, cleanup result, and outstanding application/NAS gaps. Never retain restored contents, environment values, passwords, private keys, cookies, or protected application data.
+
+Rehearse again after Restic, PostgreSQL, MariaDB, Paperless, RomM, persistence paths, roles, images, backup scope, or repository behavior changes. A database-layer pass does not close NAS-media consistency, authenticated application, PVE, VZDump, credential-retrieval, off-site, or blank-hardware gates.
+
+
 ## 1. Current Recovery Architecture
 
 Rotom recovery is layered. No single layer replaces another:
@@ -237,9 +472,11 @@ Select and verify an incident-appropriate recovery point before use. A successfu
 
 The current source scope includes `/etc`, `/home`, `/root`, `/opt`, `/srv`, `/usr/local`, `/var/lib/docker/volumes`, and `/var/backups/system-info`, subject to the installed include/exclude files. `/mnt` remains excluded.
 
-The latest documented automatic observation is snapshot `aad4a52e` from 2026-10-17 at 03:05 PDT, approximately 18.600 GiB. The service exited successfully after retention and prune. A same-day read-only preflight found the timer enabled and active, the exact NAS export mounted read/write, no concurrent Restic process, protected control-file permissions, readable snapshot metadata, and no failed systemd units. A standard `restic check` completed across all 22 snapshots with no errors. A separate `restic check --read-data` then read all 1,077 packs in 4 minutes 15 seconds and found no errors. A representative isolated restore from `aad4a52e` recovered the selected `/var/backups/system-info` subset—six files totaling 29.503 MiB—into a restricted temporary target; file count, size, and restored directory metadata were checked before the temporary target was removed. This representative restore does not replace an application-level restore rehearsal.
+The latest documented automatic observation is snapshot `aad4a52e` from 2026-10-17 at 03:05 PDT, approximately 18.600 GiB. The service exited successfully after retention and prune. A same-day read-only preflight found the timer enabled and active, the exact NAS export mounted read/write, no concurrent Restic process, protected control-file permissions, readable snapshot metadata, and no failed systemd units. A standard `restic check` completed across all 22 snapshots with no errors. A separate `restic check --read-data` then read all 1,077 packs in 4 minutes 15 seconds and found no errors.
 
-Manual post-credential-path snapshot `333c87b3` also completed successfully. Jared previously confirmed a broader restore rehearsal, but the selected snapshot and detailed transcript were not supplied here.
+A complete isolated restore of `aad4a52e` recovered 39,398 files/directories totaling 18.600 GiB in two minutes, and Restic `--verify` then verified all 27,581 restored files without error. Full SQLite integrity checks passed all 17 discovered restored databases, including the transactionally consistent NPM, Home Assistant, and Zigbee copies. The restored Paperless PostgreSQL 18 cluster completed crash recovery with no network or published ports; logical dumps of `paperless` and `postgres` succeeded, and `pg_amcheck` passed all relations and indexes. The restored RomM MariaDB 11.8.9 cluster completed InnoDB crash recovery with no network or published ports; extended native checks and a complete logical dump succeeded. Both disposable containers and the root-only 19 GiB rehearsal tree were removed after evidence retention.
+
+Manual post-credential-path snapshot `333c87b3` also completed successfully. The current database-layer rehearsal does not prove NAS-resident media consistency or authenticated application behavior; those remain separate acceptance gates.
 
 The VM-local `/srv/rotom/backup-staging` path is absent. Historical references to local fast-rollback archives below that root do not establish current availability.
 

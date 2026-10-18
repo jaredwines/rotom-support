@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Define RS by tracked repository content
+**Documentation updated:** 2026-10-17 — Record complete Rotom restore rehearsal
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -86,11 +86,11 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## 2026-10-17 — Refresh total-loss recovery readiness evidence
 
-- **Files changed:** `05-Backup-and-Restore.md`, `guide/PVE-and-Rotom-Total-Loss-Recovery.md`, `00-Rotom-Change-Log.md`.
-- **Status:** **Verified / Documentation only.** No production data, backup policy, retention, repository contents, PVE state, NAS configuration, or external service was changed.
-- **Changes:** Recorded the current Rotom Restic preflight, standard and full-data-read repository checks, and representative isolated-restore result. Added an objective maximum-readiness gate so plan completeness cannot be mistaken for demonstrated end-to-end recoverability.
-- **Evidence:** On 2026-10-17 automatic snapshot `aad4a52e` completed at 03:05 PDT with service exit zero after retention/prune; the exact NAS export, timer, protected file metadata, recent snapshots, and failed-unit state passed preflight; standard `restic check` found no errors across 22 snapshots; `restic check --read-data` read all 1,077 packs in 4 minutes 15 seconds with no errors; and an isolated restore recovered six selected system-information files totaling 29.503 MiB before the restricted temporary target was removed.
-- **Outstanding:** A retained blank-hardware Phases 0–20 rehearsal, exact current PVE/NAS/application drill transcripts, independently tested recovery access and media, and a verified off-site layer remain necessary for maximum demonstrated readiness. Available Sources replacement remains manual by Jared.
+- **Files changed:** `05-Backup-and-Restore.md`, `guide/PVE-and-Rotom-Total-Loss-Recovery.md`, `internals/tooling/test-rr-runbooks`, `00-Rotom-Change-Log.md`.
+- **Status:** **Verified / Implemented / Documentation only.** Temporary root-only staging and two network-isolated database containers were created for the rehearsal and removed afterward. Production data, running application containers, backup policy, retention, repository contents, PVE state, NAS configuration, and external services were not changed.
+- **Changes:** Recorded the current Rotom Restic preflight, standard and full-data-read checks, complete verified restore, and native database recovery results. Added a tested canonical full-restore rehearsal procedure and an objective maximum-readiness gate so plan completeness cannot be mistaken for demonstrated recoverability.
+- **Evidence:** On 2026-10-17 snapshot `aad4a52e` completed at 03:05 PDT with service exit zero after retention/prune; standard `restic check` found no errors across 22 snapshots; full-data-read verification read all 1,077 packs without error; the complete 18.600 GiB snapshot restored 39,398 files/directories and verified all 27,581 files; all 17 discovered SQLite databases passed integrity checks; isolated restored Paperless PostgreSQL 18 and RomM MariaDB 11.8.9 copies completed crash recovery, native checks, and complete logical dumps with no network or published ports; and both containers plus the 19 GiB staging tree were removed. Final verification found 23 production containers running, no rehearsal containers or staging tree, the backup timer enabled/active, the service inactive between runs, the exact repository mount active, no failed units, and root capacity returned.
+- **Outstanding:** A retained blank-hardware Phases 0–20 rehearsal, current PVE Restic/VZDump and NAS snapshot transcripts, authenticated application/NAS consistency acceptance, independently tested recovery access and media, and a verified off-site layer remain necessary for maximum demonstrated readiness. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-17 — Expand the Docker Compose editing guide
 

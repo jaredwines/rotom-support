@@ -4,7 +4,7 @@
 **Document role:** Orchestration guide for rebuilding PVE and Rotom after complete loss of the original computer
 **Scenario:** Replacement hardware; original PVE installation, local disks, and running Rotom VM are unavailable
 **Evidence baseline:** PVE inspection on 2026-10-16 and Rotom recovery verification on 2026-10-17
-**Documentation updated:** 2026-10-17 — Record current Rotom restore evidence and maximum-readiness gate
+**Documentation updated:** 2026-10-17 — Record complete Rotom restore and native database rehearsal
 **Routine backup authority:** [05 - Backup and Restore](../runbook/05-Backup-and-Restore.md)
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 **RS dependency governance:** [00 - Rotom Change Log](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules)
@@ -211,12 +211,16 @@ Complete this while the current systems still exist. A missing required item is 
 - [ ] Record PVE/Rotom/NAS IP reservations and the decision on reusing the Rotom MAC.
 - [ ] Record ConBee II `1cf1:0030`, Intel Bluetooth `8087:0aaa`, iGPU `8086:3ea5`, device purpose, physical port, and acceptance test.
 - [ ] Record current NAS export discovery and snapshot policy, including isolated restore steps.
-- [ ] Rehearse VZDump verification/isolated restore, Rotom Restic staging restore, PVE Restic staging restore, NAS snapshot restore, and application acceptance.
-- [ ] Keep evidence from a full data-read Restic check separate from ordinary successful backup logs.
+- [ ] Retain a current VZDump verification and isolated-boot transcript.
+- [x] Rehearse a complete Rotom Restic staging restore and native database checks — passed 2026-10-17 for snapshot `aad4a52e`.
+- [ ] Retain a current PVE Restic staging-restore transcript.
+- [ ] Retain a current NAS snapshot isolated-restore transcript and application/NAS consistency result.
+- [ ] Retain current authenticated application-acceptance results.
+- [x] Keep evidence from a full-data-read Restic check separate from ordinary successful backup logs — all 1,077 packs passed 2026-10-17.
 
 ### Demonstrated readiness and maximum-readiness gate
 
-Runbook document 05 owns the current backup and restore evidence. On 2026-10-17, the current Rotom automatic snapshot completed successfully, the exact repository mount and timer passed preflight, a standard Restic repository check found no errors across 22 snapshots, a full-data-read check read all 1,077 packs without error, and a representative subset from the newest snapshot was restored into an isolated restricted target and verified before cleanup. Earlier evidence includes an isolated VZDump restore that booted with its network disconnected, a documented historical full-data-read Restic check and representative application-state restore, and owner-confirmed current VMA/disposable-restore, broader Rotom Restic restore, and Libraries NAS exercises whose detailed transcripts were not supplied.
+Runbook document 05 owns the current backup and restore evidence. On 2026-10-17, the current Rotom automatic snapshot completed successfully, the exact repository mount and timer passed preflight, a standard Restic repository check found no errors across 22 snapshots, and a full-data-read check read all 1,077 packs without error. A complete isolated restore of snapshot `aad4a52e` recovered 39,398 files/directories totaling 18.600 GiB; Restic verified all 27,581 restored files. All 17 discovered SQLite databases passed full integrity checks. Restored Paperless PostgreSQL and RomM MariaDB copies completed crash recovery with no network or published ports, passed native integrity checks, and produced complete logical dumps. The disposable containers and root-only rehearsal tree were then removed. Earlier evidence includes an isolated VZDump restore that booted with its network disconnected and owner-confirmed current VMA/disposable-restore and Libraries NAS exercises whose detailed transcripts were not supplied.
 
 Do not describe readiness as complete merely because the written plan is complete. **Maximum demonstrated readiness** requires all of the following evidence to be current and retained:
 
@@ -705,6 +709,8 @@ sudo env \
 
 This restores the selected snapshot only into restricted staging. If the full snapshot is too large, use Restic's verified `--include` or `SNAPSHOT:/subfolder` syntax from the official restore documentation and record the exact selection.
 
+For a complete prepare-now rehearsal on a functioning Rotom system, including Restic `--verify`, all restored SQLite databases, isolated Paperless PostgreSQL recovery, and isolated RomM MariaDB recovery, use the canonical [Rehearse a Complete Rotom Restic Restore in Isolation](../runbook/05-Backup-and-Restore.md#rehearse-a-complete-rotom-restic-restore-in-isolation) procedure. During an actual total-loss recovery, adapt that procedure only to the restored guest and exact selected recovery set; never point its database validators at production paths.
+
 | Control | Requirement |
 |---|---|
 | Outcome | Selected files exist in staging and only reviewed application sets are promoted |
@@ -720,7 +726,7 @@ This restores the selected snapshot only into restricted staging. If the full sn
 | Troubleshooting | Prefer application-native export/import when raw database compatibility is uncertain |
 | Evidence/gate | Snapshot/path, diff, metadata, DB result, promotion record; do not continue until each selected set passes |
 
-**NEEDS VERIFICATION BEFORE DISASTER:** record the exact current database file paths and tested application-native offline integrity/export commands for NPM, Home Assistant, Paperless PostgreSQL, and RomM MariaDB after every major application upgrade.
+**VERIFIED 2026-10-17:** the current NPM, Home Assistant, and Zigbee consistent SQLite copies plus every discovered restored application SQLite database passed full integrity checks; restored Paperless PostgreSQL 18 and RomM MariaDB 11.8.9 copies completed isolated crash recovery, native checks, and logical dumps. Revalidate with the canonical document 05 procedure after every major application or database-image upgrade. This closes the database-layer check, not authenticated application behavior or NAS-media consistency.
 
 ## Phase 13 - Recover NAS-Resident Data
 
@@ -1052,7 +1058,7 @@ Never retain credential values, private keys, cookies, protected environment con
 - **CRITICAL PRE-DISASTER GAP:** verify external recovery locations for both Restic passwords, NAS/router administration, DNS/domain recovery, SSH private keys, and application encryption/recovery keys.
 - **CRITICAL PRE-DISASTER GAP:** maintain a verified offline PVE installer compatible with the protected VM archive and document its checksum.
 - **NEEDS VERIFICATION BEFORE DISASTER:** exact current NAS snapshot schedule, retention, creation procedure, and isolated restore target.
-- **NEEDS VERIFICATION BEFORE DISASTER:** application-native offline database checks/export/import steps after each major application upgrade.
+- **VERIFIED 2026-10-17; REVALIDATE AFTER UPGRADE:** current Restic restore, SQLite integrity, Paperless PostgreSQL recovery/check/dump, and RomM MariaDB recovery/check/dump procedures passed against snapshot `aad4a52e`; authenticated applications and NAS-media consistency remain separate gates.
 - **NEEDS VERIFICATION BEFORE DISASTER:** replacement-hardware NIC, storage, firmware, IOMMU, GPU, USB, Bluetooth, ConBee, and WOL behavior cannot be known before replacement selection.
 - PVE Restic contains selected staged evidence, not a supported whole-host image. Its staged `/etc/pve` files are inspection inputs, not direct-copy authority.
 - The PVE Restic staging inventory included public certificates/configuration and empty private directories, but excluded the private material needed to reproduce all PVE identities automatically.
@@ -1074,7 +1080,7 @@ An unresolved row does not make the guide unsafe; it deliberately blocks the dep
 | DNS/domain access | Test registrar/provider recovery and MFA escrow | Successful recovery-path rehearsal | Blocks external route repair if current state is lost |  |
 | SSH/application keys | Inventory required public authorization and secret locators | Sanitized inventory and application recovery test | May block administration or encrypted application state |  |
 | NAS snapshot procedure | Record current schedule/retention and rehearse an isolated appliance-native restore | Snapshot ID, isolated target, comparison, and cleanup record | Blocks snapshot promotion; current NAS remains read-only authority |  |
-| Application databases | Record version-specific offline checks and export/import rehearsal per application | Native check output and isolated import result | Blocks promotion of affected mutable state |  |
+| Application databases | Record version-specific offline checks and restore/export rehearsal per application | Native check output and isolated recovery/dump result | Blocks promotion of affected mutable state | **PASS 2026-10-17** for restored SQLite, Paperless PostgreSQL 18, and RomM MariaDB 11.8.9; revalidate after upgrades |
 | Hardware inventory | Update device IDs, purpose, physical ports, photos, and accepted degraded modes | Host/guest/app test record | Blocks only the affected passthrough dependency |  |
 | Off-site protection | Decide and implement an independently administered off-site layer | Successful backup, integrity check, and isolated restore | Site/NAS loss remains unrecoverable |  |
 | RS distribution | Store the tracked RS repository offline, including the current `00`–`08` runbook set and this supplementary guide; print the emergency/control/checklist pages | File comparison and physical-copy location | Slows or blocks guided recovery without GitHub |  |
