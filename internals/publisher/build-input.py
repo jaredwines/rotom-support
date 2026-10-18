@@ -103,20 +103,25 @@ for name, page in manifest.items():
         node = node.setdefault(part, {})
     node[remaining[-1]] = page
 
-def readme_title(name):
-    text = repo.joinpath(*pathlib.PurePosixPath(name).parts).read_text(encoding='utf-8')
-    match = re.search(r'^#\s+(.+?)\s*$', text, re.MULTILINE)
-    return match.group(1) if match else name
+def markdown_title(name):
+    try:
+        text = repo.joinpath(*pathlib.PurePosixPath(name).parts).read_text(encoding='utf-8')
+    except UnicodeDecodeError:
+        return pathlib.PurePosixPath(name).name
+    if '\x00' in text:
+        return pathlib.PurePosixPath(name).name
+    match = re.search(r'^#[ \t]+([^\r\n]+?)[ \t]*$', text, re.MULTILINE)
+    return match.group(1) if match else pathlib.PurePosixPath(name).name
 
-readme_titles = {page: readme_title(name) for name, page in manifest.items()
-                 if pathlib.PurePosixPath(name).name == 'README.md'}
+markdown_titles = {page: markdown_title(name) for name, page in manifest.items()
+                   if pathlib.PurePosixPath(name).suffix.lower() == '.md'}
 
 def nav_items(tree):
-    return [{(readme_titles.get(value, name) if not isinstance(value, dict) else name):
+    return [{(markdown_titles.get(value, name) if not isinstance(value, dict) else name):
              nav_items(value) if isinstance(value, dict) else value}
             for name, value in sorted(tree.items(), key=lambda item: (item[0] != 'README.md', item[0].lower()))]
 
-nav = [{readme_titles['index.md']: 'index.md'}] + [{name: nav_items(group)} for name, group in groups.items() if group]
+nav = [{markdown_titles['index.md']: 'index.md'}] + [{name: nav_items(group)} for name, group in groups.items() if group]
 config = {'site_name': 'Rotom Support', 'docs_dir': '/docs', 'site_dir': '/site',
           'theme': {'name': 'material', 'language': 'en', 'features': ['navigation.tabs', 'navigation.tabs.sticky', 'navigation.sections', 'navigation.top', 'toc.follow', 'search.suggest', 'search.highlight'],
                     'palette': [{'scheme': 'slate', 'primary': 'deep purple', 'accent': 'purple'}]},

@@ -12,6 +12,7 @@ with tempfile.TemporaryDirectory() as directory:
     subprocess.run(['git', 'init', '-q', str(repo)], check=True)
     files = {'README.md': '# Home\n', '.hidden': 'hidden text\n',
              'section/README.md': '# Section\n', 'section/index.md': '# Index\n',
+             'section/topic.md': '# Topic Title\nText\n', 'section/untitled.md': 'No heading\n',
              'tools/script': '```\nscript\n', 'binary.bin': b'\x00\xff',
              '.gitignore': 'ignored rule\n', 'section/.gitattributes': 'attributes\n',
              '.github/workflows/check.yml': 'workflow\n'}
@@ -41,7 +42,11 @@ with tempfile.TemporaryDirectory() as directory:
     features = json.loads((stage / 'mkdocs.yml').read_text())['theme']['features']
     assert 'navigation.tabs' in features and 'toc.follow' in features
     assert [next(iter(entry)) for entry in nav] == ['Home', 'Repository']
-    assert nav[1]['Repository'][2]['section'][0] == {'Section': views['section/README.md']}
+    section_nav = next(entry['section'] for entry in nav[1]['Repository'] if 'section' in entry)
+    assert {'Section': views['section/README.md']} in section_nav
+    assert {'Index': views['section/index.md']} in section_nav
+    assert {'Topic Title': views['section/topic.md']} in section_nav
+    assert {'untitled.md': views['section/untitled.md']} in section_nav
     assert (stage / 'docs/index.md').read_text() == files['README.md']
     assert (stage / 'docs' / views['section/README.md']).read_text() == files['section/README.md']
     assert 'hidden text' in (stage / 'docs' / views['.hidden']).read_text()
