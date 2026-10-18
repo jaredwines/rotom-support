@@ -137,11 +137,11 @@ reject_text '**Current live verification — 2026-10-15:** Arcane automatic upda
 reject_text 'Available Sources remains the RS membership boundary' \
     "$REPO_ROOT/AGENTS.md" "$REPO_ROOT/README.md" "$REPO_ROOT/runbook"/0[1-8]-* \
     "$REPO_ROOT/architecture"/*.md "$REPO_ROOT/guide"/*.md "$REPO_ROOT/internals"/*.md \
-    "$REPO_ROOT/internals/codex"/*.md "$REPO_ROOT/internals/tooling/README.md"
+    "$REPO_ROOT/internals/agents"/*.md "$REPO_ROOT/internals/tooling/README.md"
 reject_text 'not an RS member' \
     "$REPO_ROOT/AGENTS.md" "$REPO_ROOT/README.md" "$REPO_ROOT/runbook"/0[1-8]-* \
     "$REPO_ROOT/architecture"/*.md "$REPO_ROOT/guide"/*.md "$REPO_ROOT/internals"/*.md \
-    "$REPO_ROOT/internals/codex"/*.md "$REPO_ROOT/internals/tooling/README.md"
+    "$REPO_ROOT/internals/agents"/*.md "$REPO_ROOT/internals/tooling/README.md"
 
 if grep -nE 'JAR-[0-9]+' "$REPO_ROOT/runbook"/0[1-8]-* >/dev/null 2>&1; then
     fail "operational references contain non-literal uppercase ticket labels"

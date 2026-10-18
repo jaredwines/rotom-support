@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-17 — Organize agent instructions
+
+- **Files changed:** `internals/codex/` moved to `internals/agents/`; `internals/README.md`, `internals/tooling/test-rr-runbooks`, `00-Rotom-Change-Log.md`.
+- **Status:** **Documentation only.**
+- **Changes:** Grouped the global instruction backup under agents and linked to the authoritative root `AGENTS.md` instead of duplicating it. Updated validation paths.
+- **Evidence:** Jared approved the organization in chat.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
+
 ## 2026-10-17 — Exclude Git-related paths from the site
 
 - **Files changed:** `internals/publisher/build-input.py`, `internals/publisher/sync`, `internals/publisher/test-publisher.py`, `internals/publisher/README.md`, `01-Rotom-Server-Inventory.md`, `06-Maintenance-and-Automation.md`, `00-Rotom-Change-Log.md`.

@@ -1,6 +1,8 @@
-# Rotom Codex Internals Overview
+# Rotom Agent Internals Overview
 
 This directory stores agent-facing support material for working on Rotom.
+
+- [`AGENTS.md`](../../AGENTS.md) is the authoritative repository instruction file, kept at the repository root for discovery.
 
 - [`rotom-global-AGENTS.md`](rotom-global-AGENTS.md) is a repository backup of the active global Codex instructions. Its opening note defines the synchronization expectation; the active file remains outside this repository.
 

@@ -4,7 +4,7 @@ This directory is an RS component containing material that supports work on and 
 
 ## Areas
 
-- [`codex/`](codex/README.md) stores agent-support reference material.
+- [`agents/`](agents/README.md) stores agent-support reference material.
 - [`tooling/`](tooling/README.md) provides the guarded repository helper and validation scripts.
 - [`publisher/`](publisher/README.md) contains the repository mirror implementation and its checks.
 
