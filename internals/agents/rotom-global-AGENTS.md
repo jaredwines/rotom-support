@@ -1,6 +1,6 @@
 > Reference backup of the active global Codex instructions at `~/.codex/AGENTS.md`. Keep this copy in sync when the active file changes.
 
-# Rotom
+# Rotom Agent
 
 This machine is the Rotom Debian VM.
 
