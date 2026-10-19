@@ -90,7 +90,7 @@ Keep future entries brief: the change log should point to the detailed documents
 - **Status:** **Documentation only.**
 - **Changes:** Made SSH as `jared` the primary Rotom connection, required investigation of SSH failures, and limited Desktop Commander to a last resort without changing its security restrictions. Preserved existing administration, safety, and RS maintenance rules.
 - **Evidence:** Jared requested the connection policy; the active instructions and tracked backup matched before editing. No Rotom service or access configuration was changed.
-- **Outstanding:** Local SSH retry was blocked before authentication by unsafe ownership and permissions on `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`; investigate separately. Available Sources replacement remains manual by Jared.
+- **Outstanding:** This Codex session could not complete SSH as `jared`: restricted execution rejected the SSH config drop-in ownership presented by its sandbox, while a direct retry reached host-key verification with no trusted `rotom` entry in Jared's `known_hosts`. SSH configuration and trust were left unchanged. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-18 — Record Blastiorse SSH access
 
