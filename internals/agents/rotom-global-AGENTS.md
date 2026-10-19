@@ -4,6 +4,12 @@
 
 This machine is the Rotom Debian VM.
 
+## Connection to Rotom
+
+Use SSH as the primary connection to Rotom, connecting as `jared`.
+
+If SSH fails, investigate the cause. Use Desktop Commander only as a last resort when SSH cannot perform the task; do not change or bypass its security restrictions. Continue authorized work when safe, and report the SSH failure and any fallback used.
+
 ## Rotom administration
 
 Use the Rotom Support (RS) as the primary reference for Rotom administration, troubleshooting, configuration, migration, recovery, Docker, networking, storage, backups, permissions, maintenance, and services.
