@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-20 — Record Jared's verified Rotom-side SSH client configuration
+**Documentation updated:** 2026-10-20 — Retire three removed NAS mount contracts
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-20 — Retire three removed NAS mount contracts
+
+- **Files changed:** 00-Rotom-Change-Log.md, 01-Rotom-Server-Inventory.md, 03-Network-and-Domains.md, 04-NAS-and-Storage.md, 05-Backup-and-Restore.md, 08-Rotom-Directory-Tree.txt, architecture/Rotom-Architecture-System.md, and guide/PVE-and-Rotom-Total-Loss-Recovery.md.
+- **Status:** **Implemented / Verified.**
+- **Changes:** At Jared's direction after he deleted the corresponding NAS drives, removed the Game_Servers/.data, Smart_Home/.data, and Hosted_Websites/.data guest NFS automount entries; stopped and cleared their generated units; and removed the verified-empty local /mnt/nas-game-servers, /mnt/nas-smart-home, and /mnt/nas-hosted-websites directories. Palworld, Smart Home, and hosted-site state remains VM-local. Libraries and the Rotom Restic repository remain the only current guest NFS contracts.
+- **Evidence:** Pre-removal inspection found no running container bind for any retired path. Game Servers had a stale NFS handle and the other two retired mounts had failed after their NAS sources were deleted. After removal, findmnt --fstab listed only Libraries and Rotom Restic; both mounts and automounts were active; no failed units remained; and all three exact local paths were absent.
+- **Outstanding:** The NAS-side drive deletion is Jared-reported; no authenticated NAS control-plane inspection was performed. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-20 — Repair Libraries resolver, download-client, and stale-root failures
 

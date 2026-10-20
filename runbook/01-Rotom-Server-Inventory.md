@@ -97,19 +97,16 @@ Remote Desktop Commander runs from `/opt/desktop-commander` as locked identity `
 
 ## 3. Current Storage Summary
 
-Rotom has five current guest NFSv3 systemd-automount contracts:
+Rotom has two current guest NFSv3 systemd-automount contracts:
 
 | NAS export | Guest path | Purpose |
 |---|---|---|
-| `Game_Servers/.data` | `/mnt/nas-game-servers` | Empty Game Servers service boundary; Palworld state remains VM-local |
-| `Smart_Home/.data` | `/mnt/nas-smart-home` | Empty Smart Home service boundary; application state remains VM-local |
 | `Libraries/.data` | `/mnt/nas-libraries` | Root-level `games/`, `movies/`, `shows/`, `torrents/`, and `documents/paperless/` payload plus the qBittorrent sentinel |
-| `Hosted_Websites/.data` | `/mnt/nas-hosted-websites` | Empty Hosted Websites service boundary; website content remains VM-local |
 | `Rotom_Restic_Backup/.data` | `/mnt/nas-rotom-restic-backup` | Rotom Restic repository |
 
-All five were observed mounted read/write on 2026-10-15. After the 2026-10-20 Libraries-layout reboot, Libraries again returned read/write with both generated unit layers active. Its recovery helper validates the exact source and current required layout, re-arms the generated automount after boot-time start-limit failure, and conditionally recovers only eligible NAS-dependent containers.
+After the 2026-10-20 Libraries-layout reboot, Libraries again returned read/write with both generated unit layers active. Its recovery helper validates the exact source and current required layout, re-arms the generated automount after boot-time start-limit failure, and conditionally recovers only eligible NAS-dependent containers. Later that day, Jared-reported deletion of the three unused NAS drives was reconciled on Rotom: their fstab entries, generated units, and empty local mountpoint directories were removed. Final verification found only the two listed NFS contracts, with both mount and automount layers active and no failed units.
 
-Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-downloaders`, `/mnt/nas-documents`, `/mnt/nas-filesync`, `/mnt/nas-web`, `/mnt/nas-gameserver`, `/mnt/nas-smarthome`, `/mnt/nas-customapps`, `/mnt/nas-apps`, `/mnt/nas-auth`, and `/mnt/nas-shared-drive` are retired locally. Their absence does not establish deletion of NAS-side exports or data. Do not recreate them from historical records.
+Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-downloaders`, `/mnt/nas-documents`, `/mnt/nas-filesync`, `/mnt/nas-web`, `/mnt/nas-gameserver`, `/mnt/nas-smarthome`, `/mnt/nas-customapps`, `/mnt/nas-apps`, `/mnt/nas-auth`, `/mnt/nas-shared-drive`, `/mnt/nas-game-servers`, `/mnt/nas-smart-home`, and `/mnt/nas-hosted-websites` are retired locally. Do not recreate them from historical records.
 
 ## 4. Current Backup and Recovery Summary
 

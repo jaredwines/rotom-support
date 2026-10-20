@@ -216,9 +216,6 @@ Services documented as retired, including Uptime Kuma, Syncthing, Gamarr, JDownl
 | `/mnt/nas-libraries/documents/paperless` | Authoritative Paperless media | Paperless application | NAS-side protection is required; Paperless database/config remain VM-local and must be restored consistently with media | **Verified live** after JAR-99 |
 | `/mnt/nas-rotom-restic-backup` | NFSv3 export `Rotom_Restic_Backup/.data` | Rotom Restic worker | Contains the repository that protects selected VM-local data; the repository is not itself backed up by that same job | **Verified live**, mounted read/write; automount active |
 | `/mnt/nas-rotom-restic-backup/rotom-restic-backup` | Rotom's current Restic repository | `rotom-restic-backup.service` and restore workflows | Retention is 7 daily, 4 weekly, and 12 monthly for automatic snapshots | **Documented current**; parent mount and timer **verified live**, repository contents not enumerated in this review |
-| `/mnt/nas-game-servers` | NFSv3 export `Game_Servers/.data`; empty service boundary | No current Palworld container dependency; Palworld state is VM-local | Not a copy of Palworld data | **Configured live**; automount waiting and not activated in this review |
-| `/mnt/nas-smart-home` | NFSv3 export `Smart_Home/.data`; empty service boundary | No current Home Assistant/Homebridge dependency; state is VM-local | Not a copy of Smart Home data | **Configured live**; automount waiting and not activated in this review |
-| `/mnt/nas-hosted-websites` | NFSv3 export `Hosted_Websites/.data`; empty service boundary | No current website container dependency; content is VM-local | Not a copy of website content | **Configured live**; automount waiting and not activated in this review |
 | `/mnt/nas-pve-restic-backup` | PVE-side NFS location for `PVE_Restic_Backup/.data` and repository `pve-restic-backup` | PVE Restic worker | Protects selected PVE host configuration/recovery material | **Owner-confirmed** working; current job result verified through status API; exact PVE mount not observed |
 | `/mnt/pve/nas-rotom-vm-backup` | Proxmox storage backed by `Rotom_VM_Backup/.data` | Proxmox job `rotom-vm-daily` and manual VZDump worker | Holds whole-VM backup archives for VMID `100` | **Owner-confirmed** working; current job result verified through status API; exact PVE mount not observed |
 
@@ -234,8 +231,11 @@ These guest paths are documented as absent and retired. Their absence on Rotom d
 | `/mnt/nas-documents` | Former Documents storage | **Retired** |
 | `/mnt/nas-filesync` | Former Filesync storage | **Retired** |
 | `/mnt/nas-web` | Former Web domain | **Retired** |
-| `/mnt/nas-gameserver` | Former singular Gameserver domain | **Retired**; not the current empty `/mnt/nas-game-servers` boundary |
-| `/mnt/nas-smarthome` | Former Smarthome domain | **Retired**; not the current empty `/mnt/nas-smart-home` boundary |
+| `/mnt/nas-gameserver` | Former singular Gameserver domain | **Retired**; do not recreate |
+| `/mnt/nas-smarthome` | Former Smarthome domain | **Retired**; do not recreate |
+| `/mnt/nas-game-servers` | Former Game Servers service boundary | **Retired** on 2026-10-20 after Jared-reported NAS drive deletion; Palworld state remains VM-local |
+| `/mnt/nas-smart-home` | Former Smart Home service boundary | **Retired** on 2026-10-20 after Jared-reported NAS drive deletion; application state remains VM-local |
+| `/mnt/nas-hosted-websites` | Former Hosted Websites service boundary | **Retired** on 2026-10-20 after Jared-reported NAS drive deletion; website content remains VM-local |
 | `/mnt/nas-customapps` | Former Customapps storage | **Retired** |
 | `/mnt/nas-apps` | Former application storage | **Retired** |
 | `/mnt/nas-auth` | Former authentication-related storage | **Retired** |

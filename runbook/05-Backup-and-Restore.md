@@ -522,7 +522,7 @@ Paperless VM-local database, broker, configuration, search data, consume/export 
 
 On 2026-10-17 Jared declined a repeat NAS snapshot rehearsal because the existing workflow is accepted as working. Treat this as an owner acceptance decision, not as a new retained snapshot identifier, isolated-restore transcript, or application/NAS consistency proof.
 
-Game Servers, Smart Home, and Hosted Websites NAS shares are empty service boundaries. Their application state remains VM-local and depends on Rotom Restic and, at a broader layer, whole-VM backup.
+The former Game Servers, Smart Home, and Hosted Websites NAS shares were retired on 2026-10-20 after Jared reported deleting those NAS drives. Their application state remains VM-local and depends on Rotom Restic and, at a broader layer, whole-VM backup.
 
 ## 6. Recovery-Critical Historical Evidence
 

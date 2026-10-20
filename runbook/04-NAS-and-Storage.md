@@ -15,7 +15,7 @@ Record substantive changes to this document in the change log as part of the sam
 
 - Start with **1. Current Storage and Recovery Policy**, **2. Libraries Storage Contract**, and **3. PVE Backup Storage**.
 - Treat recovery-critical historical artifacts as evidence, not as current mount or ownership instructions.
-- Use **7. Recovery-Critical Historical Artifacts** only after reconciling it with the current five-mount contract, current identity data in document 07, and read-only live evidence.
+- Use **7. Recovery-Critical Historical Artifacts** only after reconciling it with the current two-mount contract, current identity data in document 07, and read-only live evidence.
 - Review **Outstanding / Needs Verification** before changing NAS metadata, exports, automounts, or protection assumptions.
 - This file owns NAS/NFS and storage contracts; backup retention and restore proof are canonical in document 05, while account and ACL policy are canonical in document 07.
 
@@ -57,13 +57,10 @@ The installed `rotom-nas-docker-recovery.service` validates the exact configured
 
 | Mount | systemd mount unit | Current role |
 |---|---|---|
-| `/mnt/nas-game-servers` | `mnt-nas\x2dgame\x2dservers.mount` | Empty Game Servers service boundary; Palworld state is VM-local |
-| `/mnt/nas-smart-home` | `mnt-nas\x2dsmart\x2dhome.mount` | Empty Smart Home service boundary; application state is VM-local |
 | `/mnt/nas-rotom-restic-backup` | `mnt-nas\x2drotom\x2drestic\x2dbackup.mount` | Rotom Restic repository storage |
 | `/mnt/nas-libraries` | `mnt-nas\x2dlibraries.mount` | Libraries, torrents, games, and Paperless media |
-| `/mnt/nas-hosted-websites` | `mnt-nas\x2dhosted\x2dwebsites.mount` | Hosted Websites service storage boundary; current Aloha content is VM-local |
 
-All five are NFS systemd automount contracts from NAS `192.168.1.70`. Exact export paths and ownership remain canonical in document 04 and live `findmnt --fstab` output.
+Both are NFS systemd automount contracts from NAS `192.168.1.70`. Exact export paths and ownership remain canonical in document 04 and live `findmnt --fstab` output.
 
 At the initial 2026-10-15 validation point, the Libraries NFS filesystem was active and healthy but `mnt-nas\x2dlibraries.automount` was inactive with boot result `mount-start-limit-hit`. A controlled repair restored both unit layers, confirmed the exact source, restarted the seven dependent containers, and verified their services. A same-day full reboot then proved the hardened recovery path: early Docker and first-helper attempts briefly failed before NAS reachability, while the helper's configured retry about 30 seconds later re-armed the automount, mounted the exact source, recovered eligible services, and completed successfully. Both generated Libraries units remained active and no systemd units were failed. An active mount with an inactive or failed automount is still degraded and requires targeted recovery.
 
@@ -251,21 +248,18 @@ Revalidate this runbook whenever a mount/export, systemd unit, required director
 
 ## 1. Current Storage and Recovery Policy
 
-**Evidence date:** 2026-10-20 for Libraries; 2026-10-15 for the other guest mounts.
+**Evidence date:** 2026-10-20.
 
-Rotom uses five current guest NFSv3 systemd automounts:
+Rotom uses two current guest NFSv3 systemd automounts:
 
 | NAS export | Guest mount | Root contract | Use |
 |---|---|---|---|
-| `Game_Servers/.data` | `/mnt/nas-game-servers` | `988:5001`, setgid service boundary | Empty boundary; Palworld state is VM-local |
-| `Smart_Home/.data` | `/mnt/nas-smart-home` | `988:5003`, setgid service boundary | Empty boundary; Smart Home state is VM-local |
 | `Libraries/.data` | `/mnt/nas-libraries` | `988:5000`; current descendants use Libraries identity | Authoritative Libraries payload and Paperless media |
-| `Hosted_Websites/.data` | `/mnt/nas-hosted-websites` | `988:5004`, setgid service boundary | Empty boundary; website content is VM-local |
 | `Rotom_Restic_Backup/.data` | `/mnt/nas-rotom-restic-backup` | root-protected repository boundary | Rotom Restic Backup |
 
 The fstab options are the standard NFS systemd-automount pattern with `_netdev`, `nofail`, `x-systemd.automount`, and `x-systemd.mount-timeout=30s`. Verify the exact source and live options rather than reconstructing an entry from this summary.
 
-All five were observed mounted read/write during the cleanup audit. Accessing an automount can activate it; use the command labels in the runbook above.
+On 2026-10-20, the unused Game Servers, Smart Home, and Hosted Websites contracts were retired after Jared reported deletion of their NAS drives. Their fstab entries, generated units, and verified-empty local mountpoint directories were removed; no running container used those paths. Final verification found only the two listed contracts, both with active mount and automount units and no failed systemd units. Accessing an automount can activate it; use the command labels in the runbook above.
 
 ## 2. Libraries Storage Contract
 
@@ -310,7 +304,7 @@ Ordinary administrators should not be added to service storage groups merely for
 
 Rotom Restic Backup excludes `/mnt`; NAS-resident Libraries data therefore requires NAS-side protection. Jared confirmed Libraries snapshot retention and an isolated restore outcome, but exact NAS-side settings and selected recovery-point evidence were not supplied in the documentation task. Revalidate those details before depending on a specific snapshot.
 
-The Game Servers, Smart Home, and Hosted Websites shares are empty service boundaries, not backup copies of their VM-local application state.
+The former Game Servers, Smart Home, and Hosted Websites shares were empty service boundaries, not backup copies of their VM-local application state; all three guest contracts were retired on 2026-10-20.
 
 Do not manually reorganize or delete Restic repository internals. Do not change NAS exports, permissions, snapshot policy, or data during a guest-mount recovery unless separately authorized.
 

@@ -110,15 +110,12 @@ Active Compose files no longer reference the former shared bridges `rotom-proxy`
 
 ## 4. Current NAS and NFS Connectivity
 
-Rotom's five current guest NFSv3 contracts use systemd automounts to `192.168.1.70`:
+Rotom's two current guest NFSv3 contracts use systemd automounts to `192.168.1.70`:
 
-- `/mnt/nas-game-servers`
-- `/mnt/nas-smart-home`
 - `/mnt/nas-libraries`
-- `/mnt/nas-hosted-websites`
 - `/mnt/nas-rotom-restic-backup`
 
-All five were observed mounted read/write during the audit. An automount declaration is not a readiness guarantee; use document 04 to verify the exact source, mount type, generated units, ownership, and sentinel before recovering a consumer.
+Both are active after the 2026-10-20 retirement of the three unused Game Servers, Smart Home, and Hosted Websites contracts. An automount declaration is not a readiness guarantee; use document 04 to verify the exact source, mount type, generated units, ownership, and sentinel before recovering a consumer.
 
 PVE has separate backup-only NAS paths for PVE Restic Backup and Rotom VM Backup. It does not mount guest application shares.
 

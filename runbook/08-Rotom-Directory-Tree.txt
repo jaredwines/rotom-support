@@ -58,8 +58,6 @@
 #   backup-staging/                       ABSENT at the evidence date
 #
 # /mnt/
-#   nas-game-servers/                     Game_Servers/.data
-#   nas-hosted-websites/                  Hosted_Websites/.data
 #   nas-libraries/                        Libraries/.data
 #     documents/
 #       paperless/                        authoritative Paperless media
@@ -71,10 +69,9 @@
 #     .rotom-qbt-media-ready/              qBittorrent NFS readiness sentinel
 #   nas-rotom-restic-backup/              Rotom_Restic_Backup/.data
 #     rotom-restic-backup/                current guest Restic repository
-#   nas-smart-home/                       Smart_Home/.data
 #
 # /etc/
-#   fstab                                 five current guest NFS automount entries
+#   fstab                                 two current guest NFS automount entries
 #   restic/
 #     include.txt
 #     exclude.txt

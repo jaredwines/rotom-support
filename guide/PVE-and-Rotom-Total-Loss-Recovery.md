@@ -751,9 +751,6 @@ Do not continue until application writers are stopped. Before temporary LAN acce
 |---|---|---|
 | `/mnt/nas-libraries` | `Libraries/.data` | `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and the sentinel contract |
 | `/mnt/nas-rotom-restic-backup` | `Rotom_Restic_Backup/.data` | `rotom-restic-backup/` |
-| `/mnt/nas-game-servers` | `Game_Servers/.data` | Empty current service boundary |
-| `/mnt/nas-smart-home` | `Smart_Home/.data` | Empty current service boundary |
-| `/mnt/nas-hosted-websites` | `Hosted_Websites/.data` | Empty current service boundary |
 
 **Read-only**
 
