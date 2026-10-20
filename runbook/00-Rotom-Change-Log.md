@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-17 — Repair ACL-safe Rotom Support publication
+**Documentation updated:** 2026-10-19 — Clarify local Rotom execution and Mac SSH alias scope
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-19 — Clarify local Rotom execution and Mac SSH alias scope
+
+- **Files changed:** `internals/agents/rotom-global-AGENTS.md`, `runbook/00-Rotom-Change-Log.md`. The active `~/.codex/AGENTS.md` is synchronized outside RS.
+- **Status:** **Documentation only.**
+- **Changes:** Replaced the ambiguous SSH-first instruction with the local-execution policy for Codex on Rotom. Recorded that `rotom` and `rotom.casa` resolve locally on Rotom, while `ssh rotom` is a Mac-only alias for Jared's configured connection to `rotom.casa`.
+- **Evidence:** On 2026-10-19, `hostname` configuration named the current VM `rotom`, `/etc/hosts` mapped `127.0.1.1` to `rotom.casa rotom`, and Jared confirmed the Mac-only alias behavior. No Rotom service, DNS, SSH, or access configuration was changed.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
 
 ## 2026-10-18 — Prefer Jared SSH for Rotom Agent access
 

@@ -4,11 +4,13 @@
 
 This machine is the Rotom Debian VM.
 
-## Connection to Rotom
+## Execution Context and Connection to Rotom
 
-Use SSH as the primary connection to Rotom, connecting as `jared`.
+Codex runs on the Rotom Debian VM. For ordinary Rotom administration, run commands locally; do not SSH to `rotom` or `rotom.casa`. On Rotom, both names resolve locally through `/etc/hosts`.
 
-If SSH fails, investigate the cause. Use Desktop Commander only as a last resort when SSH cannot perform the task; do not change or bypass its security restrictions. Continue authorized work when safe, and report the SSH failure and any fallback used.
+On Jared's Mac, `ssh rotom` is a Mac-only SSH alias that connects as `jared` to `rotom.casa`. Do not assume that alias exists on another machine. When an external SSH connection to Rotom is specifically needed, use the source machine's configured endpoint and connect as `jared`.
+
+If an externally required SSH connection fails, investigate the cause. Use Desktop Commander only as a last resort when SSH cannot perform the task; do not change or bypass its security restrictions. Continue authorized work when safe, and report the SSH failure and any fallback used.
 
 ## Rotom administration
 
