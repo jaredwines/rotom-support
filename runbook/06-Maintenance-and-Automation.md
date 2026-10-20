@@ -105,9 +105,9 @@ The helper can recover only supported containers with an eligible restart policy
 
 ## 3. Arcane Automation
 
-On 2026-10-17 Jared accepted the following live Arcane settings as the intended baseline: automatic update enabled daily at midnight (`0 0 0 * * *`) with an empty container-exclusion list; automatic healing enabled every five minutes (`0 */5 * * * *`) with an empty exclusion list; no more than five healing restarts in a 30-minute window; scheduled pruning disabled; and project-symlink following enabled. Arcane project polling remains enabled hourly.
+On 2026-10-17 Jared accepted the following Arcane settings as the intended baseline: automatic update enabled daily at midnight (`0 0 0 * * *`) with an empty container-exclusion list; automatic healing enabled every five minutes (`0 */5 * * * *`) with an empty exclusion list; no more than five healing restarts in a 30-minute window; scheduled pruning disabled; and project-symlink following enabled. Arcane project polling remains enabled hourly.
 
-The corresponding stored flags are `autoUpdate=true`, `autoHealEnabled=true`, `scheduledPruneEnabled=false`, and `followProjectSymlinks=true`.
+The corresponding stored flags were `autoUpdate=true`, `autoHealEnabled=true`, `scheduledPruneEnabled=false`, and `followProjectSymlinks=true` before the 2026-10-20 reset. The reset intentionally removed Arcane's stored database and settings. Its fresh database discovered the five Compose definitions beneath `/srv/rotom/stacks/platform`; it cannot discover the other 13 roots without an intentional project registration or configuration-scope change. Reapply the accepted automation policy before treating it as live.
 
 Arcane automatic activity has recreated or updated containers in the past. Empty exclusion lists mean every otherwise eligible container is in scope for those functions; they do not authorize image, named-volume, stale-project-row, or intentionally stopped-service cleanup.
 

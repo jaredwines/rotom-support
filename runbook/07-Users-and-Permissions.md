@@ -138,7 +138,7 @@ Use the owning service identity for ordinary service-specific administration. Ro
 - RomM has no Compose user override. Its broader game-library bind is read-only, while the nested ROM-upload bind is writable; browser-uploaded ROM files were observed as `root:5000`, mode `0644`. Preserve that narrow boundary and observed ownership unless an explicit ownership change is authorized and verified.
 - Palworld uses Game Servers identity and VM-local state.
 - Home Assistant and Homebridge use Smart Home identity and VM-local state.
-- Aloha and Jared Wines active content is owned within Hosted Websites roots.
+- Aloha's active content and Jared Wines' intentionally stopped site content are owned within Hosted Websites roots.
 - NPM retains its image-default container identity; do not add a user override or Docker socket without a separate design review.
 
 ## 5. Administrative and Credential Boundaries

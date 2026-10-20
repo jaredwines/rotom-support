@@ -62,6 +62,8 @@ The installed `rotom-nas-docker-recovery.service` validates the exact configured
 
 Both are NFS systemd automount contracts from NAS `192.168.1.70`. Exact export paths and ownership remain canonical in document 04 and live `findmnt --fstab` output.
 
+**Current discrepancy (2026-10-20):** both contracts were active but mounted read-only during the Docker/Arcane reset. Jared explicitly authorized the Docker recreation to proceed without repairing that state. Do not infer writable NAS service or Restic-repository access from the active automounts; investigate and verify the live read/write semantics before any write-dependent action.
+
 At the initial 2026-10-15 validation point, the Libraries NFS filesystem was active and healthy but `mnt-nas\x2dlibraries.automount` was inactive with boot result `mount-start-limit-hit`. A controlled repair restored both unit layers, confirmed the exact source, restarted the seven dependent containers, and verified their services. A same-day full reboot then proved the hardened recovery path: early Docker and first-helper attempts briefly failed before NAS reachability, while the helper's configured retry about 30 seconds later re-armed the automount, mounted the exact source, recovered eligible services, and completed successfully. Both generated Libraries units remained active and no systemd units were failed. An active mount with an inactive or failed automount is still degraded and requires targeted recovery.
 
 ### 5. Read-only preflight

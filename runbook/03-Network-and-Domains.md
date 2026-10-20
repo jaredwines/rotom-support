@@ -93,12 +93,12 @@ Nginx Proxy Manager is host-networked and owns the guest's HTTP/HTTPS reverse-pr
 | `support.rotom.casa` | `127.0.0.1:8082` | Private Rotom Support portal; NPM host `27`, wildcard certificate `24`, and trusted-LAN access list `1` |
 | `docs.rotom.casa` | `127.0.0.1:8082` | Legacy private hostname; NPM host `22` permanently redirects paths and query strings to `https://support.rotom.casa/runbook/` |
 | `pve.rotom.casa` | HTTPS `192.168.1.68:8006` | Forced TLS, WebSockets, and the configured access list |
-| `jaredwines.com` | `127.0.0.1:7777` | Active behind NPM proxy host `8`; public and local-SNI checks returned `200` |
+| `jaredwines.com` | `127.0.0.1:7777` | Intentionally stopped by Jared on 2026-10-20; when started, NPM proxy host `8` serves the retained loopback-only publication |
 | `alohamillworks.com` | `127.0.0.1:7778` | Active website; local-SNI and external public probes returned `200` |
 
 Application routes for Paperless, Prowlarr, RomM, Home Assistant, Homebridge, Jellyfin, Radarr, Sonarr, and the other supported services must be diagnosed through the access-path runbook above and their current NPM records. Do not infer route state from a dated database table.
 
-`jaredwines.com` is active behind NPM proxy host `8`. Glances no longer has a host listener; Homepage reaches it through private Docker service DNS.
+`jaredwines.com` is currently intentionally stopped; NPM proxy host `8` and its loopback-only publication remain the supported configuration when it is started. Glances no longer has a host listener; Homepage reaches it through private Docker service DNS.
 
 ## 3. Current Listener and Docker-Network Model
 

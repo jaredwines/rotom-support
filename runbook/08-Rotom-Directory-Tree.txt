@@ -4,12 +4,16 @@
 # Configuration semantics remain canonical in documents 02 through 07.
 # Index: 01-Rotom-Server-Inventory.md
 # Maintenance contract and protected history: 00-Rotom-Change-Log.md
-# Evidence date: 2026-10-20 for Libraries; 2026-10-17 for the wider topology
+# Evidence date: 2026-10-20
 #
 # CURRENT TOPOLOGY
 #
-# The 2026-10-17 baseline was 23 running containers, 18 networks, two named volumes, and 18 active Compose definitions.
-# The pre-migration 2026-10-20 running set was 21; both Palworld containers require separate investigation.
+# The 2026-10-20 Docker/Arcane reset removed 22 containers, 15 Compose-created
+# networks, two Arcane internal volumes, 25 images, and Arcane application state.
+# All 18 Compose definitions were recreated. The rebuilt runtime reached 23 healthy
+# containers, 18 networks including Docker defaults, two fresh Arcane internal
+# volumes, and 22 images. Jared then intentionally stopped both Palworld containers
+# and jaredwines.com; the current runtime is 20 running and three intentionally stopped.
 # The retired rotom-docs rollback stack and network were removed on 2026-10-18.
 #
 # /srv/rotom/

@@ -56,9 +56,9 @@ Nginx Proxy Manager is shared by all proxied services. Do not restart or recreat
 | Site | Desired-state status | Compose file | Container | Direct check | Proxied check |
 |---|---|---|---|---|---|
 | Aloha Millworks | Supported active site | `/srv/rotom/stacks/hosted-websites/alohamillworks.com/compose.yaml` | `alohamillworks.com` | `http://127.0.0.1:7778/` → `200` | `https://alohamillworks.com/` → `200` |
-| Jared Wines | Supported active site | `/srv/rotom/stacks/hosted-websites/jaredwines.com/compose.yaml` | `jaredwines.com` | `http://127.0.0.1:7777/` → `200` | `https://jaredwines.com/` → `200` |
+| Jared Wines | Supported stopped site | `/srv/rotom/stacks/hosted-websites/jaredwines.com/compose.yaml` | `jaredwines.com` | When started: `http://127.0.0.1:7777/` → `200` | When started: `https://jaredwines.com/` → `200` |
 
-The final 2026-10-15 recovery established `jaredwines.com` as intentionally active with loopback-only publication `127.0.0.1:7777:80`. Starting or recreating it is authorized only under the same confirmed-active preflight used for Aloha; changing its content, listener, NPM route, or public exposure remains outside this runbook.
+The final 2026-10-15 recovery established `jaredwines.com` as intentionally active with loopback-only publication `127.0.0.1:7777:80`. Jared intentionally stopped it on 2026-10-20. Starting or recreating it requires Jared's explicit desired-state confirmation; changing its content, listener, NPM route, or public exposure remains outside this runbook.
 
 NPM runs host-networked from `/srv/rotom/stacks/platform/nginx-proxy-manager/compose.yaml`. Current routes use host or loopback listeners rather than cross-project Docker DNS.
 
@@ -212,9 +212,9 @@ Revalidate this runbook when a website's desired deployment state, Compose path,
 
 ## 1. Current Docker Runtime and Deployment State
 
-**Evidence date:** 2026-10-17.
+**Evidence date:** 2026-10-20.
 
-The 2026-10-17 complete baseline contained 23 running containers, 18 Docker networks, two named volumes, and 18 active Compose definitions. Immediately before Libraries-layout maintenance on 2026-10-20, only 21 containers were running; both Palworld containers were absent from that set and require separate investigation. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. Every supported application remains Compose-managed under `/srv/rotom/stacks`.
+At Jared's explicit direction on 2026-10-20, the pre-reset Docker inventory of 22 containers, 15 Compose-created networks, two Arcane internal volumes, and 25 images was removed. Arcane's persistent state was also reset. All 18 validated Compose definitions under `/srv/rotom/stacks` were then recreated. The rebuilt runtime reached 23 healthy running containers, 18 networks including Docker defaults, two fresh Arcane internal volumes, and 22 images. Jared then intentionally stopped `palworld-server-jared`, `palworld-server-fran`, and `jaredwines.com`; the current runtime has 20 running containers and those three stopped containers.
 
 | Domain | Compose definitions | Supported services |
 |---|---:|---|
@@ -232,17 +232,17 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 |---|---|---|
 | Homepage and Glances | Supported active pair | One Compose file at `/srv/rotom/stacks/platform/homepage/compose.yaml`; Glances has no host listener |
 | Nginx Proxy Manager | Supported active service | Host networking; authoritative state under Platform appdata; no Docker socket |
-| Arcane | Supported active service | Platform stacks are mounted for management; accepted automation policy is recorded in document 06; empty exclusions do not authorize cleanup |
+| Arcane | Supported active service | Its application state and project database were reset; its fresh database discovered the five Platform Compose roots only. The previously accepted automation policy must be reapplied; empty exclusions do not authorize cleanup |
 | Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
-| Jared Wines | Supported active site | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8` |
+| Jared Wines | Supported stopped site | Intentionally stopped by Jared on 2026-10-20; when started, loopback-only `127.0.0.1:7777:80`; NPM proxy host `8` |
 | Libraries applications | Supported active services | Authoritative NAS payload under `/mnt/nas-libraries`; media sources are root-level `games/`, `movies/`, and `shows/`; non-creating binds protect every direct source |
 | RomM | Supported active service | Parent game-library bind is read-only; only the nested ROM tree is writable for browser uploads. Protected IGDB variables are present without recording values; IGDB and LaunchBox provider health are verified. |
 | Paperless | Supported active service | VM-local database/configuration plus `/mnt/nas-libraries/documents/paperless` media |
 | Prowlarr | Supported active service | Explicit container DNS `192.168.1.1` prevents the Docker boot-time resolver race; it supplies the configured Sonarr/Radarr indexers |
 | qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract and WireGuard; UI/control listener remains at `127.0.0.1:8080` for NPM and is additionally published at `192.168.1.69:8080` for Sonarr/Radarr |
-| Palworld Jared and Fran | Supported definitions; runtime needs verification | VM-local state; UDP publications unchanged; both are intended to remain running under `restart: unless-stopped`, but neither was in the observed 2026-10-20 running set |
+| Palworld Jared and Fran | Supported stopped services | Intentionally stopped by Jared on 2026-10-20; VM-local state and UDP publications unchanged; Compose restart policy remains `unless-stopped` |
 | Home Assistant and Homebridge | Supported active services | VM-local state under Smart Home appdata; host networking retained for discovery; each Compose file explicitly uses DNS `192.168.1.1` |
 
 Container state is time-sensitive. Diagnose current runtime state with the runbook above instead of relying on the evidence-date count alone.
@@ -292,9 +292,8 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 
 ## 7. Outstanding / Needs Verification
 
-- Two Arcane-related named volumes, stale project rows, and any unreferenced images require exact-object review before cleanup; the accepted automation policy does not authorize their deletion.
-- Actual residual Docker network/image objects were not enumerated during the documentation cleanup because privileged Docker access was unavailable.
-- Both supported Palworld containers were absent from the 2026-10-20 pre-maintenance running set; determine whether that state is intentional and restore or document the intended state separately.
+- The reset created fresh Arcane internal volumes and removed stale project rows, prior Arcane settings, and the former image inventory. Reapply the accepted automation policy and intentionally register or expose the 13 non-Platform Compose roots if they should be Arcane-managed.
+- Libraries and Rotom Restic NFS mounts were observed read-only during the reset. NAS-backed services started under Jared's explicit waiver; verify write readiness separately.
 
 ## 8. Related Documentation
 

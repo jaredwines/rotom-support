@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record Libraries DNS and download-client repair
+**Documentation updated:** 2026-10-20 — Record Docker/Arcane reset and current stopped services
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -77,7 +77,7 @@ Within each subject document, use the current-state sections first. Use historic
 
 Rotom is Debian 13 VMID 100 on Proxmox VE host `pve`. The guest uses reserved address `192.168.1.69`; PVE uses `192.168.1.68`; the UniFi NAS uses `192.168.1.70`.
 
-The latest complete topology baseline was **23 running Compose-managed containers, 18 Docker networks, two named volumes, and 18 active Compose definitions** on 2026-10-17. Before the Libraries-layout maintenance on 2026-10-20, the running set contained 21 containers; the two supported Palworld containers were absent and require separate investigation. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. The active definitions are grouped under five local domains:
+On 2026-10-20, Jared authorized a complete Docker and Arcane-state reset. The pre-reset runtime had 22 containers, 15 Compose-created networks, two Arcane internal volumes, and 25 images. All were removed along with Arcane's persistent state, then all 18 validated Compose definitions were recreated. The rebuilt runtime reached 23 healthy running containers, 18 networks including Docker defaults, two fresh Arcane internal volumes, and 22 images. Jared then intentionally stopped `palworld-server-jared`, `palworld-server-fran`, and `jaredwines.com`; the current intended runtime is therefore 20 running containers and those three intentionally stopped containers. The active definitions are grouped under five local domains:
 
 | Domain | Identity | Active roots | Current services |
 |---|---:|---|---|
@@ -89,9 +89,9 @@ The latest complete topology baseline was **23 running Compose-managed container
 
 The five service accounts are locked. Their NSS home fields still name absent `/home/<service>` paths; those paths are not deployment or recovery roots. Human administrators are Jared and Fran. Fran is a full administrator and the sole human member of Docker group GID `989`; Docker membership is root-equivalent.
 
-Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. `jaredwines.com` is intentionally active and publishes only `127.0.0.1:7777:80` for NPM proxy host `8`. Aloha publishes `7778:80`.
+Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. `jaredwines.com` is currently intentionally stopped; when started, it publishes only `127.0.0.1:7777:80` for NPM proxy host `8`. Aloha publishes `7778:80`.
 
-Cloudflare DDNS and Prowlarr use explicit container DNS `192.168.1.1` to avoid the Docker boot-time resolver race; Prowlarr's 2026-10-20 recreation restored external indexer resolution. Arcane's accepted automation baseline is daily automatic update at midnight with no excluded containers, automatic healing every five minutes with no excluded containers, at most five restarts within a 30-minute window, scheduled pruning disabled, and project-symlink following enabled. Both Palworld servers are intended to remain running under `restart: unless-stopped`.
+Cloudflare DDNS and Prowlarr use explicit container DNS `192.168.1.1` to avoid the Docker boot-time resolver race; Prowlarr's 2026-10-20 recreation restored external indexer resolution. Arcane's reset database has rediscovered only the five Platform Compose roots; the accepted automation policy must be reapplied before treating it as active. Both Palworld servers are currently intentionally stopped, while their Compose restart policy remains `unless-stopped`.
 
 Remote Desktop Commander runs from `/opt/desktop-commander` as locked identity `desktopcmd` (`1001:1001`). Its former home is absent.
 
@@ -104,7 +104,7 @@ Rotom has two current guest NFSv3 systemd-automount contracts:
 | `Libraries/.data` | `/mnt/nas-libraries` | Root-level `games/`, `movies/`, `shows/`, `torrents/`, and `documents/paperless/` payload plus the qBittorrent sentinel |
 | `Rotom_Restic_Backup/.data` | `/mnt/nas-rotom-restic-backup` | Rotom Restic repository |
 
-After the 2026-10-20 Libraries-layout reboot, Libraries again returned read/write with both generated unit layers active. Its recovery helper validates the exact source and current required layout, re-arms the generated automount after boot-time start-limit failure, and conditionally recovers only eligible NAS-dependent containers. Later that day, Jared-reported deletion of the three unused NAS drives was reconciled on Rotom: their fstab entries, generated units, and empty local mountpoint directories were removed. Final verification found only the two listed NFS contracts, with both mount and automount layers active and no failed units.
+After the 2026-10-20 Libraries-layout reboot, Libraries returned read/write with both generated unit layers active. Its recovery helper validates the exact source and current required layout, re-arms the generated automount after boot-time start-limit failure, and conditionally recovers only eligible NAS-dependent containers. Later that day, Jared-reported deletion of the three unused NAS drives was reconciled on Rotom: their fstab entries, generated units, and empty local mountpoint directories were removed. During the later Docker reset, both remaining NFS contracts were active but observed read-only; treat that as a current discrepancy requiring investigation before relying on writes or a new Restic snapshot.
 
 Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-downloaders`, `/mnt/nas-documents`, `/mnt/nas-filesync`, `/mnt/nas-web`, `/mnt/nas-gameserver`, `/mnt/nas-smarthome`, `/mnt/nas-customapps`, `/mnt/nas-apps`, `/mnt/nas-auth`, `/mnt/nas-shared-drive`, `/mnt/nas-game-servers`, `/mnt/nas-smart-home`, and `/mnt/nas-hosted-websites` are retired locally. Do not recreate them from historical records.
 
@@ -130,8 +130,8 @@ The alerting worker, units, timers, scripts, Homepage integration, and delivery 
 ## 6. Outstanding and Needs Verification
 
 - Root-only rollback archives for the retired shared Docker bridges and the pre-change NAS-recovery helper were not readable during this audit. Retain or remove them only after a separately authorized exact-path inspection.
-- Arcane's two named volumes, stale project rows, and any unreferenced images require exact-object review before cleanup; the accepted automation policy is not cleanup authorization.
-- The 2026-10-20 pre-maintenance running set contained 21 containers rather than the prior 23-container baseline; both supported Palworld containers were absent and require separate investigation.
+- The Arcane reset removed stale project rows and automation settings. Reapply the accepted automation policy; its current mount/discovery scope contains only five Platform projects, leaving 13 non-Platform Compose roots to be intentionally registered or exposed.
+- Both remaining NFS contracts were read-only during the Docker reset. Resolve that discrepancy before write-dependent service use or a new Rotom Restic snapshot.
 - Continue normal monitoring of the historical PVE NIC/reset and non-fatal iGPU option-ROM warning. Do not infer a single cause without new evidence.
 - Select and verify an incident-appropriate recovery point at recovery time; retention changes available snapshot and archive sets.
 

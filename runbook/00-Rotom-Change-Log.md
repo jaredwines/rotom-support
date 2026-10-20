@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-20 — Reset Docker runtime and Arcane project state
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, and `internals/tooling/test-rr-runbooks`.
+- **Status:** **Implemented / Verified.**
+- **Changes:** At Jared's explicit direction, removed the entire Docker runtime inventory: 22 containers, 15 Compose-created networks, two Arcane internal volumes, 25 images, and Arcane's persistent application-data directory. Recreated all 18 validated Compose definitions. A fresh Arcane database discovered the five Platform projects only; its former project rows, settings, backup history, and duplicate records were intentionally discarded. Jared then intentionally stopped both Palworld containers and `jaredwines.com`.
+- **Evidence:** Before removal, all 18 Compose files passed `docker compose config -q`. Post-rebuild, 23 containers were running and healthy, with 18 networks and two fresh Arcane internal volumes. After Jared's stop request, the two Palworld containers exited with status 143 and `jaredwines.com` exited with status 0; the remaining 20 containers continued running. Arcane logs recorded a fresh database migration and discovery of exactly the five Platform Compose roots.
+- **Outstanding:** The Libraries and Rotom Restic NFS mounts were observed read-only during the reset. Jared explicitly authorized proceeding without repairing that discrepancy or taking a fresh Restic snapshot. Reapply Arcane's accepted automation policy and decide whether to expand its configured project scope or manually register the 13 non-Platform Compose projects.
+
 ## 2026-10-20 — Retire three removed NAS mount contracts
 
 - **Files changed:** 00-Rotom-Change-Log.md, 01-Rotom-Server-Inventory.md, 03-Network-and-Domains.md, 04-NAS-and-Storage.md, 05-Backup-and-Restore.md, 08-Rotom-Directory-Tree.txt, architecture/Rotom-Architecture-System.md, and guide/PVE-and-Rotom-Total-Loss-Recovery.md.
