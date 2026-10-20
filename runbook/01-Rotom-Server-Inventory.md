@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record the Libraries layout migration and runtime discrepancy
+**Documentation updated:** 2026-10-20 — Route SSH client and access lookup
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -28,6 +28,7 @@ Choose the row that best matches the work. In the destination, read the current-
 | Backup execution, failure, repository verification, or restore | [05 — backup and restore task router](05-Backup-and-Restore.md#start-by-task-or-symptom) |
 | Timer, scheduled automation, update, or maintenance problem | [06 — automation and maintenance task router](06-Maintenance-and-Automation.md#start-by-task-or-symptom) |
 | Permission, ownership, user, group, identity, or access problem | [07 — identity and access task router](07-Users-and-Permissions.md#start-by-task-or-symptom) |
+| SSH alias, target account, authentication method, or access-policy lookup | [07 — current SSH client and access register](07-Users-and-Permissions.md#rotom-side-ssh-client-and-access-register) |
 | Filesystem-path lookup | [08 — current and historical filesystem topology](08-Rotom-Directory-Tree.txt) |
 | Website repository synchronization or publication | [06 — documentation and synchronization workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow) |
 | RS maintenance or publication | [00 — documentation maintenance rules and change history](00-Rotom-Change-Log.md#current-documentation-maintenance-rules) |

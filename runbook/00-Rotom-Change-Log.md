@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-19 — Clarify local Rotom execution and Mac SSH alias scope
+**Documentation updated:** 2026-10-20 — Record Jared's verified Rotom-side SSH client configuration
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-20 — Record Jared's verified Rotom-side SSH client configuration
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `07-Users-and-Permissions.md`, and `internals/tooling/test-rr-runbooks`.
+- **Status:** **Verified / Documentation only.** Recorded the current Rotom-side aliases for GitHub, the UniFi gateway, NAS, and PVE, including their targets, accounts, authentication methods, and client-file modes; routed SSH access lookup to the identity/access owner. No live SSH configuration, key, authorization, server policy, or appliance state was changed.
+- **Changes:** Recorded the preserved GitHub key pair under its corrected `id_ed25519_github` basename, the explicit GitHub identity constraint, password-authenticated infrastructure aliases, and the unchanged separate `id_ed25519_codex_rotom` pair. Preserved the local-execution, appliance-console, PVE-execution, and service-account credential boundaries.
+- **Evidence:** Jared supplied the final SSH client configuration and successful 2026-10-20 manual tests for all four aliases, including GitHub authentication as `jaredwines`. Read-only inspection in this task matched the supplied file exactly and confirmed `0600` for the client file and GitHub private key plus `0644` for its public key. The Codex sandbox could not independently run `ssh -G` because it rejected the presented ownership of `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`; this known sandbox limitation did not affect the supplied connection evidence.
+- **Outstanding:** None for the documented Rotom-side configuration. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-20 — Restructure the Libraries NAS layout
 

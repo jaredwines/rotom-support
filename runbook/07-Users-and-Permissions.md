@@ -3,8 +3,8 @@
 **Documentation set:** Rotom Support
 **Document role:** Canonical source for Linux accounts, UID/GID identities, groups, privileges, ACLs, and access policy
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
-**Baseline verified:** Current state reconciled through 2026-10-15; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-20 — Update the Paperless NAS ownership boundary
+**Baseline verified:** Current state reconciled through 2026-10-15; SSH client and access evidence updated 2026-10-20; see outstanding items for remaining verification
+**Documentation updated:** 2026-10-20 — Record Jared's Rotom-side SSH client and access register
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -14,6 +14,7 @@ Record substantive changes to this document in the change log as part of the sam
 ## Start by Task or Symptom
 
 - Permission denied, unexpected owner/group/mode/ACL, or service identity mismatch: use [Diagnose an Identity, Ownership, or Access Failure](#diagnose-an-identity-ownership-or-access-failure).
+- SSH alias, target account, authentication method, or access-policy lookup: use [Rotom-side SSH Client and Access Register](#rotom-side-ssh-client-and-access-register).
 - NAS-root or NFS permission behavior: establish the mount/export contract in [document 04](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) and interpret numeric identity here.
 - Container process identity: compare Compose/runtime state in [document 02](02-Docker-Services.md#start-by-task-or-symptom).
 
@@ -83,6 +84,21 @@ Retain the exact path, numeric and named identity, parent traversal result, prio
 On 2026-10-18, Jared verified key-authenticated SSH from Windows workstation Blastiorse: `ssh rotom` connects as `jared`, `ssh pve` as `jared`, and `ssh nas` and `ssh gateway` as appliance `root`. The gateway and NAS root consoles are for targeted troubleshooting; routine appliance administration uses UniFi roles. These tests did not establish key persistence across appliance updates or reboots. A Blastiorse key was initially authorized for PVE root in error; its subsequent removal was not confirmed. Inspect and resolve that specific authorization through the Jared-executed PVE workflow without removing unrelated keys.
 
 Docker group membership is root-equivalent. Fran is the sole listed human Docker-group member; Jared and service identities remain outside it.
+
+### Rotom-side SSH client and access register
+
+Jared's current SSH client configuration on Rotom is `/home/jared/.ssh/config`, mode `0600`. These aliases are local to that file and do not define the separate Mac, Blastiorse, or other-client configurations:
+
+| Alias | Target | Account | Verified authentication from Rotom |
+|---|---|---|---|
+| `github.com` | `github.com` | `git` | Existing key pair `~/.ssh/id_ed25519_github` and `.pub`; `IdentityFile` is explicit and `IdentitiesOnly yes` |
+| `gateway` | `192.168.1.1` | `root` | Password prompt and successful login |
+| `nas` | `192.168.1.70` | `root` | Password prompt and successful login |
+| `pve` | `192.168.1.68` | `jared` | Password prompt and successful login |
+
+The GitHub private key and public key have modes `0600` and `0644`, respectively. On 2026-10-20 the existing GitHub pair was corrected from the misspelled basename `d_ed25519_github` to `id_ed25519_github`; no key was regenerated and no GitHub authorization was changed. `ssh -T git@github.com` then authenticated as GitHub account `jaredwines`. The infrastructure aliases have no dedicated `IdentityFile` or `IdentitiesOnly` setting and were verified through password authentication. The separate `id_ed25519_codex_rotom` pair remains present and was not changed.
+
+This register records access, not expanded authority: ordinary administration on Rotom remains local; appliance root consoles remain limited to targeted troubleshooting; PVE work remains Jared-executed; and all RS GitHub operations run as `jared`. Never copy Jared's private key into a service account or record key contents in RS.
 
 ### Current service identities
 

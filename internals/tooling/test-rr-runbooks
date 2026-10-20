@@ -83,6 +83,7 @@ require_file internals/publisher/rotom-support-sync.timer
 require_text 01-Rotom-Server-Inventory.md "## Start by Task or Symptom"
 require_text 01-Rotom-Server-Inventory.md "### Maintaining the Runbook-First Model"
 require_text 01-Rotom-Server-Inventory.md "00-Rotom-Change-Log.md#runbook-first-maintenance-standard"
+require_text 01-Rotom-Server-Inventory.md "SSH alias, target account, authentication method, or access-policy lookup"
 
 for file in 02-Docker-Services.md 03-Network-and-Domains.md 04-NAS-and-Storage.md \
             05-Backup-and-Restore.md 06-Maintenance-and-Automation.md 07-Users-and-Permissions.md
@@ -115,6 +116,8 @@ require_text 05-Backup-and-Restore.md "Changes Rotom and protected storage/repos
 require_text 06-Maintenance-and-Automation.md "## Investigate a Failed Timer or Automation"
 require_text 06-Maintenance-and-Automation.md "### Verify or recover repository publication"
 require_text 07-Users-and-Permissions.md "## Diagnose an Identity, Ownership, or Access Failure"
+require_text 07-Users-and-Permissions.md "### Rotom-side SSH client and access register"
+require_text 07-Users-and-Permissions.md '`id_ed25519_github`'
 require_text 07-Users-and-Permissions.md 'Never use `chmod 777`'
 
 require_text 01-Rotom-Server-Inventory.md "Before the Libraries-layout maintenance on 2026-10-20, the running set contained 21 containers"
