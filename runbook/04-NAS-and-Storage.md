@@ -4,7 +4,7 @@
 **Document role:** Canonical source for NAS exports, NFS mounts, storage layout, automount behavior, and storage contracts
 **Hosts:** PVE hypervisor `pve`, Debian VM `rotom`, and UniFi UNAS 2  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record the migrated Libraries layout and recovery contract
+**Documentation updated:** 2026-10-20 — Record RomM's narrow writable ROM-upload bind
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -275,7 +275,7 @@ All five were observed mounted read/write during the cleanup audit. Accessing an
 - `torrents/` plus the qBittorrent readiness sentinel.
 - `documents/paperless/` for authoritative Paperless media.
 
-Jellyfin receives separate non-creating read-only binds for the three media roots while retaining `/data/library/{games,movies,shows}` internally. RomM and NPM receive `games/` through their preserved internal paths. Radarr and Sonarr retain the broad `/media` bind and use `/media/movies` and `/media/shows` as their application roots. Paperless retains `/usr/src/paperless/media` internally.
+Jellyfin receives separate non-creating read-only binds for the three media roots while retaining `/data/library/{games,movies,shows}` internally. RomM receives `games/` read-only at `/romm/library` plus its only writable exception: the nested non-creating `games/roms` bind at `/romm/library/roms` for browser uploads. NPM receives `games/` through its preserved internal path. Radarr and Sonarr retain the broad `/media` bind and use `/media/movies` and `/media/shows` as their application roots. Paperless retains `/usr/src/paperless/media` internally.
 
 Compose uses non-creating binds where a missing source would risk local shadow directories. The recovery helper must fail closed when the exact NFS filesystem, automount state, required directories, ownership, or sentinel is wrong.
 

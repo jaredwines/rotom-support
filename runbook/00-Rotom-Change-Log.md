@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-20 — Enable narrow RomM browser-upload access and metadata providers
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, `architecture/Rotom-Architecture-System.md`, and `internals/tooling/test-rr-runbooks`.
+- **Status:** **Implemented / Verified.**
+- **Changes:** Kept RomM's `/mnt/nas-libraries/games -> /romm/library` bind read-only and added only the nested `/mnt/nas-libraries/games/roms -> /romm/library/roms` writable bind, both non-creating. Browser uploads now land beneath the authoritative NAS `games/roms/<platform>/` tree without granting writes to the rest of `games/`. RomM's protected environment now supplies its IGDB client variables; their values remain outside RS. The existing LaunchBox provider completed its initial local metadata-store update.
+- **Evidence:** The edited Compose file validated before applying; only `romm` was recreated. Runtime inspection confirmed the parent mount `RW=false` and ROM subdirectory `RW=true`; a browser upload succeeded; RomM returned local HTTP `200` with zero restarts; IGDB authentication and LaunchBox provider health each returned `true`. The three current NAS ROM files and the three RomM database records matched after Jared confirmed that library state is intentional. The manually run cleanup task removed 2,423 stale database records only; it did not delete ROM files.
+- **Outstanding:** Browser-uploaded files were observed as `root:5000` mode `0644`; preserve that observed contract unless a separately authorized ownership change is designed and verified. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-20 — Record Jared's verified Rotom-side SSH client configuration
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `07-Users-and-Permissions.md`, and `internals/tooling/test-rr-runbooks`.

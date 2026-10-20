@@ -3,7 +3,7 @@
 **Artifact class:** Supplementary RS architecture document; not a canonical operational source
 **Document role:** Newcomer-friendly map of Rotom's services, access paths, storage, and data protection
 **Evidence baseline:** Rotom Support plus read-only live inspection through 2026-10-20
-**Documentation updated:** 2026-10-20 — Update the Libraries layout and runtime evidence
+**Documentation updated:** 2026-10-20 — Record narrow RomM browser-upload access
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 
 This guide is for newcomers, administrators, and recovery operators who need to understand how Rotom's infrastructure and services fit together. Use it to learn the system and identify the right source; use the numbered Rotom Support (RS) documents for authoritative configuration, troubleshooting, and recovery procedures.
@@ -172,7 +172,7 @@ The main path convention is:
 | `sonarr` | Organizes TV shows | VM-local configuration; read/write Libraries mount at `/media`; torrent subpath additionally mounted read-only; LAN port `8989` | **Verified live** |
 | `prowlarr` | Supplies indexers to Radarr/Sonarr and related clients | VM-local configuration only; no NAS bind; LAN port `9696` | **Verified live** |
 | `qbittorrentvpn` | Downloads through WireGuard/VPN | VM-local configuration; read/write `/mnt/nas-libraries/torrents`; read-only NAS readiness sentinel; loopback-only UI `8080` | **Verified live** |
-| `romm` | RomM web application and game-library reader | VM-local data/assets/config/resources/backup; read-only `/mnt/nas-libraries/games`; talks to `romm-db` and `romm-valkey` on `romm_default`; loopback-only UI `8081` | **Verified live**; 2,437-ROM scan passed after JAR-99 |
+| `romm` | RomM web application and game-library reader/uploader | VM-local data/assets/config/resources/backup; read-only `/mnt/nas-libraries/games` with only nested `/mnt/nas-libraries/games/roms` writable for browser uploads; talks to `romm-db` and `romm-valkey` on `romm_default`; loopback-only UI `8081` | **Verified live**; uploads, IGDB, and LaunchBox provider health passed on 2026-10-20 |
 | `romm-db` | RomM MariaDB database | VM-local database under `/srv/rotom/appdata/libraries/romm/database`; private `romm_default` network | **Verified live**, healthy |
 | `romm-valkey` | RomM cache/queue | VM-local Valkey data; private `romm_default` network | **Verified live** |
 | `paperless` | Paperless document application | VM-local application/search/consume/export state; authoritative media at `/mnt/nas-libraries/documents/paperless`; talks to database and broker; loopback-only UI `8000` | **Verified live**, healthy; existing and controlled-import documents downloaded after JAR-99 |
@@ -211,7 +211,7 @@ Services documented as retired, including Uptime Kuma, Syncthing, Gamarr, JDownl
 | Mount or path | What it is and what it stores | Services that depend on it | Persistence and backup relationship | Status |
 |---|---|---|---|---|
 | `/mnt/nas-libraries` | NFSv3 export `Libraries/.data`; authoritative media/game library, torrents, and Paperless media | Jellyfin, Radarr, Sonarr, qBittorrentVPN, RomM, Paperless, and NPM's read-only game-library use | Excluded from Rotom Restic because `/mnt` is excluded; depends on NAS-side snapshots/restore | **Verified live**, mounted read/write; automount active |
-| `/mnt/nas-libraries/{games,movies,shows}` | Root-level authoritative game, movie, and TV libraries | Jellyfin reads all three; RomM and NPM read games; Radarr/Sonarr manage movies/shows through the broader Libraries mount | Same NAS snapshot protection as the Libraries export | **Verified live** after JAR-99 |
+| `/mnt/nas-libraries/{games,movies,shows}` | Root-level authoritative game, movie, and TV libraries | Jellyfin reads all three; NPM reads games; RomM reads games except for its nested writable `games/roms` browser-upload destination; Radarr/Sonarr manage movies/shows through the broader Libraries mount | Same NAS snapshot protection as the Libraries export | **Verified live** after JAR-99; RomM upload exception verified 2026-10-20 |
 | `/mnt/nas-libraries/torrents` | Download and seeding area | qBittorrentVPN writes; Radarr and Sonarr receive read-only binds in the observed container metadata | Same NAS snapshot protection as the Libraries export | **Verified live** |
 | `/mnt/nas-libraries/documents/paperless` | Authoritative Paperless media | Paperless application | NAS-side protection is required; Paperless database/config remain VM-local and must be restored consistently with media | **Verified live** after JAR-99 |
 | `/mnt/nas-rotom-restic-backup` | NFSv3 export `Rotom_Restic_Backup/.data` | Rotom Restic worker | Contains the repository that protects selected VM-local data; the repository is not itself backed up by that same job | **Verified live**, mounted read/write; automount active |

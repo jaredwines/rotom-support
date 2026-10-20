@@ -25,6 +25,7 @@ Choose the row that best matches the work. In the destination, read the current-
 | Website, container, or application unavailable | [02 — container and Docker-backed website diagnosis and recovery](02-Docker-Services.md#diagnose-and-recover-a-container-or-docker-backed-website) |
 | Proxy, listener, DNS, TLS, domain, routing, or external-access problem | [03 — end-to-end access-path diagnosis](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure) |
 | NAS path, NFS mount, or storage dependency unavailable | [04 — configured NAS-mount diagnosis and recovery](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) |
+| RomM browser upload, ROM-library write boundary, or metadata-provider health | [02 — RomM upload and metadata-provider contract](02-Docker-Services.md#romm-upload-and-metadata-provider-contract) |
 | Backup execution, failure, repository verification, or restore | [05 — backup and restore task router](05-Backup-and-Restore.md#start-by-task-or-symptom) |
 | Timer, scheduled automation, update, or maintenance problem | [06 — automation and maintenance task router](06-Maintenance-and-Automation.md#start-by-task-or-symptom) |
 | Permission, ownership, user, group, identity, or access problem | [07 — identity and access task router](07-Users-and-Permissions.md#start-by-task-or-symptom) |

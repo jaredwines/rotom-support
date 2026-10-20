@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Linux accounts, UID/GID identities, groups, privileges, ACLs, and access policy
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
 **Baseline verified:** Current state reconciled through 2026-10-15; SSH client and access evidence updated 2026-10-20; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-20 — Record Jared's Rotom-side SSH client and access register
+**Documentation updated:** 2026-10-20 — Record RomM browser-upload ownership boundary
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -135,6 +135,7 @@ Use the owning service identity for ordinary service-specific administration. Ro
 
 - Paperless application processes use Libraries identity; authoritative media is `/mnt/nas-libraries/documents/paperless`.
 - qBittorrentVPN uses Libraries storage identity and a fail-closed NFS/sentinel contract.
+- RomM has no Compose user override. Its broader game-library bind is read-only, while the nested ROM-upload bind is writable; browser-uploaded ROM files were observed as `root:5000`, mode `0644`. Preserve that narrow boundary and observed ownership unless an explicit ownership change is authorized and verified.
 - Palworld uses Game Servers identity and VM-local state.
 - Home Assistant and Homebridge use Smart Home identity and VM-local state.
 - Aloha and Jared Wines active content is owned within Hosted Websites roots.

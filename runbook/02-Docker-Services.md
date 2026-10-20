@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 preserves the 2026-10-17 complete baseline and the 2026-10-20 running-set discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record migrated Libraries bind paths and runtime discrepancy
+**Documentation updated:** 2026-10-20 — Record narrow RomM browser-upload and metadata-provider contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -238,6 +238,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported active site | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8` |
 | Libraries applications | Supported active services | Authoritative NAS payload under `/mnt/nas-libraries`; media sources are root-level `games/`, `movies/`, and `shows/`; non-creating binds protect every direct source |
+| RomM | Supported active service | Parent game-library bind is read-only; only the nested ROM tree is writable for browser uploads. Protected IGDB variables are present without recording values; IGDB and LaunchBox provider health are verified. |
 | Paperless | Supported active service | VM-local database/configuration plus `/mnt/nas-libraries/documents/paperless` media |
 | qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract, WireGuard, loopback UI `127.0.0.1:8080` |
 | Palworld Jared and Fran | Supported definitions; runtime needs verification | VM-local state; UDP publications unchanged; both are intended to remain running under `restart: unless-stopped`, but neither was in the observed 2026-10-20 running set |
@@ -248,6 +249,14 @@ Container state is time-sensitive. Diagnose current runtime state with the runbo
 Home Assistant's ZHA integration is configured for a ConBee II at `/dev/ttyACM0`. PVE VM 100 has USB passthrough for vendor/product `1cf1:0030`, configured by Jared. After the 2026-10-16 PVE reboot, the device was visible on Rotom and in the Home Assistant container. The numbered device path can change, and individual Zigbee device operation was not verified. Historical ConBee disconnection during PVE stability testing did not establish the cause of earlier resets; monitor PVE stability after reconnection.
 
 For a ZHA missing-device error, check the device on Rotom and inside Home Assistant before changing configuration. If absent on Rotom, Jared must inspect the physical adapter and PVE passthrough. If present on Rotom but absent in the container, assess container startup timing and the existing Compose configuration before any targeted recovery. Preserve Zigbee state and avoid replacing the coordinator or resetting its network as a diagnostic step.
+
+## RomM Upload and Metadata-Provider Contract
+
+RomM receives `/mnt/nas-libraries/games` at `/romm/library` through a non-creating read-only bind. Its only writable NAS exception is the non-creating nested bind `/mnt/nas-libraries/games/roms` at `/romm/library/roms`. Browser uploads therefore write to `/mnt/nas-libraries/games/roms/<platform>/`; they must not be used as a reason to grant RomM write access to the broader `games/` tree.
+
+RomM currently runs without a Compose user override. Files uploaded through its browser flow were observed as `root:5000`, mode `0644`; preserve that result unless a separately authorized ownership design is implemented and verified. Before changing either bind, confirm both exact NFS sources, `create_host_path: false`, and the parent/child mount modes with Compose and Docker inspection. Stop if the parent becomes writable, the child is not exactly `games/roms`, the NFS source is unavailable, or a broader access/ownership change is proposed.
+
+The protected RomM environment contains the IGDB client ID and client secret; never print or record their values. On 2026-10-20, both variables loaded after a targeted RomM recreation and a sanitized token request succeeded. LaunchBox was already enabled; its initial metadata-store update completed successfully, and both provider health endpoints returned `true`. Metadata scans and provider updates change RomM application state and may make outbound provider requests; use the RomM administration UI deliberately and retain task results. A quick scan does not rematch existing ROMs; use the most targeted metadata scan mode appropriate to the intended result.
 
 ## 3. Docker Networking
 

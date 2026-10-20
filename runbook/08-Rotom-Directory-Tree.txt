@@ -63,7 +63,8 @@
 #   nas-libraries/                        Libraries/.data
 #     documents/
 #       paperless/                        authoritative Paperless media
-#     games/                              authoritative game library
+#     games/                              authoritative game library; RomM reads this tree
+#       roms/                             RomM's only writable nested bind; browser-upload destination
 #     movies/                             authoritative movie library
 #     shows/                              authoritative TV library
 #     torrents/                           qBittorrent payload
