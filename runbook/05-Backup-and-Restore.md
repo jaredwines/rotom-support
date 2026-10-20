@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Add AI-assisted total-loss recovery routing
+**Documentation updated:** 2026-10-20 — Update the Paperless NAS recovery path
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -518,7 +518,7 @@ An earlier 2026-09-29 disposable restore remains useful historical portability e
 
 Rotom Restic excludes `/mnt`. Authoritative Libraries data, including Paperless media, therefore depends on NAS-side protection.
 
-Paperless VM-local database, broker, configuration, search data, consume/export paths, and protected inputs are under `/srv/rotom/{appdata,secrets}/libraries/paperless`. Authoritative media is `/mnt/nas-libraries/paperless`. The restored five-file media set matched its retained manifest. Jared confirmed Libraries snapshot retention and an isolated restore outcome; exact policy values and the selected recovery point were not supplied.
+Paperless VM-local database, broker, configuration, search data, consume/export paths, and protected inputs are under `/srv/rotom/{appdata,secrets}/libraries/paperless`. Authoritative media is `/mnt/nas-libraries/documents/paperless`. The earlier restored five-file media set matched its retained manifest before the 2026-10-20 layout migration. Two checksum-matched repair files and two controlled-import outputs then intentionally increased the live media set to nine files; this is current application evidence, not a replacement restore manifest. Jared confirmed Libraries snapshot retention and an isolated restore outcome, but waived a fresh migration-specific snapshot; exact policy values and a current selected recovery-point identifier were not supplied.
 
 On 2026-10-17 Jared declined a repeat NAS snapshot rehearsal because the existing workflow is accepted as working. Treat this as an owner acceptance decision, not as a new retained snapshot identifier, isolated-restore transcript, or application/NAS consistency proof.
 

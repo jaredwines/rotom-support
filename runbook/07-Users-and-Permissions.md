@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Linux accounts, UID/GID identities, groups, privileges, ACLs, and access policy
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
 **Baseline verified:** Current state reconciled through 2026-10-15; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-17 — Record human read access under /srv/rotom
+**Documentation updated:** 2026-10-20 — Update the Paperless NAS ownership boundary
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -117,7 +117,7 @@ Use the owning service identity for ordinary service-specific administration. Ro
 
 ## 4. Application-Specific Boundaries
 
-- Paperless application processes use Libraries identity; authoritative media is `/mnt/nas-libraries/paperless`.
+- Paperless application processes use Libraries identity; authoritative media is `/mnt/nas-libraries/documents/paperless`.
 - qBittorrentVPN uses Libraries storage identity and a fail-closed NFS/sentinel contract.
 - Palworld uses Game Servers identity and VM-local state.
 - Home Assistant and Homebridge use Smart Home identity and VM-local state.

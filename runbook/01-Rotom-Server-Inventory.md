@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Define RS repository membership and authority
+**Documentation updated:** 2026-10-20 — Record the Libraries layout migration and runtime discrepancy
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -75,7 +75,7 @@ Within each subject document, use the current-state sections first. Use historic
 
 Rotom is Debian 13 VMID 100 on Proxmox VE host `pve`. The guest uses reserved address `192.168.1.69`; PVE uses `192.168.1.68`; the UniFi NAS uses `192.168.1.70`.
 
-The verified application topology is **23 running Compose-managed containers, 18 Docker networks, two named volumes, and 18 active Compose definitions**. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. The active definitions are grouped under five local domains:
+The latest complete topology baseline was **23 running Compose-managed containers, 18 Docker networks, two named volumes, and 18 active Compose definitions** on 2026-10-17. Before the Libraries-layout maintenance on 2026-10-20, the running set contained 21 containers; the two supported Palworld containers were absent and require separate investigation. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. The active definitions are grouped under five local domains:
 
 | Domain | Identity | Active roots | Current services |
 |---|---:|---|---|
@@ -101,11 +101,11 @@ Rotom has five current guest NFSv3 systemd-automount contracts:
 |---|---|---|
 | `Game_Servers/.data` | `/mnt/nas-game-servers` | Empty Game Servers service boundary; Palworld state remains VM-local |
 | `Smart_Home/.data` | `/mnt/nas-smart-home` | Empty Smart Home service boundary; application state remains VM-local |
-| `Libraries/.data` | `/mnt/nas-libraries` | Authoritative Libraries payload, including Paperless media |
+| `Libraries/.data` | `/mnt/nas-libraries` | Root-level `games/`, `movies/`, `shows/`, `torrents/`, and `documents/paperless/` payload plus the qBittorrent sentinel |
 | `Hosted_Websites/.data` | `/mnt/nas-hosted-websites` | Empty Hosted Websites service boundary; website content remains VM-local |
 | `Rotom_Restic_Backup/.data` | `/mnt/nas-rotom-restic-backup` | Rotom Restic repository |
 
-All five were observed mounted read/write on 2026-10-15. The Libraries recovery helper validates the exact source, re-arms the generated automount after boot-time start-limit failure, and conditionally recovers only eligible NAS-dependent containers.
+All five were observed mounted read/write on 2026-10-15. After the 2026-10-20 Libraries-layout reboot, Libraries again returned read/write with both generated unit layers active. Its recovery helper validates the exact source and current required layout, re-arms the generated automount after boot-time start-limit failure, and conditionally recovers only eligible NAS-dependent containers.
 
 Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-downloaders`, `/mnt/nas-documents`, `/mnt/nas-filesync`, `/mnt/nas-web`, `/mnt/nas-gameserver`, `/mnt/nas-smarthome`, `/mnt/nas-customapps`, `/mnt/nas-apps`, `/mnt/nas-auth`, and `/mnt/nas-shared-drive` are retired locally. Their absence does not establish deletion of NAS-side exports or data. Do not recreate them from historical records.
 
@@ -132,6 +132,7 @@ The alerting worker, units, timers, scripts, Homepage integration, and delivery 
 
 - Root-only rollback archives for the retired shared Docker bridges and the pre-change NAS-recovery helper were not readable during this audit. Retain or remove them only after a separately authorized exact-path inspection.
 - Arcane's two named volumes, stale project rows, and any unreferenced images require exact-object review before cleanup; the accepted automation policy is not cleanup authorization.
+- The 2026-10-20 pre-maintenance running set contained 21 containers rather than the prior 23-container baseline; both supported Palworld containers were absent and require separate investigation.
 - Continue normal monitoring of the historical PVE NIC/reset and non-fatal iGPU option-ROM warning. Do not infer a single cause without new evidence.
 - Select and verify an incident-appropriate recovery point at recovery time; retention changes available snapshot and archive sets.
 

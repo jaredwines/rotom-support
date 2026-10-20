@@ -4,11 +4,12 @@
 # Configuration semantics remain canonical in documents 02 through 07.
 # Index: 01-Rotom-Server-Inventory.md
 # Maintenance contract and protected history: 00-Rotom-Change-Log.md
-# Evidence date: 2026-10-17
+# Evidence date: 2026-10-20 for Libraries; 2026-10-17 for the wider topology
 #
 # CURRENT TOPOLOGY
 #
-# Current topology is 23 running container objects, 18 networks, two named volumes, and 18 active Compose definitions.
+# The 2026-10-17 baseline was 23 running containers, 18 networks, two named volumes, and 18 active Compose definitions.
+# The pre-migration 2026-10-20 running set was 21; both Palworld containers require separate investigation.
 # The retired rotom-docs rollback stack and network were removed on 2026-10-18.
 #
 # /srv/rotom/
@@ -60,9 +61,13 @@
 #   nas-game-servers/                     Game_Servers/.data
 #   nas-hosted-websites/                  Hosted_Websites/.data
 #   nas-libraries/                        Libraries/.data
-#     library/                            authoritative media/game library
+#     documents/
+#       paperless/                        authoritative Paperless media
+#     games/                              authoritative game library
+#     movies/                             authoritative movie library
+#     shows/                              authoritative TV library
 #     torrents/                           qBittorrent payload
-#     paperless/                          authoritative Paperless media
+#     .rotom-qbt-media-ready/              qBittorrent NFS readiness sentinel
 #   nas-rotom-restic-backup/              Rotom_Restic_Backup/.data
 #     rotom-restic-backup/                current guest Restic repository
 #   nas-smart-home/                       Smart_Home/.data

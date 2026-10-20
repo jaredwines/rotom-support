@@ -4,7 +4,7 @@
 **Document role:** Canonical source for scheduled/routine maintenance, automation, monitoring behavior, and operational administration workflow
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
 **Baseline verified:** Current state reconciled through 2026-10-17; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-17 — Make publication file selection ACL-safe
+**Documentation updated:** 2026-10-20 — Update Libraries recovery automation for the new layout
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -99,9 +99,9 @@ PVE VM 100 passes the Intel Bluetooth adapter (`8087:0aaa`) to Rotom as `usb1`; 
 
 ## 2. Libraries Recovery Automation
 
-The NAS recovery helper handles the boot-time race in which Docker requests Libraries before the NAS is reachable. It resets failed generated units, arms `mnt-nas\x2dlibraries.automount`, starts or triggers the exact mount, verifies the documented NFS source and required directories, and fails closed if the automount does not remain active.
+The NAS recovery helper handles the boot-time race in which Docker requests Libraries before the NAS is reachable. It resets failed generated units, arms `mnt-nas\x2dlibraries.automount`, starts or triggers the exact mount, verifies the documented NFS source plus `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and the readiness sentinel, and fails closed if the automount does not remain active.
 
-The helper can recover only supported containers with an eligible restart policy and a recorded NAS/mount startup-failure signature. It leaves running and intentionally stopped containers untouched. Its verified reboot path required the configured retry about thirty seconds after the first pre-NAS attempt.
+The helper can recover only supported containers with an eligible restart policy and a recorded NAS/mount startup-failure signature. It leaves running and intentionally stopped containers untouched. Its earlier verified reboot path required the configured retry about thirty seconds after the first pre-NAS attempt. The 2026-10-20 Libraries-layout reboot verified the new directory contract: the exact export returned read/write, both generated unit layers were active, and the helper completed successfully with exit zero.
 
 ## 3. Arcane Automation
 

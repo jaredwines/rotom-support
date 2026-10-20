@@ -4,7 +4,7 @@
 **Document role:** Canonical source for NAS exports, NFS mounts, storage layout, automount behavior, and storage contracts
 **Hosts:** PVE hypervisor `pve`, Debian VM `rotom`, and UniFi UNAS 2  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Record owner-confirmed NAS protection status
+**Documentation updated:** 2026-10-20 — Record the migrated Libraries layout and recovery contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -51,7 +51,7 @@ Do **not** use this runbook to:
 
 Read-only commands do not intentionally change configuration. Accessing an automounted path or starting its `.mount` unit activates the existing NFS connection and is a live-state change, although it does not alter the mount contract.
 
-The installed `rotom-nas-docker-recovery.service` validates only `/mnt/nas-libraries`, `library/`, and `paperless/`. It then considers only `qbittorrentvpn`, `radarr`, `sonarr`, `jellyfin`, `romm`, `paperless`, and `nginx-proxy-manager`. It starts a stopped container only when its restart policy is `unless-stopped` or `always` and its recorded error matches a NAS/mount startup failure. It leaves running, intentionally stopped, absent, and unrelated containers unchanged.
+The installed `rotom-nas-docker-recovery.service` validates the exact configured `/mnt/nas-libraries` NFS source plus `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and `.rotom-qbt-media-ready/`. It then considers only `qbittorrentvpn`, `radarr`, `sonarr`, `jellyfin`, `romm`, `paperless`, and `nginx-proxy-manager`. It starts a stopped container only when its restart policy is `unless-stopped` or `always` and its recorded error matches a NAS/mount startup failure. It leaves running, intentionally stopped, absent, and unrelated containers unchanged.
 
 ### 4. Canonical current-state inputs
 
@@ -160,12 +160,20 @@ Verify required directories without creating anything:
 **Read-only; may activate an existing automount**
 
 ```bash
-sudo test -d /mnt/nas-libraries/library
-sudo test -d /mnt/nas-libraries/paperless
+sudo test -d /mnt/nas-libraries/games
+sudo test -d /mnt/nas-libraries/movies
+sudo test -d /mnt/nas-libraries/shows
+sudo test -d /mnt/nas-libraries/torrents
+sudo test -d /mnt/nas-libraries/documents/paperless
+sudo test -d /mnt/nas-libraries/.rotom-qbt-media-ready
 sudo stat -c '%u:%g %a %n' \
   /mnt/nas-libraries \
-  /mnt/nas-libraries/library \
-  /mnt/nas-libraries/paperless
+  /mnt/nas-libraries/games \
+  /mnt/nas-libraries/movies \
+  /mnt/nas-libraries/shows \
+  /mnt/nas-libraries/torrents \
+  /mnt/nas-libraries/documents/paperless \
+  /mnt/nas-libraries/.rotom-qbt-media-ready
 ```
 
 #### Recover eligible Libraries-backed containers
@@ -243,7 +251,7 @@ Revalidate this runbook whenever a mount/export, systemd unit, required director
 
 ## 1. Current Storage and Recovery Policy
 
-**Evidence date:** 2026-10-15.
+**Evidence date:** 2026-10-20 for Libraries; 2026-10-15 for the other guest mounts.
 
 Rotom uses five current guest NFSv3 systemd automounts:
 
@@ -261,15 +269,17 @@ All five were observed mounted read/write during the cleanup audit. Accessing an
 
 ## 2. Libraries Storage Contract
 
-`/mnt/nas-libraries` is the sole active Libraries guest contract. Its required current paths include:
+`/mnt/nas-libraries` is the sole active Libraries guest contract. Its required current paths are:
 
-- `library/` for Jellyfin, Radarr, Sonarr, RomM, and NPM's controlled read-only use.
+- `games/`, `movies/`, and `shows/` as root-level authoritative content.
 - `torrents/` plus the qBittorrent readiness sentinel.
-- `paperless/` for authoritative Paperless media.
+- `documents/paperless/` for authoritative Paperless media.
+
+Jellyfin receives separate non-creating read-only binds for the three media roots while retaining `/data/library/{games,movies,shows}` internally. RomM and NPM receive `games/` through their preserved internal paths. Radarr and Sonarr retain the broad `/media` bind and use `/media/movies` and `/media/shows` as their application roots. Paperless retains `/usr/src/paperless/media` internally.
 
 Compose uses non-creating binds where a missing source would risk local shadow directories. The recovery helper must fail closed when the exact NFS filesystem, automount state, required directories, ownership, or sentinel is wrong.
 
-At boot, Docker may request Libraries before the NAS is reachable. The enabled recovery helper resets failed generated units, arms `mnt-nas\x2dlibraries.automount`, mounts the exact export, verifies it, and conditionally recovers eligible containers. The verified reboot path required the helper's configured retry approximately thirty seconds later.
+At boot, Docker may request Libraries before the NAS is reachable. The enabled recovery helper resets failed generated units, arms `mnt-nas\x2dlibraries.automount`, mounts the exact export, verifies it, and conditionally recovers eligible containers. The prior verified path required the helper's configured retry approximately thirty seconds later. After the Libraries-layout reboot on 2026-10-20, the exact export returned read/write, both generated unit layers were active, and the helper completed with `Result=success` and exit zero against the new layout.
 
 ## 3. PVE Backup Storage
 

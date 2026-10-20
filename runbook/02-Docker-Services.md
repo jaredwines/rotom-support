@@ -2,9 +2,9 @@
 
 **Documentation set:** Rotom Support
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
-**Scope:** Rotom workload layer; the current runtime baseline is the 2026-10-17 inventory in section 1
+**Scope:** Rotom workload layer; section 1 preserves the 2026-10-17 complete baseline and the 2026-10-20 running-set discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
+**Documentation updated:** 2026-10-20 — Record migrated Libraries bind paths and runtime discrepancy
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -214,7 +214,7 @@ Revalidate this runbook when a website's desired deployment state, Compose path,
 
 **Evidence date:** 2026-10-17.
 
-The current topology contains 23 running containers, 18 Docker networks, two named volumes, and 18 active Compose definitions. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. Every supported application is Compose-managed under `/srv/rotom/stacks`.
+The 2026-10-17 complete baseline contained 23 running containers, 18 Docker networks, two named volumes, and 18 active Compose definitions. Immediately before Libraries-layout maintenance on 2026-10-20, only 21 containers were running; both Palworld containers were absent from that set and require separate investigation. The retired `rotom-docs` rollback stack and its network were removed on 2026-10-18. Every supported application remains Compose-managed under `/srv/rotom/stacks`.
 
 | Domain | Compose definitions | Supported services |
 |---|---:|---|
@@ -237,10 +237,10 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported active site | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8` |
-| Libraries applications | Supported active services | Authoritative NAS payload under `/mnt/nas-libraries`; non-creating binds where loss would be unsafe |
-| Paperless | Supported active service | VM-local database/configuration plus `/mnt/nas-libraries/paperless` media |
+| Libraries applications | Supported active services | Authoritative NAS payload under `/mnt/nas-libraries`; media sources are root-level `games/`, `movies/`, and `shows/`; non-creating binds protect every direct source |
+| Paperless | Supported active service | VM-local database/configuration plus `/mnt/nas-libraries/documents/paperless` media |
 | qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract, WireGuard, loopback UI `127.0.0.1:8080` |
-| Palworld Jared and Fran | Supported active services | VM-local state; UDP publications unchanged; both healthy and intended to remain running under `restart: unless-stopped` |
+| Palworld Jared and Fran | Supported definitions; runtime needs verification | VM-local state; UDP publications unchanged; both are intended to remain running under `restart: unless-stopped`, but neither was in the observed 2026-10-20 running set |
 | Home Assistant and Homebridge | Supported active services | VM-local state under Smart Home appdata; host networking retained for discovery; each Compose file explicitly uses DNS `192.168.1.1` |
 
 Container state is time-sensitive. Diagnose current runtime state with the runbook above instead of relying on the evidence-date count alone.
@@ -257,7 +257,7 @@ Homepage reaches Glances through service DNS on their private Compose network. N
 
 ## 4. NAS-Backed Container Safety
 
-The scoped recovery helper validates `/mnt/nas-libraries`, its required `library/` and `paperless/` directories, and the applicable sentinel before considering container recovery. It may recover only supported NAS-dependent containers with an eligible restart policy and a recorded NAS/mount startup-failure signature. It leaves running and intentionally stopped containers unchanged.
+The scoped recovery helper validates the exact configured `/mnt/nas-libraries` NFS source plus `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and the qBittorrent readiness sentinel before considering container recovery. It may recover only supported NAS-dependent containers with an eligible restart policy and a recorded NAS/mount startup-failure signature. It leaves running and intentionally stopped containers unchanged.
 
 Do not recreate a missing bind source as a local directory. Stop if an expected path is not the documented NFS filesystem or if the source, ownership, mode, Compose definition, or recovery intent differs.
 
@@ -284,6 +284,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 
 - Two Arcane-related named volumes, stale project rows, and any unreferenced images require exact-object review before cleanup; the accepted automation policy does not authorize their deletion.
 - Actual residual Docker network/image objects were not enumerated during the documentation cleanup because privileged Docker access was unavailable.
+- Both supported Palworld containers were absent from the 2026-10-20 pre-maintenance running set; determine whether that state is intentional and restore or document the intended state separately.
 
 ## 8. Related Documentation
 

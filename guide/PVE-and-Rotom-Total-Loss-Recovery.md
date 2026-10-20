@@ -4,7 +4,7 @@
 **Document role:** Orchestration guide for rebuilding PVE and Rotom after complete loss of the original computer
 **Scenario:** Replacement hardware; original PVE installation, local disks, and running Rotom VM are unavailable
 **Evidence baseline:** PVE inspection on 2026-10-16 and Rotom recovery verification on 2026-10-17
-**Documentation updated:** 2026-10-17 — Add AI-assisted recovery bootstrap and manual fallback
+**Documentation updated:** 2026-10-20 — Update the Libraries recovery layout
 **Routine backup authority:** [05 - Backup and Restore](../runbook/05-Backup-and-Restore.md)
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 **RS dependency governance:** [00 - Rotom Change Log](../runbook/00-Rotom-Change-Log.md#current-documentation-maintenance-rules)
@@ -749,7 +749,7 @@ Do not continue until application writers are stopped. Before temporary LAN acce
 
 | Guest target | Recorded NAS export role | Required content |
 |---|---|---|
-| `/mnt/nas-libraries` | `Libraries/.data` | `library/`, `torrents/`, `paperless/` and sentinel contract |
+| `/mnt/nas-libraries` | `Libraries/.data` | `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and the sentinel contract |
 | `/mnt/nas-rotom-restic-backup` | `Rotom_Restic_Backup/.data` | `rotom-restic-backup/` |
 | `/mnt/nas-game-servers` | `Game_Servers/.data` | Empty current service boundary |
 | `/mnt/nas-smart-home` | `Smart_Home/.data` | Empty current service boundary |

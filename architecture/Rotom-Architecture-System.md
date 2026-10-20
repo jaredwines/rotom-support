@@ -2,8 +2,8 @@
 
 **Artifact class:** Supplementary RS architecture document; not a canonical operational source
 **Document role:** Newcomer-friendly map of Rotom's services, access paths, storage, and data protection
-**Evidence baseline:** Rotom Support plus read-only live inspection on 2026-10-17
-**Documentation updated:** 2026-10-17 — Improve orientation and correct diagram paths
+**Evidence baseline:** Rotom Support plus read-only live inspection through 2026-10-20
+**Documentation updated:** 2026-10-20 — Update the Libraries layout and runtime evidence
 **RS index:** [01 - Rotom Server Inventory](../runbook/01-Rotom-Server-Inventory.md)
 
 This guide is for newcomers, administrators, and recovery operators who need to understand how Rotom's infrastructure and services fit together. Use it to learn the system and identify the right source; use the numbered Rotom Support (RS) documents for authoritative configuration, troubleshooting, and recovery procedures.
@@ -143,7 +143,7 @@ These names remain visible either as deleted NPM database rows or in preserved R
 
 ## Docker containers
 
-Live inspection found 24 container objects: 23 running and one intentionally stopped rollback container. The 23 running containers belong to 18 active Compose definitions. Each project normally has a private Docker network; NPM, Home Assistant, and Homebridge intentionally use host networking. Glances is reachable only by Homepage on their shared private network.
+The 2026-10-17 live inspection found 23 running containers across 18 active Compose definitions; its one intentionally stopped rollback container was removed on 2026-10-18. The 2026-10-20 pre-JAR-99 running set contained 21 containers because both supported Palworld containers were absent and need separate investigation. Each project normally has a private Docker network; NPM, Home Assistant, and Homebridge intentionally use host networking. Glances is reachable only by Homepage on their shared private network.
 
 The main path convention is:
 
@@ -167,15 +167,15 @@ The main path convention is:
 
 | Container | What it does | Important connections and storage | Status |
 |---|---|---|---|
-| `jellyfin` | Streams the media library | VM-local configuration; read-only `/mnt/nas-libraries/library`; LAN port `8096` | **Verified live** |
+| `jellyfin` | Streams the media library | VM-local configuration; separate read-only `/mnt/nas-libraries/{movies,shows,games}` sources retained internally below `/data/library`; LAN port `8096` | **Verified live**; movie and episode partial streams passed after JAR-99 |
 | `radarr` | Organizes movies | VM-local configuration; read/write Libraries mount at `/media`; torrent subpath additionally mounted read-only; LAN port `7878` | **Verified live** |
 | `sonarr` | Organizes TV shows | VM-local configuration; read/write Libraries mount at `/media`; torrent subpath additionally mounted read-only; LAN port `8989` | **Verified live** |
 | `prowlarr` | Supplies indexers to Radarr/Sonarr and related clients | VM-local configuration only; no NAS bind; LAN port `9696` | **Verified live** |
 | `qbittorrentvpn` | Downloads through WireGuard/VPN | VM-local configuration; read/write `/mnt/nas-libraries/torrents`; read-only NAS readiness sentinel; loopback-only UI `8080` | **Verified live** |
-| `romm` | RomM web application and game-library reader | VM-local data/assets/config/resources/backup; read-only `/mnt/nas-libraries/library/games`; talks to `romm-db` and `romm-valkey` on `romm_default`; loopback-only UI `8081` | **Verified live** |
+| `romm` | RomM web application and game-library reader | VM-local data/assets/config/resources/backup; read-only `/mnt/nas-libraries/games`; talks to `romm-db` and `romm-valkey` on `romm_default`; loopback-only UI `8081` | **Verified live**; 2,437-ROM scan passed after JAR-99 |
 | `romm-db` | RomM MariaDB database | VM-local database under `/srv/rotom/appdata/libraries/romm/database`; private `romm_default` network | **Verified live**, healthy |
 | `romm-valkey` | RomM cache/queue | VM-local Valkey data; private `romm_default` network | **Verified live** |
-| `paperless` | Paperless document application | VM-local application/search/consume/export state; authoritative media at `/mnt/nas-libraries/paperless`; talks to database and broker; loopback-only UI `8000` | **Verified live**, healthy |
+| `paperless` | Paperless document application | VM-local application/search/consume/export state; authoritative media at `/mnt/nas-libraries/documents/paperless`; talks to database and broker; loopback-only UI `8000` | **Verified live**, healthy; existing and controlled-import documents downloaded after JAR-99 |
 | `paperless-db` | Paperless PostgreSQL database | VM-local database under `/srv/rotom/appdata/libraries/paperless/database`; private `paperless_default` network | **Verified live** |
 | `paperless-broker` | Paperless Valkey job broker | VM-local broker data; private `paperless_default` network | **Verified live** |
 
@@ -190,8 +190,8 @@ The main path convention is:
 
 | Container | What it does | Important connections and storage | Status |
 |---|---|---|---|
-| `palworld-server-jared` | Jared's Palworld server | VM-local world/server state under `/srv/rotom/appdata/game-servers/palworld-jared`; UDP `8211` and `27015`; does not use the empty Game Servers NAS boundary | **Verified live**, healthy; intended to remain running under `restart: unless-stopped` |
-| `palworld-server-fran` | Fran's Palworld server | VM-local world/server state under `/srv/rotom/appdata/game-servers/palworld-fran`; UDP `8212` and `27016`; does not use the empty Game Servers NAS boundary | **Verified live**, healthy; intended to remain running under `restart: unless-stopped` |
+| `palworld-server-jared` | Jared's Palworld server | VM-local world/server state under `/srv/rotom/appdata/game-servers/palworld-jared`; UDP `8211` and `27015`; does not use the empty Game Servers NAS boundary | **Needs verification**; absent from the 2026-10-20 observed running set |
+| `palworld-server-fran` | Fran's Palworld server | VM-local world/server state under `/srv/rotom/appdata/game-servers/palworld-fran`; UDP `8212` and `27016`; does not use the empty Game Servers NAS boundary | **Needs verification**; absent from the 2026-10-20 observed running set |
 
 ### Smart Home
 
@@ -211,9 +211,9 @@ Services documented as retired, including Uptime Kuma, Syncthing, Gamarr, JDownl
 | Mount or path | What it is and what it stores | Services that depend on it | Persistence and backup relationship | Status |
 |---|---|---|---|---|
 | `/mnt/nas-libraries` | NFSv3 export `Libraries/.data`; authoritative media/game library, torrents, and Paperless media | Jellyfin, Radarr, Sonarr, qBittorrentVPN, RomM, Paperless, and NPM's read-only game-library use | Excluded from Rotom Restic because `/mnt` is excluded; depends on NAS-side snapshots/restore | **Verified live**, mounted read/write; automount active |
-| `/mnt/nas-libraries/library` | Library subtree for media and games | Jellyfin and RomM read it; Radarr/Sonarr manage content through the broader Libraries mount; NPM has a read-only games bind | Same NAS snapshot protection as the Libraries export | **Verified live** |
+| `/mnt/nas-libraries/{games,movies,shows}` | Root-level authoritative game, movie, and TV libraries | Jellyfin reads all three; RomM and NPM read games; Radarr/Sonarr manage movies/shows through the broader Libraries mount | Same NAS snapshot protection as the Libraries export | **Verified live** after JAR-99 |
 | `/mnt/nas-libraries/torrents` | Download and seeding area | qBittorrentVPN writes; Radarr and Sonarr receive read-only binds in the observed container metadata | Same NAS snapshot protection as the Libraries export | **Verified live** |
-| `/mnt/nas-libraries/paperless` | Authoritative Paperless media | Paperless application | NAS-side protection is required; Paperless database/config remain VM-local and must be restored consistently with media | **Verified live** |
+| `/mnt/nas-libraries/documents/paperless` | Authoritative Paperless media | Paperless application | NAS-side protection is required; Paperless database/config remain VM-local and must be restored consistently with media | **Verified live** after JAR-99 |
 | `/mnt/nas-rotom-restic-backup` | NFSv3 export `Rotom_Restic_Backup/.data` | Rotom Restic worker | Contains the repository that protects selected VM-local data; the repository is not itself backed up by that same job | **Verified live**, mounted read/write; automount active |
 | `/mnt/nas-rotom-restic-backup/rotom-restic-backup` | Rotom's current Restic repository | `rotom-restic-backup.service` and restore workflows | Retention is 7 daily, 4 weekly, and 12 monthly for automatic snapshots | **Documented current**; parent mount and timer **verified live**, repository contents not enumerated in this review |
 | `/mnt/nas-game-servers` | NFSv3 export `Game_Servers/.data`; empty service boundary | No current Palworld container dependency; Palworld state is VM-local | Not a copy of Palworld data | **Configured live**; automount waiting and not activated in this review |
@@ -284,7 +284,7 @@ All primary backup destinations and NAS snapshots are at the same physical site,
 
 ## Documentation-to-live comparison
 
-The major topology matched current RS:
+The 2026-10-17 major topology matched then-current RS:
 
 - 23 running containers;
 - 18 active Compose definitions;
@@ -296,10 +296,13 @@ The major topology matched current RS:
 
 Three NAS mounts were in the normal `active/waiting` automount state and had not been activated by this review. Libraries and Rotom Restic storage were actively mounted read/write. This is not a conflict with the five configured mount contracts.
 
+On 2026-10-20, JAR-99 verified the new Libraries layout and all affected service endpoints through a normal reboot. That same task observed only 21 running containers before maintenance; both Palworld containers were already absent, so the earlier 23-container statement remains dated evidence rather than current runtime proof.
+
 ### Remaining verification limits
 
 - **Arcane cleanup boundary:** the update/heal policy is resolved, but its two named volumes, stale project rows, and any unreferenced images still require separate exact-object review before deletion.
 - **Recovery detail:** current owner-confirmed Restic, VMA/disposable-restore, and NAS isolated-restore transcripts were not supplied to RS. An incident must verify a specific available recovery point.
+- **Palworld runtime:** both supported Palworld containers were absent from the observed 2026-10-20 running set; determine whether this is intentional before restoring or revising their supported state.
 
 Router/WAN, PVE, NAS control-plane, and NAS snapshot operation are not active discrepancies: Jared confirmed they work and asked that no further authenticated inspection be performed. Their exact control-plane exports remain intentionally outside this review.
 
