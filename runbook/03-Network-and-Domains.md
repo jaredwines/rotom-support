@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Rotom LAN, DNS, Docker networking, ports, Cloudflare, NPM, and domain routing
 **Hosts:** PVE hypervisor `pve` plus Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-17 — Resolve architecture audit findings
+**Documentation updated:** 2026-10-20 — Record Libraries DNS and download-client repair
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -102,7 +102,7 @@ Application routes for Paperless, Prowlarr, RomM, Home Assistant, Homebridge, Je
 
 ## 3. Current Listener and Docker-Network Model
 
-Supported host or loopback publications include Homepage `3001`, Arcane `3552`, Rotom Support `127.0.0.1:8082`, qBittorrent `127.0.0.1:8080`, Jared Wines `127.0.0.1:7777`, Aloha `7778`, Jellyfin `8096`, Home Assistant `8123`, Radarr `7878`, Sonarr `8989`, Prowlarr `9696`, NPM `80/81/443`, and the read-only Rotom backup-status API `8787`.
+Supported host or loopback publications include Homepage `3001`, Arcane `3552`, Rotom Support `127.0.0.1:8082`, qBittorrent `127.0.0.1:8080` plus trusted-LAN `192.168.1.69:8080`, Jared Wines `127.0.0.1:7777`, Aloha `7778`, Jellyfin `8096`, Home Assistant `8123`, Radarr `7878`, Sonarr `8989`, Prowlarr `9696`, NPM `80/81/443`, and the read-only Rotom backup-status API `8787`.
 
 Container ports and current process listeners are time-sensitive; verify them read-only before diagnosis or change.
 
@@ -124,7 +124,7 @@ PVE has separate backup-only NAS paths for PVE Restic Backup and Rotom VM Backup
 
 ## 5. DNS, DDNS, and TLS
 
-Cloudflare DDNS remains an outbound-only Platform service. Its protected token value is not documented. On 2026-10-17, repeated container DNS failures were traced to Docker's embedded resolver having no usable external nameserver. Explicit container DNS `192.168.1.1` was added to its Compose definition and only that container was recreated. Its generated resolver then named `192.168.1.1`, restart count remained zero, and the updater reported the current A record was already up to date. NPM remains the TLS termination and reverse-proxy authority for Rotom application routes.
+Cloudflare DDNS remains an outbound-only Platform service. Its protected token value is not documented. On 2026-10-17, repeated container DNS failures were traced to Docker's embedded resolver having no usable external nameserver. Explicit container DNS `192.168.1.1` was added to its Compose definition and only that container was recreated. On 2026-10-20, Prowlarr suffered the same post-boot resolver failure; its Compose definition now also explicitly uses `192.168.1.1`. Both generated resolver files name Docker's embedded resolver with that router address as the external server. NPM remains the TLS termination and reverse-proxy authority for Rotom application routes.
 
 Cloudflare API and DNS checks on 2026-10-17 verified an unproxied apex A record for `rotom.casa` pointing to the current public address and an unproxied wildcard CNAME `*.rotom.casa` pointing to the apex. The LAN resolver overrides only the apex to `192.168.1.69`; wildcard names follow the public CNAME unless another local record exists. Jared confirmed the router WAN/VLAN path works and waived further authenticated inspection; exact control-plane settings were not exported into this review.
 
@@ -156,7 +156,7 @@ The pre-virtualization bare-metal interface, routing, UFW, Docker bridge-address
 
 - Preserve Rotom reservation `192.168.1.69`, PVE `192.168.1.68`, NAS `192.168.1.70`, and the currently documented MAC/VM identity contracts.
 - Preserve NPM state, certificates, access lists, and host-networking role.
-- Preserve loopback-only exposure for Jared Wines, Rotom Support, and qBittorrent. Preserve the trusted-LAN restriction on both the support hostname and its legacy redirect.
+- Preserve loopback-only exposure for Jared Wines and Rotom Support. Preserve qBittorrent's dual listener: loopback `127.0.0.1:8080` for NPM and trusted-LAN `192.168.1.69:8080` for Sonarr/Radarr. Preserve the trusted-LAN restriction on both the support hostname and its legacy redirect.
 - Preserve the five exact guest NFS sources from document 04.
 - Keep secret values out of diagnostic output and documentation.
 - Reconcile public DNS, LAN DNS, TLS, proxy configuration, listeners, and application state before changing any layer.

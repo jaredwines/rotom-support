@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Route SSH client and access lookup
+**Documentation updated:** 2026-10-20 — Record Libraries DNS and download-client repair
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -91,7 +91,7 @@ The five service accounts are locked. Their NSS home fields still name absent `/
 
 Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. `jaredwines.com` is intentionally active and publishes only `127.0.0.1:7777:80` for NPM proxy host `8`. Aloha publishes `7778:80`.
 
-Cloudflare DDNS uses explicit container DNS `192.168.1.1`; the container was recreated after the setting was added and then confirmed the current Cloudflare A record was already up to date. Arcane's accepted automation baseline is daily automatic update at midnight with no excluded containers, automatic healing every five minutes with no excluded containers, at most five restarts within a 30-minute window, scheduled pruning disabled, and project-symlink following enabled. Both Palworld servers are intended to remain running under `restart: unless-stopped`.
+Cloudflare DDNS and Prowlarr use explicit container DNS `192.168.1.1` to avoid the Docker boot-time resolver race; Prowlarr's 2026-10-20 recreation restored external indexer resolution. Arcane's accepted automation baseline is daily automatic update at midnight with no excluded containers, automatic healing every five minutes with no excluded containers, at most five restarts within a 30-minute window, scheduled pruning disabled, and project-symlink following enabled. Both Palworld servers are intended to remain running under `restart: unless-stopped`.
 
 Remote Desktop Commander runs from `/opt/desktop-commander` as locked identity `desktopcmd` (`1001:1001`). Its former home is absent.
 

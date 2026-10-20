@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 preserves the 2026-10-17 complete baseline and the 2026-10-20 running-set discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record narrow RomM browser-upload and metadata-provider contract
+**Documentation updated:** 2026-10-20 — Record Libraries DNS and download-client repair
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -240,7 +240,8 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Libraries applications | Supported active services | Authoritative NAS payload under `/mnt/nas-libraries`; media sources are root-level `games/`, `movies/`, and `shows/`; non-creating binds protect every direct source |
 | RomM | Supported active service | Parent game-library bind is read-only; only the nested ROM tree is writable for browser uploads. Protected IGDB variables are present without recording values; IGDB and LaunchBox provider health are verified. |
 | Paperless | Supported active service | VM-local database/configuration plus `/mnt/nas-libraries/documents/paperless` media |
-| qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract, WireGuard, loopback UI `127.0.0.1:8080` |
+| Prowlarr | Supported active service | Explicit container DNS `192.168.1.1` prevents the Docker boot-time resolver race; it supplies the configured Sonarr/Radarr indexers |
+| qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract and WireGuard; UI/control listener remains at `127.0.0.1:8080` for NPM and is additionally published at `192.168.1.69:8080` for Sonarr/Radarr |
 | Palworld Jared and Fran | Supported definitions; runtime needs verification | VM-local state; UDP publications unchanged; both are intended to remain running under `restart: unless-stopped`, but neither was in the observed 2026-10-20 running set |
 | Home Assistant and Homebridge | Supported active services | VM-local state under Smart Home appdata; host networking retained for discovery; each Compose file explicitly uses DNS `192.168.1.1` |
 

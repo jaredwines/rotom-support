@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-20 — Repair Libraries resolver, download-client, and stale-root failures
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, and `03-Network-and-Domains.md`.
+- **Status:** **Implemented / Verified.** Prowlarr, Sonarr, Radarr, and qBittorrentVPN were repaired without changing NAS data, download queues, or application configuration outside the named collection root.
+- **Changes:** Added explicit router DNS `192.168.1.1` to Prowlarr after Docker restored it before DHCP had supplied an external resolver. Retained qBittorrent's loopback listener for NPM and added its trusted-LAN `192.168.1.69:8080` listener so the existing Sonarr/Radarr download-client targets work. Changed the unmonitored Avatar Aang collection's obsolete `/media/library/movies` root to `/media/movies`. At Jared's request, cleared historical Sonarr/Radarr application and Docker logs before restarting those two containers; only fresh post-restart logs remain.
+- **Evidence:** Prowlarr resolved external indexer hosts and its health response was empty after its built-in indexer test. qBittorrentVPN recreated from the existing local image with WireGuard `wg0` at `10.2.0.2/32`; loopback and LAN HTTP probes both returned `200`, and both Sonarr and Radarr reached its LAN listener. The built-in download-client and indexer tests returned `200` for each application, followed by empty health responses. The Radarr collection record now names `/media/movies`.
+- **Outstanding:** The additional qBittorrent listener is intentionally limited to the trusted LAN. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-20 — Enable narrow RomM browser-upload access and metadata providers
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, `architecture/Rotom-Architecture-System.md`, and `internals/tooling/test-rr-runbooks`.
