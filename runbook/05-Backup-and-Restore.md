@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Update the Paperless NAS recovery path
+**Documentation updated:** 2026-10-20 — Record current VZDump availability verification
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -516,6 +516,8 @@ On 2026-10-17 eight retained VMID 100 archives were present. The newest archive,
 The same archive then completed a current disposable restore into VMID `101` on temporary directory storage backed by the exact VM-backup NFS export, avoiding local thin-pool overcommit. Before boot, the test VM was set to `onboot=0`, reduced to 1 GiB and two cores, and stripped of its NIC, iGPU, ConBee, and Bluetooth attachments. It booted without network or host-device access; the guest agent responded on the fifth three-second poll and reported hostname `rotom`, Debian 13, and kernel `6.12.107+deb13-amd64`. PVE remained healthy with zero failed units and at least 1.6 GiB memory available during the test. Graceful shutdown timed out, so the disposable guest was stopped; this does not prove graceful application shutdown. Exact-target cleanup removed VMID `101`, its two NFS-backed disks, the temporary storage definition, and the test path. Production VMID `100` remained running and guest-agent responsive, the archive remained present, the PVE Restic timer remained enabled/active, and NFS available-space accounting returned to the pre-test `3,794,723,328 KiB`. This proves current archive restoration and isolated OS boot, not authenticated application behavior or a full production-size boot under replacement-hardware conditions. Archive availability changes under normal retention.
 
 An earlier 2026-09-29 disposable restore remains useful historical portability evidence; the current 2026-10-17 exercise supersedes it for archive-specific restore and isolated-boot readiness.
+
+Jared's 2026-10-20 read-only PVE check confirmed that `rotom-vm-daily` remains enabled with the recorded VMID 100, snapshot, zstd, `05:00`, and `7 daily / 4 weekly / 6 monthly` policy. The storage listed three VMID 100 archives from October 18, 19, and 20; PVE reported zero failed units. This confirms current scheduled-archive availability, while the separate 2026-10-17 VMA verification and isolated restore remain the applicable restoration evidence.
 
 ## 5. NAS-Resident Application Data
 
