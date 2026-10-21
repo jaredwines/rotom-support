@@ -455,6 +455,7 @@ Rotom recovery is layered. No single layer replaces another:
 3. Rotom VM Backup creates whole-VM Proxmox VZDump archives.
 4. NAS snapshot/restore protects authoritative NAS payload excluded from guest Restic.
 5. Historical application-aware artifacts and the pre-virtualization raw image provide additional dated recovery evidence.
+6. The public `jaredwines/rotom-compose` repository preserves reviewed non-secret Compose configuration history and an off-site copy; it is supplementary only and cannot restore secrets, application state, Docker state, NAS payload, or a complete VM.
 
 Select and verify an incident-appropriate recovery point before use. A successful scheduled job, repository check, archive decompression, or file listing is not by itself a complete restore rehearsal.
 

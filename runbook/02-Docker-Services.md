@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 preserves the 2026-10-17 complete baseline and the 2026-10-20 running-set discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record Libraries DNS and download-client repair
+**Documentation updated:** 2026-10-20 — Add version-controlled Compose update workflow
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -22,6 +22,7 @@ Record substantive changes to this document in the change log as part of the sam
 ## Start by Task or Symptom
 
 - For a stopped or missing supported container, failed health check, direct application failure, or Docker-backed website outage, use the procedure immediately below.
+- For a reviewed change to a tracked Compose definition or its non-secret support file, use [Update Rotom Compose Configuration](#update-rotom-compose-configuration) before applying the separately authorized service change.
 - If the direct listener works but proxy, TLS, DNS, routing, or public access fails, continue in [document 03](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure).
 - If a bind source is an unavailable NFS path, use [document 04](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) before changing Docker state.
 
@@ -209,6 +210,42 @@ Record the site, desired-state authority, Compose path, initial container state,
 
 Revalidate this runbook when a website's desired deployment state, Compose path, image, bind source, published port, NPM upstream, certificate, or network model changes. Add additional sites only after their direct and proxied expected responses are verified.
 
+## Update Rotom Compose Configuration
+
+### Outcome, scope, and current inputs
+
+Use this procedure to record a reviewed change to a tracked file in the nested Git working tree `/srv/rotom/stacks`, whose `origin` is `git@github.com:jaredwines/rotom-compose.git`. The public remote holds only current non-secret configuration history and an off-site copy; it is not a secret store, a replacement for Restic/PVE/NAS recovery, or authority to recreate retired services.
+
+The initial reviewed allowlist is the 18 current `compose.yaml` definitions across `platform`, `libraries`, `hosted-websites`, `game-servers`, and `smart-home`, plus `platform/mkdocs-rr/mkdocs.yml`, `platform/mkdocs-rr/scripts/publish-source`, `README.md`, and `.gitignore`. Never add `/srv/rotom/secrets`, `/srv/rotom/appdata`, Docker volumes or `/var/lib/docker`, NAS data, databases, logs, certificates, credentials, `.env` files, generated output, `.git`, or historical `*.before-*`/`*.pre-*` files.
+
+### Read-only preflight and stop conditions
+
+**Read-only**
+
+```bash
+sudo -iu jared -- git -C /srv/rotom/stacks status --short
+sudo -iu jared -- git -C /srv/rotom/stacks remote -v
+sudo -iu jared -- git -C /srv/rotom/stacks diff --check
+sudo docker compose -f /srv/rotom/stacks/EXACT-DOMAIN/EXACT-STACK/compose.yaml config -q
+```
+
+Confirm the exact target is tracked and inspect its diff. Stop if the worktree has an unrelated change, the remote differs, the path is untracked or historical, the rendered definition fails, a literal credential is present, or the change would alter a secret, appdata, Docker/NAS persistent data, ownership boundary, or an unreviewed service contract. Do not add broad paths merely because they appear under the working tree.
+
+### Smallest action, verification, and recovery
+
+Edit only the reviewed tracked target, validate the affected Compose project, then inspect and stage the exact path. Commit and push only the reviewed diff:
+
+**Changes Rotom**
+
+```bash
+sudo -iu jared -- git -C /srv/rotom/stacks add -- EXACT-TRACKED-PATH
+sudo -iu jared -- git -C /srv/rotom/stacks diff --cached --check
+sudo -iu jared -- git -C /srv/rotom/stacks diff --cached
+sudo -iu jared -- git -C /srv/rotom/stacks commit -m 'Describe the reviewed Compose change'
+sudo -iu jared -- git -C /srv/rotom/stacks push
+```
+
+Verify a clean worktree, the expected remote branch, and `docker compose ... config -q`. Git alone does not start, stop, recreate, or update a container. Apply only the separately intended targeted service action, then perform its owning service verification. If Git validation or push fails, preserve the working tree and error; do not reset, clean, force-push, or make a service change to compensate.
 
 ## 1. Current Docker Runtime and Deployment State
 
@@ -224,7 +261,7 @@ At Jared's explicit direction on 2026-10-20, the pre-reset Docker inventory of 2
 | Game Servers | 2 | Palworld Jared, Palworld Fran |
 | Smart Home | 2 | Home Assistant, Homebridge |
 
-The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is under `/srv/rotom/appdata/<domain>`; protected inputs are under `/srv/rotom/secrets/<domain>`; declarative Compose definitions are under `/srv/rotom/stacks/<domain>`.
+The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is under `/srv/rotom/appdata/<domain>`; protected inputs are under `/srv/rotom/secrets/<domain>`; declarative Compose definitions are under `/srv/rotom/stacks/<domain>`. The nested `/srv/rotom/stacks` Git repository retains only the reviewed non-secret definitions and necessary support files; see the update procedure above.
 
 ## 2. Current Service Contracts
 

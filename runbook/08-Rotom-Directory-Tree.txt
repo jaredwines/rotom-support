@@ -21,6 +21,8 @@
 #
 # /srv/rotom/
 #   stacks/
+#     .git/                              Jared-owned nested Git metadata; public non-secret Compose history
+#     README.md, .gitignore              scope and exclusions for the nested repository
 #     platform/
 #       arcane/compose.yaml
 #       cloudflare-ddns/compose.yaml        explicit container DNS 192.168.1.1
@@ -192,6 +194,8 @@
 # /usr/local/bin/rs                                      canonical installed helper
 # /usr/local/bin/rr                                      compatibility wrapper
 # /home/jared/.config/rr/repository                      private path configuration
+# /srv/rotom/stacks/                                        nested public Git working tree for reviewed non-secret Compose configuration
+# https://github.com/jaredwines/rotom-compose               public off-site configuration-history copy; not a recovery or secret store
 # Intentionally tracked repository content is RS; untracked/ignored/generated/Git-internal content is excluded.
 # Available Sources is a separate destination, is not the RS membership boundary, and replacement is manual.
 # Router/WAN, PVE, NAS control-plane, and NAS snapshot operation were owner-confirmed working on 2026-10-17;

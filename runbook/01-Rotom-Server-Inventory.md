@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Restrict Arcane project-file access and record zero projects
+**Documentation updated:** 2026-10-20 — Record version-controlled Compose configuration
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -32,6 +32,7 @@ Choose the row that best matches the work. In the destination, read the current-
 | SSH alias, target account, authentication method, or access-policy lookup | [07 — current SSH client and access register](07-Users-and-Permissions.md#rotom-side-ssh-client-and-access-register) |
 | Filesystem-path lookup | [08 — current and historical filesystem topology](08-Rotom-Directory-Tree.txt) |
 | Website repository synchronization or publication | [06 — documentation and synchronization workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow) |
+| Review or update tracked Rotom Compose configuration | [02 — Update Rotom Compose Configuration](02-Docker-Services.md#update-rotom-compose-configuration) |
 | RS maintenance or publication | [00 — documentation maintenance rules and change history](00-Rotom-Change-Log.md#current-documentation-maintenance-rules) |
 
 Procedures answer **what to do**; current-state sections answer **what exists**. Reconstruction material supports disaster recovery. Historical and retired sections are evidence, not current instructions. Document `00` is the sole RS maintenance authority.
@@ -88,6 +89,8 @@ On 2026-10-20, Jared authorized a complete Docker and Arcane-state reset. The pr
 | Smart Home | `126:5003` | `/srv/rotom/{stacks,appdata}/smart-home` | Home Assistant, Homebridge |
 
 The five service accounts are locked. Their NSS home fields still name absent `/home/<service>` paths; those paths are not deployment or recovery roots. Human administrators are Jared and Fran. Fran is a full administrator and the sole human member of Docker group GID `989`; Docker membership is root-equivalent.
+
+The current non-secret Compose definitions and necessary MkDocs support files are version-controlled in the nested `/srv/rotom/stacks` Git working tree and published at `https://github.com/jaredwines/rotom-compose`. The public repository is a reviewed configuration-history and off-site-copy layer only; secrets, `.env` files, appdata, Docker state, NAS data, historical copies, and generated output remain outside it. Follow the supported update workflow in document 02; do not treat this repository as a backup or a source for recreating retired services.
 
 Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. `jaredwines.com` is currently intentionally stopped; when started, it publishes only `127.0.0.1:7777:80` for NPM proxy host `8`. Aloha publishes `7778:80`.
 
