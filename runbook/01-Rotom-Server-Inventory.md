@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record intentional backup reset and console banners
+**Documentation updated:** 2026-10-20 — Record verified post-reset recovery points
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -118,7 +118,7 @@ Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-d
 - **Rotom VM Backup:** Proxmox job `rotom-vm-daily`; VMID `100`; daily `05:00`; snapshot mode with zstd; retention `7 daily / 4 weekly / 6 monthly`.
 - **NAS-resident application data:** outside Rotom Restic because `/mnt` is excluded. Confirm the applicable NAS snapshot and isolated-restore path before relying on it.
 
-On 2026-10-20, Jared intentionally cleared the Rotom Restic repository, PVE Restic repository, and every retained VMID 100 VMA archive. Final `restic snapshots` checks on both hosts and PVE's VM-backup storage listing were empty. The existing timers and `rotom-vm-daily` job were retained, so this empty state is a verified reset point rather than retirement of backup automation; select and verify a newly created recovery point before relying on protection again.
+On 2026-10-20, Jared intentionally cleared the Rotom Restic repository, PVE Restic repository, and every retained VMID 100 VMA archive. Final checks then showed two new Rotom Restic snapshots (latest `f6cae3c8`, 14.165 GiB), two new PVE Restic snapshots (latest `00600860`, 232.049 KiB), and one VMID 100 VMA archive, `vzdump-qemu-100-2026_10_20-19_01_20.vma.zst` (34,853,099,624 bytes). The existing timers and `rotom-vm-daily` job were retained throughout; select and verify an appropriate current recovery point before relying on protection.
 
 Current recovery procedures and limitations are owned by [05 — Backup and Restore](05-Backup-and-Restore.md). Backup layers are complementary and must not be treated as interchangeable.
 

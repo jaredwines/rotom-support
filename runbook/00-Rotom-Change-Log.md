@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-20 — Record verified post-reset recovery points
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `05-Backup-and-Restore.md`, and `08-Rotom-Directory-Tree.txt`.
+- **Status:** **Implemented / Verified.**
+- **Changes:** Recorded the verified recovery coverage rebuilt after the intentional reset: two Rotom Restic snapshots, two PVE Restic snapshots, and one Rotom VMID 100 VMA archive. The existing repositories, workers, timers, and native Proxmox job remained enabled throughout; historical recovery-test evidence remains historical.
+- **Evidence:** Jared supplied final Restic listings showing Rotom snapshots `7998f4f6` and `f6cae3c8`, PVE snapshots `75c4b19a` and `00600860`, and the sole PVE VMA listing `vzdump-qemu-100-2026_10_20-19_01_20.vma.zst` at 34,853,099,624 bytes. The manual VZDump job logged successful completion at 19:09:16 PDT after streaming 100 GiB.
+- **Outstanding:** These new recovery points have not yet completed a fresh full-data Restic check, isolated restore, or VMA verification; retain the earlier exercises only as historical evidence. NAS snapshots and the historical raw NVMe image remain outside this reset. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-20 — Record intentional backup reset and console banners
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, and `08-Rotom-Directory-Tree.txt`.
