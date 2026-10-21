@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-20 — Record the verified post-reset Docker runtime and Arcane controls
+**Documentation updated:** 2026-10-20 — Resolve the Arcane Analytics Heartbeat observation
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-20 — Resolve the Arcane Analytics Heartbeat observation
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, and `06-Maintenance-and-Automation.md`.
+- **Status:** **Documentation updated / Verified.**
+- **Changes:** Resolved the post-reset Arcane Analytics Heartbeat observation. The failed run was not a Docker or application-health failure and requires no configuration change or repeated manual run.
+- **Evidence:** Sanitized Arcane logs recorded HTTP `429 Too Many Requests` from its analytics heartbeat endpoint, then scheduled a one-hour automatic retry. The Arcane container remained running and healthy. Image Update Watcher completed with zero failed images or containers; Docker Client Refresh and Environment Health also succeeded.
+- **Outstanding:** Exact Arcane schedules, thresholds, and project-polling settings remain unrecorded. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-20 — Record verified post-reset Docker runtime and Arcane controls
 

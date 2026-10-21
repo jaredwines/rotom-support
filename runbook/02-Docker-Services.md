@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 preserves the 2026-10-17 complete baseline and the 2026-10-20 running-set discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record verified post-reset Docker runtime
+**Documentation updated:** 2026-10-20 — Resolve the Arcane Analytics Heartbeat observation
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -329,7 +329,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 
 ## 7. Outstanding / Needs Verification
 
-- Arcane deliberately has zero registered Projects and no access to host Compose directories. Its Docker socket remains root-equivalent; exact post-reset schedules and healing thresholds need a current readback if they matter operationally. The latest UI screenshot showed its Analytics Heartbeat failed; impact is not yet investigated.
+- Arcane deliberately has zero registered Projects and no access to host Compose directories. Its Docker socket remains root-equivalent; exact post-reset schedules and healing thresholds need a current readback if they matter operationally.
 
 ## 8. Related Documentation
 

@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record verified post-reset Docker runtime and Arcane controls
+**Documentation updated:** 2026-10-20 — Resolve the Arcane Analytics Heartbeat observation
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -133,7 +133,7 @@ The alerting worker, units, timers, scripts, Homepage integration, and delivery 
 ## 6. Outstanding and Needs Verification
 
 - Root-only rollback archives for the retired shared Docker bridges and the pre-change NAS-recovery helper were not readable during this audit. Retain or remove them only after a separately authorized exact-path inspection.
-- Arcane deliberately has zero Projects and no host Compose-directory bind. This prevents its Projects UI from editing the Compose trees, but its writable Docker socket remains root-equivalent control of the Docker daemon. Exact post-reset automation schedules and healing thresholds need a current readback if they matter operationally. The latest UI screenshot showed its Analytics Heartbeat failed; impact is not yet investigated.
+- Arcane deliberately has zero Projects and no host Compose-directory bind. This prevents its Projects UI from editing the Compose trees, but its writable Docker socket remains root-equivalent control of the Docker daemon. Exact post-reset automation schedules and healing thresholds need a current readback if they matter operationally.
 - Continue normal monitoring of the historical PVE NIC/reset and non-fatal iGPU option-ROM warning. Do not infer a single cause without new evidence.
 - Select and verify an incident-appropriate recovery point at recovery time; retention changes available snapshot and archive sets.
 
