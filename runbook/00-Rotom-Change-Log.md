@@ -84,6 +84,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-20 — Record intentional backup reset and console banners
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, and `08-Rotom-Directory-Tree.txt`.
+- **Status:** **Implemented / Verified.**
+- **Changes:** Recorded Jared's intentional reset of retained Rotom Restic, PVE Restic, and Rotom VM VMA backup data while preserving the existing repository configuration, workers, timers, and `rotom-vm-daily` job. Recorded the retained PVE local recovery-staging tree, removal of the obsolete VMID 100 pre-disk-shrink configuration copy and Rotom Support prior-site rollback directory, and visual-only Rotom/PVE MOTD headers.
+- **Evidence:** Jared's supplied command output showed all 22 Rotom Restic snapshots pruned (16.462 GiB), all 11 PVE Restic snapshots pruned (572.228 KiB), and empty final `restic snapshots` checks for both repositories. PVE's final VMID 100 backup-storage listing was empty after removal of its three VMA archives. Read-only inspection found `/var/backups/pve-restic-recovery` populated by the 04:00 worker run and confirmed the exact removed rollback-copy paths. Jared supplied successful banner displays for both hosts.
+- **Outstanding:** No currently usable Rotom Restic, PVE Restic, or VMID 100 VMA recovery point remained at verification; wait for and verify newly scheduled backups before depending on these layers. NAS snapshots and the historical raw NVMe image were outside this reset. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-20 — Resolve the Arcane Analytics Heartbeat observation
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, and `06-Maintenance-and-Automation.md`.

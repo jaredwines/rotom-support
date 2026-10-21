@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record current VZDump availability verification
+**Documentation updated:** 2026-10-20 — Record intentional Restic and VMA backup reset
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -476,11 +476,13 @@ The current source scope includes `/etc`, `/home`, `/root`, `/opt`, `/srv`, `/us
 
 The latest documented automatic observation is snapshot `aad4a52e` from 2026-10-17 at 03:05 PDT, approximately 18.600 GiB. The service exited successfully after retention and prune. A same-day read-only preflight found the timer enabled and active, the exact NAS export mounted read/write, no concurrent Restic process, protected control-file permissions, readable snapshot metadata, and no failed systemd units. A standard `restic check` completed across all 22 snapshots with no errors. A separate `restic check --read-data` then read all 1,077 packs in 4 minutes 15 seconds and found no errors.
 
-During the 2026-10-20 Docker/Arcane reset, `/mnt/nas-rotom-restic-backup` was active but read-only. Jared explicitly authorized the reset to proceed without a fresh snapshot. The documented 2026-10-17 snapshot remains the latest supported Rotom Restic observation; verify and restore writable repository access before any new backup, restore, retention, or repository operation.
+During the 2026-10-20 Docker/Arcane reset, `/mnt/nas-rotom-restic-backup` was active but read-only. Jared explicitly authorized the reset to proceed without a fresh snapshot. Later same-day Restic operations completed successfully during the authorized backup reset, but every snapshot was then intentionally removed; verify current writable repository access and select a newly created snapshot before any backup, restore, retention, or repository operation.
 
 A complete isolated restore of `aad4a52e` recovered 39,398 files/directories totaling 18.600 GiB in two minutes, and Restic `--verify` then verified all 27,581 restored files without error. Full SQLite integrity checks passed all 17 discovered restored databases, including the transactionally consistent NPM, Home Assistant, and Zigbee copies. The restored Paperless PostgreSQL 18 cluster completed crash recovery with no network or published ports; logical dumps of `paperless` and `postgres` succeeded, and `pg_amcheck` passed all relations and indexes. The restored RomM MariaDB 11.8.9 cluster completed InnoDB crash recovery with no network or published ports; extended native checks and a complete logical dump succeeded. Both disposable containers and the root-only 19 GiB rehearsal tree were removed after evidence retention.
 
 Manual post-credential-path snapshot `333c87b3` also completed successfully. The current database-layer rehearsal does not prove NAS-resident media consistency or authenticated application behavior; those remain separate acceptance gates.
+
+On 2026-10-20, Jared explicitly cleared all 22 snapshots in this repository and completed Restic prune, removing 16.462 GiB. The final `restic snapshots` check returned no snapshots. The repository, worker, credential path, and timer remain configured; this was an intentional reset of retained data, not retirement of the Rotom backup service. The preceding snapshot and restore results remain historical evidence only and must not be treated as a currently available recovery point.
 
 The VM-local `/srv/rotom/backup-staging` path is absent. Historical references to local fast-rollback archives below that root do not establish current availability.
 
@@ -497,6 +499,8 @@ The VM-local `/srv/rotom/backup-staging` path is absent. Historical references t
 | Credential path | `/etc/restic/restic-repository-password` on PVE |
 
 On 2026-10-17 the timer was enabled and active, the exact repository mount was read/write, and no failed systemd units were present. Snapshot `19ed0226` from 04:00:21 PDT was selected from ten retained snapshots. A full-data-read check read both repository packs without error. A root-only `0700` staging restore recovered 307 files/directories totaling 231.557 KiB, and Restic `--verify` verified all 116 restored files. The reviewed inventory contained the expected boot, network, package, public PVE configuration, VM configuration, service, worker, and reconstruction evidence; its private-material path scan was empty. Public `/root/.ssh/authorized_keys` data is reconstruction evidence, not a private key. Exact-target cleanup removed the 920 KiB staging tree; PVE root retained 56 GiB free, the timer remained enabled and active, the service was correctly inactive between runs, and zero failed units were present.
+
+On 2026-10-20, Jared explicitly cleared all 11 PVE Restic snapshots and completed prune, removing 572.228 KiB. The final `restic snapshots` check returned no snapshots. The PVE repository, worker, credential path, and timer remain configured; earlier PVE verification and restore results remain historical evidence, not current recovery points. The normal worker's local `/var/backups/pve-restic-recovery` staging tree was present at the same day's 04:00 run, with a `files/` recovery tree, inventory files, and `RESTORE-NOTES.txt`; it is local recovery material, not an additional Restic snapshot.
 
 PVE work remains Jared-executed where the RS labels it **PVE — Jared executes**.
 
@@ -518,6 +522,8 @@ The same archive then completed a current disposable restore into VMID `101` on 
 An earlier 2026-09-29 disposable restore remains useful historical portability evidence; the current 2026-10-17 exercise supersedes it for archive-specific restore and isolated-boot readiness.
 
 Jared's 2026-10-20 read-only PVE check confirmed that `rotom-vm-daily` remains enabled with the recorded VMID 100, snapshot, zstd, `05:00`, and `7 daily / 4 weekly / 6 monthly` policy. The storage listed three VMID 100 archives from October 18, 19, and 20; PVE reported zero failed units. This confirms current scheduled-archive availability, while the separate 2026-10-17 VMA verification and isolated restore remain the applicable restoration evidence.
+
+Later on 2026-10-20, Jared explicitly removed those three retained VMID 100 archives. A final `pvesm list nas-rotom-vm-backup --content backup --vmid 100` listing was empty. `rotom-vm-daily` remains enabled, so the next scheduled run will establish a new archive; earlier VMA verification and restore results remain historical evidence only.
 
 ## 5. NAS-Resident Application Data
 

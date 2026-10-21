@@ -4,7 +4,7 @@
 **Document role:** Canonical source for scheduled/routine maintenance, automation, monitoring behavior, and operational administration workflow
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
 **Baseline verified:** Current state reconciled through 2026-10-17; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-20 — Resolve the Arcane Analytics Heartbeat observation
+**Documentation updated:** 2026-10-20 — Record intentional backup reset and console banners
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -124,6 +124,8 @@ Uptime Kuma and the Rotom/PVE alert-delivery layer are retired. No worker, servi
 NPM certificate renewal remains active. Diagnose renewal by inspecting the currently served certificate, NPM state, and logs without exposing protected inputs.
 
 ## 5. Command-Line Safety and Administration
+
+Rotom and PVE display visual-only ASCII login headers through `/etc/update-motd.d/00-rotom` and `/etc/update-motd.d/00-pve`, respectively. These hooks identify the host after login and do not replace the normal kernel or last-login information.
 
 - Use small, reviewable command blocks.
 - Read before writing.

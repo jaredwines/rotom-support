@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Resolve the Arcane Analytics Heartbeat observation
+**Documentation updated:** 2026-10-20 — Record intentional backup reset and console banners
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -117,6 +117,8 @@ Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-d
 - **PVE Restic Backup:** repository `/mnt/nas-pve-restic-backup/pve-restic-backup`; daily `04:00`; current credential path `/etc/restic/restic-repository-password` on PVE.
 - **Rotom VM Backup:** Proxmox job `rotom-vm-daily`; VMID `100`; daily `05:00`; snapshot mode with zstd; retention `7 daily / 4 weekly / 6 monthly`.
 - **NAS-resident application data:** outside Rotom Restic because `/mnt` is excluded. Confirm the applicable NAS snapshot and isolated-restore path before relying on it.
+
+On 2026-10-20, Jared intentionally cleared the Rotom Restic repository, PVE Restic repository, and every retained VMID 100 VMA archive. Final `restic snapshots` checks on both hosts and PVE's VM-backup storage listing were empty. The existing timers and `rotom-vm-daily` job were retained, so this empty state is a verified reset point rather than retirement of backup automation; select and verify a newly created recovery point before relying on protection again.
 
 Current recovery procedures and limitations are owned by [05 — Backup and Restore](05-Backup-and-Restore.md). Backup layers are complementary and must not be treated as interchangeable.
 

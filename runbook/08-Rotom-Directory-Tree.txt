@@ -76,7 +76,7 @@
 #     torrents/                           qBittorrent payload
 #     .rotom-qbt-media-ready/              qBittorrent NFS readiness sentinel
 #   nas-rotom-restic-backup/              Rotom_Restic_Backup/.data
-#     rotom-restic-backup/                current guest Restic repository
+#     rotom-restic-backup/                current guest Restic repository; empty after 2026-10-20 reset
 #
 # /etc/
 #   fstab                                 two current guest NFS automount entries
@@ -118,9 +118,9 @@
 #
 # PVE BACKUP TOPOLOGY
 # /mnt/nas-pve-restic-backup/
-#   pve-restic-backup/                    PVE host-configuration Restic repository
-# /mnt/pve/nas-rotom-vm-backup/           PVE-managed Rotom_VM_Backup/.data storage
-# /var/backups/pve-restic-recovery/       PVE recovery staging
+#   pve-restic-backup/                    PVE host-configuration Restic repository; empty after 2026-10-20 reset
+# /mnt/pve/nas-rotom-vm-backup/           PVE-managed Rotom_VM_Backup/.data storage; VMID 100 archives empty after reset
+# /var/backups/pve-restic-recovery/       PVE recovery staging; current 2026-10-20 worker tree retained locally
 # /etc/restic/restic-repository-password  PVE-local root-only credential
 # /usr/local/sbin/pve-restic-backup
 # /usr/local/sbin/pve-backup-status-api
