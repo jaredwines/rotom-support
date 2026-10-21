@@ -22,7 +22,7 @@ Record substantive changes to this document in the change log as part of the sam
 ## Start by Task or Symptom
 
 - For a stopped or missing supported container, failed health check, direct application failure, or Docker-backed website outage, use the procedure immediately below.
-- For a reviewed change to a tracked Compose definition or its non-secret support file, use [Update Rotom Compose Configuration](#update-rotom-compose-configuration) before applying the separately authorized service change.
+- **Update RC** means update the reviewed non-secret **Rotom Compose** configuration. Use [Update Rotom Compose Configuration](#update-rotom-compose-configuration) before applying the separately authorized service change.
 - If the direct listener works but proxy, TLS, DNS, routing, or public access fails, continue in [document 03](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure).
 - If a bind source is an unavailable NFS path, use [document 04](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) before changing Docker state.
 
@@ -214,7 +214,7 @@ Revalidate this runbook when a website's desired deployment state, Compose path,
 
 ### Outcome, scope, and current inputs
 
-Use this procedure to record a reviewed change to a tracked file in the nested Git working tree `/srv/rotom/stacks`, whose `origin` is `git@github.com:jaredwines/rotom-compose.git`. The public remote holds only current non-secret configuration history and an off-site copy; it is not a secret store, a replacement for Restic/PVE/NAS recovery, or authority to recreate retired services.
+Use this procedure when Jared says **Update RC** or when recording a reviewed change to a tracked file in the nested Git working tree `/srv/rotom/stacks`, whose `origin` is `git@github.com:jaredwines/rotom-compose.git`. **RC** means **Rotom Compose**. The public remote holds only current non-secret configuration history and an off-site copy; it is not a secret store, a replacement for Restic/PVE/NAS recovery, or authority to recreate retired services.
 
 The initial reviewed allowlist is the 18 current `compose.yaml` definitions across `platform`, `libraries`, `hosted-websites`, `game-servers`, and `smart-home`, plus `platform/mkdocs-rr/mkdocs.yml`, `platform/mkdocs-rr/scripts/publish-source`, `README.md`, and `.gitignore`. Never add `/srv/rotom/secrets`, `/srv/rotom/appdata`, Docker volumes or `/var/lib/docker`, NAS data, databases, logs, certificates, credentials, `.env` files, generated output, `.git`, or historical `*.before-*`/`*.pre-*` files.
 

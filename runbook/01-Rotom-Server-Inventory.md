@@ -32,7 +32,7 @@ Choose the row that best matches the work. In the destination, read the current-
 | SSH alias, target account, authentication method, or access-policy lookup | [07 — current SSH client and access register](07-Users-and-Permissions.md#rotom-side-ssh-client-and-access-register) |
 | Filesystem-path lookup | [08 — current and historical filesystem topology](08-Rotom-Directory-Tree.txt) |
 | Website repository synchronization or publication | [06 — documentation and synchronization workflow](06-Maintenance-and-Automation.md#6-documentation-and-synchronization-workflow) |
-| Review or update tracked Rotom Compose configuration | [02 — Update Rotom Compose Configuration](02-Docker-Services.md#update-rotom-compose-configuration) |
+| Review or update tracked RC (Rotom Compose) configuration | [02 — Update Rotom Compose Configuration](02-Docker-Services.md#update-rotom-compose-configuration) |
 | RS maintenance or publication | [00 — documentation maintenance rules and change history](00-Rotom-Change-Log.md#current-documentation-maintenance-rules) |
 
 Procedures answer **what to do**; current-state sections answer **what exists**. Reconstruction material supports disaster recovery. Historical and retired sections are evidence, not current instructions. Document `00` is the sole RS maintenance authority.

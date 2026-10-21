@@ -4,6 +4,8 @@ This repository is the Git working copy for the Rotom Support (RS).
 
 ## Documentation authority
 
+**Terminology:** Within Rotom work, **RC** means **Rotom Compose**: the reviewed non-secret deployment configuration in `/srv/rotom/stacks` and its Git history. “Update RC” means follow the canonical **Update Rotom Compose Configuration** procedure in `runbook/02-Docker-Services.md`; it does not itself authorize a service lifecycle change or an RS update unless the verified Compose change changes RS-documented state.
+
 - Rotom Support (RS) is all intentionally tracked content in this repository. Local untracked files, ignored files, temporary artifacts, generated output, and Git's internal metadata are not part of RS merely because they exist inside the checkout.
 - `runbook/` is the primary authority for Rotom's documented current state, operation, troubleshooting, configuration, maintenance, migration, recovery, Docker, networking, storage, backups, permissions, and services.
 - `runbook/00-Rotom-Change-Log.md` is the canonical RS maintenance contract.

@@ -12,7 +12,7 @@
 
 This file records meaningful changes to Rotom Support and the server changes or decisions those updates describe. The numbered files `01`–`08` remain the detailed state/reference sources for the latest recorded configuration and clearly labeled plans, while other tracked repository areas retain their narrower defined roles. Older entries here describe history, not instructions to restore an old configuration.
 
-**Terminology:** **Rotom Support** is the proper name for **all intentionally tracked content in the Rotom-Support repository**. Local untracked files, ignored files, temporary artifacts, generated output, and Git's internal metadata are not RS merely because they exist inside the checkout. The numbered files **00–08** are the **Core Numbered Reference Set** within RS, and `runbook/` is the primary authority for Rotom's documented current state and operations. Other tracked areas retain their narrower defined roles. Within the Rotom project, **RS** is the accepted acronym for **Rotom Support**. “Project docs,” “rotom project docs,” “project documentation,” “project documents,” and “project reference files” are informal aliases only when context does not imply a narrower scope. Available Sources is a separate, manually maintained publication or reference destination; it neither defines RS membership nor represents the complete repository. The definition and current source map are maintained in [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md).
+**Terminology:** **Rotom Support** is the proper name for **all intentionally tracked content in the Rotom-Support repository**. Local untracked files, ignored files, temporary artifacts, generated output, and Git's internal metadata are not RS merely because they exist inside the checkout. The numbered files **00–08** are the **Core Numbered Reference Set** within RS, and `runbook/` is the primary authority for Rotom's documented current state and operations. Other tracked areas retain their narrower defined roles. Within the Rotom project, **RS** is the accepted acronym for **Rotom Support**. **RC** means **Rotom Compose**: the reviewed non-secret deployment configuration in `/srv/rotom/stacks` and its Git history. “Update RC” invokes the canonical **Update Rotom Compose Configuration** procedure in document 02; it does not independently authorize a container lifecycle change or an RS update. “Project docs,” “rotom project docs,” “project documentation,” “project documents,” and “project reference files” are informal aliases only when context does not imply a narrower scope. Available Sources is a separate, manually maintained publication or reference destination; it neither defines RS membership nor represents the complete repository. The definition and current source map are maintained in [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md).
 
 ### How to use this file safely
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-20 — Define the RC shorthand for Rotom Compose
+
+- **Files changed:** `AGENTS.md`, `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, and `02-Docker-Services.md`.
+- **Status:** **Documentation only.**
+- **Changes:** Defined **RC** as **Rotom Compose** in the agent instructions and current runbook. “Update RC” now unambiguously routes to the existing Update Rotom Compose procedure: review the exact non-secret tracked configuration change, validate it, inspect and commit/push it, then apply only the separately intended service action. It does not by itself authorize a container lifecycle change or an RS update.
+- **Evidence:** Jared explicitly adopted the shorthand on 2026-10-20. No live Rotom, PVE, NAS, Docker, GitHub, or Compose change occurred.
+- **Outstanding:** None.
 
 ## 2026-10-20 — Version-control current Rotom Compose configuration
 
