@@ -14,6 +14,9 @@
 # containers, 18 networks including Docker defaults, two fresh Arcane internal
 # volumes, and 22 images. Jared then intentionally stopped both Palworld containers
 # and jaredwines.com; the current runtime is 20 running and three intentionally stopped.
+# Arcane's canonical URL is https://arcane.rotom.casa. It has zero registered Projects
+# and no host Compose-directory bind; only its own appdata is writable alongside its
+# Docker socket, while Platform secrets remain read-only.
 # The retired rotom-docs rollback stack and network were removed on 2026-10-18.
 #
 # /srv/rotom/

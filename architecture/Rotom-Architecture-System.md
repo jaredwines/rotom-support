@@ -159,7 +159,7 @@ The main path convention is:
 | `nginx-proxy-manager` | HTTPS front door and hostname router | Host network; VM-local proxy database and certificates under `/srv/rotom/appdata/platform/nginx-proxy-manager`; read-only access to the NAS game library for a controlled route/use documented by the deployment | **Verified live** |
 | `homepage` | Main dashboard | Port `3001`; VM-local configuration; read-only Docker socket; reaches Glances by service name on `homepage_default` | **Verified live**, healthy |
 | `glances` | System metrics for Homepage | No host listener; read-only host root and Docker socket; shares `homepage_default` with Homepage | **Verified live** |
-| `arcane` | Docker/Compose management | Port `3552`; VM-local state; Docker socket; writable Platform stack definitions and read-only Platform secrets. Accepted policy: update daily at midnight and heal every five minutes, both with empty exclusions; heal limit five restarts per 30 minutes; pruning off. | **Verified live**, healthy; policy accepted by owner |
+| `arcane` | Docker/Compose management | Port `3552`; canonical URL `https://arcane.rotom.casa`; VM-local state; writable Docker socket; read-only Platform secrets; no host Compose-directory bind and zero registered Projects. The saved UI controls enable automatic update, image update watching, and auto-heal; scheduled pruning, image auto patch, and vulnerability scan are disabled. | **Verified live**, healthy; Docker-socket control remains root-equivalent |
 | `cloudflare-ddns` | Updates Cloudflare DNS from Rotom | Outbound-only; reads a protected token file from `/srv/rotom/secrets/platform`; explicit DNS `192.168.1.1`; no inbound listener | **Verified live** after resolver correction; reports apex record current |
 | `mkdocs-rr` | Serves the generated Rotom Support site | Loopback-only port `8082`; read-only generated site under `/srv/rotom/appdata/platform/mkdocs-rr/site` | **Verified live** |
 
@@ -200,7 +200,7 @@ The main path convention is:
 | `home-assistant` | Home automation platform | Host network for discovery; VM-local `/config`; host D-Bus and ConBee II passthrough; explicit router DNS; no dependency on the empty Smart Home NAS boundary | **Verified live** |
 | `homebridge` | HomeKit bridge | Host network for discovery; VM-local `/homebridge`; explicit router DNS; no dependency on the empty Smart Home NAS boundary | **Verified live** |
 
-Two Docker named volumes, `arcane-backups` and `arcane-rustic-cache`, were **verified live** as objects. They were not mounted by any running container in the inspected metadata. RS already marks their exact policy and cleanup disposition as needing authenticated Arcane review; their presence is not deletion authorization.
+The prior Arcane named volumes were intentionally removed during the 2026-10-20 Docker reset. New Arcane internal volumes were recreated with the service; inspect their current attachment and contents before any cleanup.
 
 Services documented as retired, including Uptime Kuma, Syncthing, Gamarr, JDownloader, the ROM importer, Igir automation, and the browser upload bridge, had no current container objects in the live inventory. They are not omitted accidentally; they are retired rather than current Docker containers.
 
@@ -289,7 +289,7 @@ The 2026-10-17 major topology matched then-current RS:
 - 23 running containers;
 - 18 active Compose definitions;
 - 18 Docker networks after removal of the retired `rotom-docs_default` network on 2026-10-18;
-- two Arcane-related named volumes;
+- two fresh Arcane-related named volumes;
 - five configured Rotom NFSv3 automount contracts;
 - the documented host/loopback listener model; and
 - all 17 current NPM hostnames returned their expected class of local HTTPS response.
@@ -300,7 +300,7 @@ On 2026-10-20, JAR-99 verified the new Libraries layout and all affected service
 
 ### Remaining verification limits
 
-- **Arcane cleanup boundary:** the update/heal policy is resolved, but its two named volumes, stale project rows, and any unreferenced images still require separate exact-object review before deletion.
+- **Arcane control boundary:** Arcane has zero Projects and cannot directly edit host Compose files through its Projects UI, but its Docker socket remains root-equivalent. Its current internal volumes and any unreferenced images still require separate exact-object review before deletion.
 - **Recovery detail:** current owner-confirmed Restic, VMA/disposable-restore, and NAS isolated-restore transcripts were not supplied to RS. An incident must verify a specific available recovery point.
 - **Palworld runtime:** both supported Palworld containers were absent from the observed 2026-10-20 running set; determine whether this is intentional before restoring or revising their supported state.
 

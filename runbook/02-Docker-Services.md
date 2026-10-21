@@ -232,7 +232,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 |---|---|---|
 | Homepage and Glances | Supported active pair | One Compose file at `/srv/rotom/stacks/platform/homepage/compose.yaml`; Glances has no host listener |
 | Nginx Proxy Manager | Supported active service | Host networking; authoritative state under Platform appdata; no Docker socket |
-| Arcane | Supported active service | Its application state and project database were reset; its fresh database discovered the five Platform Compose roots only. The previously accepted automation policy must be reapplied; empty exclusions do not authorize cleanup |
+| Arcane | Supported active service | Canonical URL `https://arcane.rotom.casa`; zero registered Projects. It has writable appdata and Docker socket, read-only Platform secrets, and no host Compose-directory bind or `PROJECTS_DIRECTORY`; this removes Projects UI access to Compose files but Docker-socket control remains root-equivalent. |
 | Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
@@ -292,7 +292,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 
 ## 7. Outstanding / Needs Verification
 
-- The reset created fresh Arcane internal volumes and removed stale project rows, prior Arcane settings, and the former image inventory. Reapply the accepted automation policy and intentionally register or expose the 13 non-Platform Compose roots if they should be Arcane-managed.
+- Arcane deliberately has zero registered Projects and no access to host Compose directories. Its Docker socket remains root-equivalent; exact post-reset schedules and healing thresholds need a current readback if they matter operationally.
 - Libraries and Rotom Restic NFS mounts were observed read-only during the reset. NAS-backed services started under Jared's explicit waiver; verify write readiness separately.
 
 ## 8. Related Documentation

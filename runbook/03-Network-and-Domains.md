@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Rotom LAN, DNS, Docker networking, ports, Cloudflare, NPM, and domain routing
 **Hosts:** PVE hypervisor `pve` plus Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record Libraries DNS and download-client repair
+**Documentation updated:** 2026-10-20 — Record canonical Arcane route
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -92,6 +92,7 @@ Nginx Proxy Manager is host-networked and owns the guest's HTTP/HTTPS reverse-pr
 | `rotom.casa` | Homepage on `192.168.1.69:3001` | Homepage requires `Host: rotom.casa`; a bare loopback request returning `400` is expected |
 | `support.rotom.casa` | `127.0.0.1:8082` | Private Rotom Support portal; NPM host `27`, wildcard certificate `24`, and trusted-LAN access list `1` |
 | `docs.rotom.casa` | `127.0.0.1:8082` | Legacy private hostname; NPM host `22` permanently redirects paths and query strings to `https://support.rotom.casa/runbook/` |
+| `arcane.rotom.casa` | `127.0.0.1:3552` | Arcane's canonical URL; local-SNI HTTPS returned `200` after its configuration update. The former `arcane.smart-hub.xyz` application URL is retired. |
 | `pve.rotom.casa` | HTTPS `192.168.1.68:8006` | Forced TLS, WebSockets, and the configured access list |
 | `jaredwines.com` | `127.0.0.1:7777` | Intentionally stopped by Jared on 2026-10-20; when started, NPM proxy host `8` serves the retained loopback-only publication |
 | `alohamillworks.com` | `127.0.0.1:7778` | Active website; local-SNI and external public probes returned `200` |

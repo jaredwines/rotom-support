@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record Docker/Arcane reset and current stopped services
+**Documentation updated:** 2026-10-20 — Restrict Arcane project-file access and record zero projects
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -91,7 +91,7 @@ The five service accounts are locked. Their NSS home fields still name absent `/
 
 Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. `jaredwines.com` is currently intentionally stopped; when started, it publishes only `127.0.0.1:7777:80` for NPM proxy host `8`. Aloha publishes `7778:80`.
 
-Cloudflare DDNS and Prowlarr use explicit container DNS `192.168.1.1` to avoid the Docker boot-time resolver race; Prowlarr's 2026-10-20 recreation restored external indexer resolution. Arcane's reset database has rediscovered only the five Platform Compose roots; the accepted automation policy must be reapplied before treating it as active. Both Palworld servers are currently intentionally stopped, while their Compose restart policy remains `unless-stopped`.
+Cloudflare DDNS and Prowlarr use explicit container DNS `192.168.1.1` to avoid the Docker boot-time resolver race; Prowlarr's 2026-10-20 recreation restored external indexer resolution. Arcane uses canonical URL `https://arcane.rotom.casa`; it has no project-directory configuration or host Compose-directory bind, and its project database contains zero records. Its saved UI controls include automatic update and auto-heal enabled, with scheduled pruning, image auto patch, and vulnerability scan disabled. Both Palworld servers are currently intentionally stopped, while their Compose restart policy remains `unless-stopped`.
 
 Remote Desktop Commander runs from `/opt/desktop-commander` as locked identity `desktopcmd` (`1001:1001`). Its former home is absent.
 
@@ -130,7 +130,7 @@ The alerting worker, units, timers, scripts, Homepage integration, and delivery 
 ## 6. Outstanding and Needs Verification
 
 - Root-only rollback archives for the retired shared Docker bridges and the pre-change NAS-recovery helper were not readable during this audit. Retain or remove them only after a separately authorized exact-path inspection.
-- The Arcane reset removed stale project rows and automation settings. Reapply the accepted automation policy; its current mount/discovery scope contains only five Platform projects, leaving 13 non-Platform Compose roots to be intentionally registered or exposed.
+- Arcane deliberately has zero Projects and no host Compose-directory bind. This prevents its Projects UI from editing the Compose trees, but its writable Docker socket remains root-equivalent control of the Docker daemon. Exact post-reset automation schedules and healing thresholds need a current readback if they matter operationally.
 - Both remaining NFS contracts were read-only during the Docker reset. Resolve that discrepancy before write-dependent service use or a new Rotom Restic snapshot.
 - Continue normal monitoring of the historical PVE NIC/reset and non-fatal iGPU option-ROM warning. Do not infer a single cause without new evidence.
 - Select and verify an incident-appropriate recovery point at recovery time; retention changes available snapshot and archive sets.
