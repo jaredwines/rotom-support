@@ -120,23 +120,23 @@ require_text 07-Users-and-Permissions.md "### Rotom-side SSH client and access r
 require_text 07-Users-and-Permissions.md '`id_ed25519_github`'
 require_text 07-Users-and-Permissions.md 'Never use `chmod 777`'
 
-require_text 01-Rotom-Server-Inventory.md "the current intended runtime is therefore 20 running containers and those three intentionally stopped containers"
+require_text 01-Rotom-Server-Inventory.md "The final inventory is 23 running containers, 18 networks including Docker defaults, zero named volumes, and 21 images"
 require_text 01-Rotom-Server-Inventory.md "Rotom Support"
-require_text 02-Docker-Services.md '| Jared Wines | Supported stopped site |'
-require_text 02-Docker-Services.md "the current runtime has 20 running containers and those three stopped containers"
+require_text 02-Docker-Services.md '| Jared Wines | Supported active site |'
+require_text 02-Docker-Services.md "The final runtime has 23 running containers, 18 networks including Docker defaults, zero named volumes, and 21 images"
 require_text 02-Docker-Services.md '| Rotom Support | Supported active service |'
 require_text 04-NAS-and-Storage.md '`documents/paperless/` for authoritative Paperless media'
 require_text 04-NAS-and-Storage.md '`games/`, `movies/`, and `shows/` as root-level authoritative content'
 require_text 04-NAS-and-Storage.md 'nested non-creating `games/roms` bind at `/romm/library/roms`'
 require_text 02-Docker-Services.md '## RomM Upload and Metadata-Provider Contract'
 require_text 07-Users-and-Permissions.md 'browser-uploaded ROM files were observed as `root:5000`, mode `0644`'
-require_text 03-Network-and-Domains.md '`jaredwines.com` is currently intentionally stopped'
+require_text 03-Network-and-Domains.md '`jaredwines.com` is currently active'
 require_text 03-Network-and-Domains.md 'Glances no longer has a host listener'
 require_text 03-Network-and-Domains.md '`support.rotom.casa`'
 require_text 06-Maintenance-and-Automation.md 'Docker-socket access remains root-equivalent'
 require_text 06-Maintenance-and-Automation.md '/srv/rotom/appdata/platform/mkdocs-rr/repository'
-require_text 07-Users-and-Permissions.md 'Aloha'\''s active content and Jared Wines'\'' intentionally stopped site content'
-require_text 08-Rotom-Directory-Tree.txt 'the current runtime is 20 running and three intentionally stopped.'
+require_text 07-Users-and-Permissions.md 'Aloha'\''s and Jared Wines'\'' active site content'
+require_text 08-Rotom-Directory-Tree.txt '23 running containers, 18 networks including Docker defaults, zero named volumes,'
 require_text 08-Rotom-Directory-Tree.txt 'mkdocs-rr/compose.yaml'
 
 reject_text '| Jared Wines | **Needs Verification** |' "$REPO_ROOT/runbook"/0[1-8]-*

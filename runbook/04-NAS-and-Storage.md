@@ -4,7 +4,7 @@
 **Document role:** Canonical source for NAS exports, NFS mounts, storage layout, automount behavior, and storage contracts
 **Hosts:** PVE hypervisor `pve`, Debian VM `rotom`, and UniFi UNAS 2  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record RomM's narrow writable ROM-upload bind
+**Documentation updated:** 2026-10-20 — Record verified read/write NFS state before Docker reset
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -62,7 +62,7 @@ The installed `rotom-nas-docker-recovery.service` validates the exact configured
 
 Both are NFS systemd automount contracts from NAS `192.168.1.70`. Exact export paths and ownership remain canonical in document 04 and live `findmnt --fstab` output.
 
-**Current discrepancy (2026-10-20):** both contracts were active but mounted read-only during the Docker/Arcane reset. Jared explicitly authorized the Docker recreation to proceed without repairing that state. Do not infer writable NAS service or Restic-repository access from the active automounts; investigate and verify the live read/write semantics before any write-dependent action.
+**Current verified state (2026-10-20):** immediately before the final Docker/Arcane reset, both contracts were active and mounted read/write from their documented NFSv3 sources. This observation does not replace the normal preflight: verify the exact active source and read/write semantics before every write-dependent action or after a NAS/mount incident.
 
 At the initial 2026-10-15 validation point, the Libraries NFS filesystem was active and healthy but `mnt-nas\x2dlibraries.automount` was inactive with boot result `mount-start-limit-hit`. A controlled repair restored both unit layers, confirmed the exact source, restarted the seven dependent containers, and verified their services. A same-day full reboot then proved the hardened recovery path: early Docker and first-helper attempts briefly failed before NAS reachability, while the helper's configured retry about 30 seconds later re-armed the automount, mounted the exact source, recovered eligible services, and completed successfully. Both generated Libraries units remained active and no systemd units were failed. An active mount with an inactive or failed automount is still degraded and requires targeted recovery.
 

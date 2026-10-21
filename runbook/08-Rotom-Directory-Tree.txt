@@ -8,12 +8,11 @@
 #
 # CURRENT TOPOLOGY
 #
-# The 2026-10-20 Docker/Arcane reset removed 22 containers, 15 Compose-created
-# networks, two Arcane internal volumes, 25 images, and Arcane application state.
-# All 18 Compose definitions were recreated. The rebuilt runtime reached 23 healthy
-# containers, 18 networks including Docker defaults, two fresh Arcane internal
-# volumes, and 22 images. Jared then intentionally stopped both Palworld containers
-# and jaredwines.com; the current runtime is 20 running and three intentionally stopped.
+# The final 2026-10-20 Docker/Arcane reset removed 23 containers, 15 Compose-created
+# networks, two named Arcane volumes, 25 images, and Arcane application state.
+# All 18 Compose definitions were recreated and started. The verified runtime has
+# 23 running containers, 18 networks including Docker defaults, zero named volumes,
+# and 21 images; no container was exited or unhealthy at verification.
 # Arcane's canonical URL is https://arcane.rotom.casa. It has zero registered Projects
 # and no host Compose-directory bind; only its own appdata is writable alongside its
 # Docker socket, while Platform secrets remain read-only.

@@ -4,7 +4,7 @@
 **Document role:** Canonical source for scheduled/routine maintenance, automation, monitoring behavior, and operational administration workflow
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
 **Baseline verified:** Current state reconciled through 2026-10-17; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-20 — Update Libraries recovery automation for the new layout
+**Documentation updated:** 2026-10-20 — Record restored Arcane controls after Docker reset
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -107,7 +107,7 @@ The helper can recover only supported containers with an eligible restart policy
 
 On 2026-10-17 Jared accepted the following Arcane settings as the intended baseline: automatic update enabled daily at midnight (`0 0 0 * * *`) with an empty container-exclusion list; automatic healing enabled every five minutes (`0 */5 * * * *`) with an empty exclusion list; no more than five healing restarts in a 30-minute window; scheduled pruning disabled; and project-symlink following enabled. Arcane project polling remains enabled hourly.
 
-The reset intentionally removed Arcane's stored database and settings. Afterward, Jared restored the account credentials independently and saved the UI controls with automatic update, image update watching, and auto-heal enabled; scheduled pruning, image auto patch, and vulnerability scan disabled. This confirms the saved control posture, not the exact previous schedules, restart threshold, symlink setting, or polling cadence; reread those values before relying on them operationally.
+The final Docker reset intentionally removed Arcane's stored database and settings. Afterward, Jared restored the account credentials independently and confirmed the UI controls with Auto Update, Image Update Watcher, and Auto Heal enabled; Scheduled Prune, Image Auto Patch, and Vulnerability Scan disabled. No credential value is recorded. This confirms the saved control posture, not the exact schedules, restart threshold, symlink setting, or polling cadence; reread those values before relying on them operationally. The same UI screenshot showed the most recent Analytics Heartbeat run failed, while Image Update Watcher, Docker Client Refresh, and Environment Health showed successful runs; impact is not yet investigated.
 
 Arcane now uses `https://arcane.rotom.casa` and deliberately has zero registered Projects. Its Compose definition has neither `PROJECTS_DIRECTORY` nor a host Compose-directory bind, so the Projects UI cannot directly edit the host Compose trees. Arcane retains writable appdata and Docker socket access plus read-only Platform secrets. Docker-socket access remains root-equivalent and is not a security boundary.
 

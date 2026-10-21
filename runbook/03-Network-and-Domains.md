@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Rotom LAN, DNS, Docker networking, ports, Cloudflare, NPM, and domain routing
 **Hosts:** PVE hypervisor `pve` plus Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record canonical Arcane route
+**Documentation updated:** 2026-10-20 — Record the active Jared Wines publication after Docker reset
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -94,12 +94,12 @@ Nginx Proxy Manager is host-networked and owns the guest's HTTP/HTTPS reverse-pr
 | `docs.rotom.casa` | `127.0.0.1:8082` | Legacy private hostname; NPM host `22` permanently redirects paths and query strings to `https://support.rotom.casa/runbook/` |
 | `arcane.rotom.casa` | `127.0.0.1:3552` | Arcane's canonical URL; local-SNI HTTPS returned `200` after its configuration update. The former `arcane.smart-hub.xyz` application URL is retired. |
 | `pve.rotom.casa` | HTTPS `192.168.1.68:8006` | Forced TLS, WebSockets, and the configured access list |
-| `jaredwines.com` | `127.0.0.1:7777` | Intentionally stopped by Jared on 2026-10-20; when started, NPM proxy host `8` serves the retained loopback-only publication |
+| `jaredwines.com` | `127.0.0.1:7777` | Active through NPM proxy host `8`; publication remains loopback-only |
 | `alohamillworks.com` | `127.0.0.1:7778` | Active website; local-SNI and external public probes returned `200` |
 
 Application routes for Paperless, Prowlarr, RomM, Home Assistant, Homebridge, Jellyfin, Radarr, Sonarr, and the other supported services must be diagnosed through the access-path runbook above and their current NPM records. Do not infer route state from a dated database table.
 
-`jaredwines.com` is currently intentionally stopped; NPM proxy host `8` and its loopback-only publication remain the supported configuration when it is started. Glances no longer has a host listener; Homepage reaches it through private Docker service DNS.
+`jaredwines.com` is currently active; NPM proxy host `8` and its loopback-only publication remain the supported configuration. Glances no longer has a host listener; Homepage reaches it through private Docker service DNS.
 
 ## 3. Current Listener and Docker-Network Model
 

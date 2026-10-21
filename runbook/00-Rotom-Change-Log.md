@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-20 — Retire three removed NAS mount contracts
+**Documentation updated:** 2026-10-20 — Record the verified post-reset Docker runtime and Arcane controls
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -83,6 +83,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-20 — Record verified post-reset Docker runtime and Arcane controls
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, and `internals/tooling/test-rr-runbooks`.
+- **Status:** **Documentation updated / Verified.**
+- **Changes:** Reconciled the current runtime after Jared's authorized global Docker and Arcane reset. All 18 validated Compose definitions were started; the final inventory is 23 running containers, 18 networks including Docker defaults, zero named volumes, and 21 images. The current Arcane Compose definition persists its state through `/srv/rotom/appdata/platform/arcane` rather than named Docker volumes. Jared restored Arcane credentials independently and confirmed the intended UI controls without recording any credential value.
+- **Evidence:** Before removal, the readable automatic Rotom Restic snapshot dated 2026-10-20 and the two active NFS mounts were verified; both mounts were read/write. The reset removed the inventoried 23 containers, 15 Compose-created networks, two named Arcane volumes, 25 images, and Arcane appdata, then recreated all 18 Compose projects. Post-rebuild inspection found all 23 containers running with no exited or unhealthy container, successful local checks for Arcane, Homepage, Aloha Millworks, Jared Wines, and Rotom Support, and successful local-SNI HTTPS checks for Arcane and Rotom Support. The Arcane UI screenshot confirmed Auto Update, Image Update Watcher, and Auto Heal enabled; Scheduled Prune, Image Auto Patch, and Vulnerability Scan disabled.
+- **Outstanding:** The screenshot's most recent Analytics Heartbeat run showed failed; its impact has not been investigated. Exact Arcane schedules, thresholds, and project-polling settings remain unrecorded. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-20 — Define the RC shorthand for Rotom Compose
 
