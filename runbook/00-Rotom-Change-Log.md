@@ -78,6 +78,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-22 — Recover Libraries read/write access and blocked Radarr import
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `04-NAS-and-Storage.md`.
+- **Status:** **Implemented / Verified.**
+- **Changes:** Recorded the targeted recovery branch for an exact active Libraries NFS mount that unexpectedly reports read-only despite non-read-only configured options. The repair remounts only that confirmed filesystem read/write and explicitly stops for wrong-source, NAS/export, or active-writer incidents. Recorded the verified incident outcome: the read/write remount restored media-library writes, and Radarr successfully imported the previously blocked completed movie without changing Compose, NAS export configuration, ownership, permissions, or ACLs.
+- **Evidence:** Live `findmnt` showed the configured Libraries NFSv3 source active as `ro`, while `findmnt --fstab` retained `defaults`; the targeted `mount -o remount,rw /mnt/nas-libraries` then reported `rw`. Both Libraries systemd unit layers and the affected containers were active. Radarr's completed-download scan finished successfully and recorded one 5,317,225,975-byte movie file. The individual qBittorrent item's inconsistent completion state was handled as a one-off manual import and does not establish a general qBittorrent configuration change.
+- **Outstanding:** Investigate NAS/export state if the Libraries mount reverts to read-only. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-20 — Remove retired ticket history
 
 - **Files changed:** `00-Rotom-Change-Log.md`.

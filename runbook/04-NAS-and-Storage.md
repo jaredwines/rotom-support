@@ -4,7 +4,7 @@
 **Document role:** Canonical source for NAS exports, NFS mounts, storage layout, automount behavior, and storage contracts
 **Hosts:** PVE hypervisor `pve`, Debian VM `rotom`, and UniFi UNAS 2  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record verified read/write NFS state before Docker reset
+**Documentation updated:** 2026-10-22 — Record Libraries read-only remount and verified media import recovery
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -37,6 +37,7 @@ Restore one existing Rotom NFS contract to its documented source without editing
 - a systemd `.mount` unit failed during boot or transient NAS/network unavailability;
 - a covered Libraries-backed container is stopped with a NAS mount startup error;
 - an automount exists but the underlying NFS mount is not active when required.
+- the exact active Libraries NFS filesystem unexpectedly reports read-only and blocks a write-dependent media import.
 
 Do **not** use this runbook to:
 
@@ -62,7 +63,7 @@ The installed `rotom-nas-docker-recovery.service` validates the exact configured
 
 Both are NFS systemd automount contracts from NAS `192.168.1.70`. Exact export paths and ownership remain canonical in document 04 and live `findmnt --fstab` output.
 
-**Current verified state (2026-10-20):** immediately before the final Docker/Arcane reset, both contracts were active and mounted read/write from their documented NFSv3 sources. This observation does not replace the normal preflight: verify the exact active source and read/write semantics before every write-dependent action or after a NAS/mount incident.
+**Current verified state (2026-10-22):** the Libraries contract was observed active from its configured NFSv3 source but unexpectedly read-only, despite the `fstab` contract requesting defaults. After the exact source and configured mount options were verified, `mount -o remount,rw /mnt/nas-libraries` restored read/write access without changing `fstab`, NAS export configuration, ownership, or service configuration. Both Libraries systemd unit layers were active afterward. Radarr then successfully imported the previously blocked completed movie. This observation does not replace the normal preflight: verify the exact active source and read/write semantics before every write-dependent action or after a NAS/mount incident.
 
 At the initial 2026-10-15 validation point, the Libraries NFS filesystem was active and healthy but `mnt-nas\x2dlibraries.automount` was inactive with boot result `mount-start-limit-hit`. A controlled repair restored both unit layers, confirmed the exact source, restarted the seven dependent containers, and verified their services. A same-day full reboot then proved the hardened recovery path: early Docker and first-helper attempts briefly failed before NAS reachability, while the helper's configured retry about 30 seconds later re-armed the automount, mounted the exact source, recovered eligible services, and completed successfully. Both generated Libraries units remained active and no systemd units were failed. An active mount with an inactive or failed automount is still degraded and requires targeted recovery.
 
@@ -110,7 +111,8 @@ Stop before recovery if:
 
 - the target is not one of the five current contracts;
 - `findmnt --fstab` shows a different source or options from document 04;
-- the target is mounted from an unexpected source or with unexpected read/write semantics;
+- the target is mounted from an unexpected source;
+- an active write, backup, or other operation requires a stable filesystem before an exact-source read/write remount;
 - NAS address `192.168.1.70` is unreachable because of a broader network incident;
 - an unmount would be required while a container, backup, or process uses the filesystem;
 - local data may have been written beneath an inactive mountpoint;
@@ -144,6 +146,18 @@ sudo systemctl start 'mnt-nas\x2dlibraries.automount'
 ```
 
 If systemd refuses to arm the automount while the NFS mount is active, stop. Do not unmount a filesystem with running consumers merely to clear the unit state.
+
+#### Restore read/write access to an exact active Libraries mount
+
+Use this branch only when `findmnt --fstab` and the active NFS mount show the exact documented Libraries source, the configured mount options do not request read-only access, and the active mount alone reports `ro`. Preserve the pre-remount `findmnt` result and ensure no active write or backup operation needs the current filesystem state. Do not use this branch for a wrong source, an unavailable NAS, or an NFS export known to be read-only.
+
+**Changes Rotom**
+
+```bash
+sudo mount -o remount,rw /mnt/nas-libraries
+```
+
+If the command fails or the resulting NFS mount still reports `ro`, stop. Do not retry by unmounting a live filesystem or by changing `fstab`, NAS export settings, ownership, permissions, or ACLs without separately scoped authorization.
 
 **Read-only**
 
@@ -210,7 +224,7 @@ sudo docker ps -a \
 systemctl --failed --no-pager
 ```
 
-Success requires the exact NFS source and its automount to be active, the helper to complete successfully when it was needed, already-running containers to remain running, and only eligible NAS-failed containers to be recovered. Application-specific health and HTTP checks from documents 02/03 must also pass for every container the helper starts. An active mount with an inactive or failed automount is usable but remains degraded and is not complete recovery.
+Success requires the exact NFS source, its automount, and read/write semantics to be active, the helper to complete successfully when it was needed, already-running containers to remain running, and only eligible NAS-failed containers to be recovered. Application-specific health and HTTP checks from documents 02/03 must also pass for every container the helper starts. An active mount with an inactive or failed automount is usable but remains degraded and is not complete recovery.
 
 For a non-Libraries mount, success is the exact NFS source plus the service-specific verification from its canonical reference. Do not run the Libraries recovery helper merely because another current mount was activated.
 
@@ -226,6 +240,7 @@ If the helper starts a container that then fails application verification, leave
 
 - **Automount active, NFS inactive:** start the exact `.mount` unit, then verify its source.
 - **Mount unit reports `Network is unreachable`:** diagnose NAS/LAN reachability; do not edit the export or `fstab` first.
+- **Mount active but unexpectedly read-only:** preserve `findmnt --fstab` and active-mount evidence. If the exact documented source is active and no write/backup operation is in progress, use the read/write-remount branch; otherwise stop and investigate NAS/export state.
 - **Mount active, required Libraries directory missing:** stop. This is a storage-layout or wrong-source incident.
 - **Container stopped with a qualifying mount error:** run the targeted helper after mount verification.
 - **Container stopped without a mount error:** leave it stopped and use its service runbook.
