@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-20 — Remove retired ticket history
+**Documentation updated:** 2026-10-24 — Adopt the Linear ticket activation contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -61,6 +61,20 @@ For each `Update the RS` task:
    - **All environments:** Available Sources is a separate destination and replacement remains manual by Jared. Do not treat it as a complete repository or membership inventory, open or control a browser for synchronization, claim a manual destination is updated before Jared confirms it, commit unrelated changes or temporary files, or commit secrets. If an `rs` check, commit, or push fails, stop and report the problem rather than bypassing the guardrails. Preserve existing RS filenames whenever possible and do not add checksum manifests, packaging metadata, generated README files, or other untracked extras unless explicitly requested. Generated packages and separate artifacts belong under `Downloads/`; the local `sources/` mirror remains read-only.
 9. For Rotom work tied to an active Linear ticket, keep that ticket current as meaningful work is verified: record material design or scope decisions, verified implementation milestones, blockers, rollbacks, and intentional deferrals as they occur. Do not use Linear as a raw command transcript or duplicate routine diagnostic output. When ChatGPT is actively assisting with the ticket and Linear access is available, these meaningful updates should be made during the work without requiring Jared to separately request each one. The current runbook remains the canonical verified as-built source of truth within RS; update it from the final verified state at ticket closeout.
 
+### Linear Ticket Activation Contract
+
+`Work on ticket JAR-<number>` starts or resumes that Linear ticket. `Resume ticket JAR-<number>` is equivalent.
+
+Retrieve the current ticket and review its status, scope, progress, attachments, assignee, and recent changes. Read the applicable RS, inspect relevant live state, and continue from the latest verified milestone without repeating completed work. The ticket coordinates the task; RS remains Rotom's canonical verified as-built authority.
+
+The instruction authorizes the ticket's explicitly described, non-destructive Rotom work, including stated inspection, implementation, verification, targeted service lifecycle, RC and RS maintenance, and meaningful Linear updates. It does not authorize destructive work, protected-information disclosure, material scope expansion, or bypassing any guardrail.
+
+Move a Backlog or Todo ticket to In Progress when implementation begins. Keep Linear updated with material decisions, verified milestones, blockers, rollbacks, and intentional deferrals—not routine command output.
+
+Before completing the ticket, update RS when the verified result changes RS-documented state, following the canonical RS maintenance workflow. Mark the ticket Done only after its acceptance criteria pass, required RS and RC updates are committed and pushed successfully, and the final live, RC, RS, and Linear states are consistent. If the result does not change RS-documented state, record that determination in the ticket instead of making a documentation-only change.
+
+On every resume, re-read the ticket. If it changed materially after work began, another actor is working on it, it conflicts with RS or live state, or a required decision, credential, verification, rollback, or guardrail is unresolved, stop and request direction. Do not reopen a Done, Canceled, or Duplicate ticket without explicit instruction.
+
 
 Keep future entries brief: the change log should point to the detailed documents rather than duplicate them. Updating the log for a task does not require a second entry merely to record that log update.
 
@@ -77,6 +91,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-24 — Adopt the Linear ticket activation contract
+
+- **Files changed:** `AGENTS.md`, `internals/agents/rotom-global-AGENTS.md`, `internals/tooling/test-rr-runbooks`, `00-Rotom-Change-Log.md`, and `01-Rotom-Server-Inventory.md`. The active `~/.codex/AGENTS.md` is synchronized outside RS.
+- **Status:** **Documentation only / Adopted operational policy.** No live Rotom service or application configuration was changed.
+- **Changes:** Established `Work on ticket JAR-<number>` and `Resume ticket JAR-<number>` as the canonical start-or-resume instructions for a current Linear ticket. The contract defines authorization boundaries, live-state and RS reconciliation, resumption, meaningful Linear updates, conditional RS closeout, completion criteria, and stop conditions. Repository and global agent instructions plus the task router point to this single canonical owner.
+- **Evidence:** Jared approved the final contract and authorized the RS and global-instruction update. The pre-change RS worktree was clean and current with `origin/main`. Inspection found that the active global instructions contained the current RC terminology while their tracked reference backup did not; this update reconciles that pre-existing drift before adding the activation pointer. Repository validation, global/reference byte comparison, final RS checks, commit, and push results are recorded by the completion workflow.
+- **Outstanding:** Available Sources replacement remains manual by Jared.
 
 ## 2026-10-22 — Recover Libraries read/write access and blocked Radarr import
 

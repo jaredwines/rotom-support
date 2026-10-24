@@ -63,14 +63,21 @@ require_text 00-Rotom-Change-Log.md "### Runbook-First Maintenance Standard"
 require_text 00-Rotom-Change-Log.md "An RS update is incomplete if it changes how Rotom is operated, diagnosed, maintained, or recovered"
 require_text 00-Rotom-Change-Log.md "internals/tooling/test-rr-runbooks"
 require_text 00-Rotom-Change-Log.md 'The sole canonical documentation-update command is **`Update the RS`**'
+require_text 00-Rotom-Change-Log.md '### Linear Ticket Activation Contract'
+require_text 00-Rotom-Change-Log.md '`Work on ticket JAR-<number>` starts or resumes that Linear ticket.'
+require_text 00-Rotom-Change-Log.md '`Resume ticket JAR-<number>` is equivalent.'
 require_text README.md "# Rotom Support"
 require_text AGENTS.md "## RS Git workflow"
+require_text AGENTS.md 'follow the canonical [Linear Ticket Activation Contract]'
 require_text AGENTS.md 'Rotom Support (RS) is all intentionally tracked content in this repository'
 require_text AGENTS.md '`runbook/` is the primary authority for Rotom'
 require_text AGENTS.md 'Available Sources is a separate, manually maintained publication or reference destination'
 require_text README.md 'Every tracked file under `guide/` is an RS component but remains outside the Core Numbered Reference Set'
 require_text 01-Rotom-Server-Inventory.md 'Rotom Support is all intentionally tracked content in the Rotom-Support repository'
 require_text 01-Rotom-Server-Inventory.md 'If another RS component conflicts with the applicable current runbook'
+require_text 01-Rotom-Server-Inventory.md '| Start or resume work from a Linear ticket | [00 — Linear Ticket Activation Contract]'
+require_text internals/agents/rotom-global-AGENTS.md 'follow the canonical **Linear Ticket Activation Contract**'
+require_text internals/agents/rotom-global-AGENTS.md '## Rotom Compose terminology'
 require_file internals/tooling/rs
 require_file internals/tooling/rr
 require_file internals/tooling/test-rs-cli

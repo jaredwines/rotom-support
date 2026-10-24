@@ -22,6 +22,14 @@ Resolve the local RS checkout with:
 
 RS is all intentionally tracked content in the repository. The numbered documents `00`–`08` in the checkout's `runbook/` directory are the primary authority for Rotom's documented current state and operations. Other tracked areas, including `guide/`, are RS components with narrower roles and do not override the runbook.
 
+## Rotom Compose terminology
+
+**RC** means **Rotom Compose**: the reviewed non-secret deployment configuration in `/srv/rotom/stacks` and its Git history. When Jared says **Update RC**, follow the canonical **Update Rotom Compose Configuration** procedure in RS document `02-Docker-Services.md`. This does not itself authorize a container lifecycle change or an RS update; make only the separately intended targeted service change after the reviewed RC workflow, and update RS when the verified result changes RS-documented state.
+
+## Linear tickets
+
+When Jared says `Work on ticket JAR-<number>` or `Resume ticket JAR-<number>`, resolve the RS checkout with `rs path` and follow the canonical **Linear Ticket Activation Contract** in `runbook/00-Rotom-Change-Log.md`. Keep the complete contract in its runbook owner rather than duplicating it here.
+
 Before changing Rotom:
 
 1. Resolve the RS checkout with `rs path`.

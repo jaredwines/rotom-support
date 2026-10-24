@@ -26,6 +26,10 @@ Do not infer authority from RS membership alone. If another RS component conflic
 
 Available Sources is a separate, manually maintained publication or reference destination. It does not define RS membership and must not be treated as the complete repository. Jared remains responsible for manually replacing its contents.
 
+## Linear tickets
+
+When Jared says `Work on ticket JAR-<number>` or `Resume ticket JAR-<number>`, follow the canonical [Linear Ticket Activation Contract](runbook/00-Rotom-Change-Log.md#linear-ticket-activation-contract). Keep the complete contract in its runbook owner rather than duplicating it here.
+
 ## RS Git workflow
 
 Use the `rs` helper for normal RS Git operations.
