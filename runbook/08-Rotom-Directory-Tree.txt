@@ -4,15 +4,15 @@
 # Configuration semantics remain canonical in documents 02 through 07.
 # Index: 01-Rotom-Server-Inventory.md
 # Maintenance contract and protected history: 00-Rotom-Change-Log.md
-# Evidence date: 2026-10-20
+# Evidence date: 2026-10-24
 #
 # CURRENT TOPOLOGY
 #
-# The final 2026-10-20 Docker/Arcane reset removed 23 containers, 15 Compose-created
-# networks, two named Arcane volumes, 25 images, and Arcane application state.
-# All 18 Compose definitions were recreated and started. The verified runtime has
-# 23 running containers, 18 networks including Docker defaults, zero named volumes,
-# and 21 images; no container was exited or unhealthy at verification.
+# The reviewed deployment now has 19 Compose definitions. The observed runtime has
+# 24 containers total, 21 running, 19 networks including Docker defaults, two named
+# volumes, and 15 unique image IDs. Command Center added one healthy container and
+# one private network. Palworld Jared, Palworld Fran, and Jared Wines were already
+# stopped before this task; two unused Arcane-created volumes also predate it.
 # Arcane's canonical URL is https://arcane.rotom.casa. It has zero registered Projects
 # and no host Compose-directory bind; only its own appdata is writable alongside its
 # Docker socket, while Platform secrets remain read-only.
@@ -25,6 +25,7 @@
 #     platform/
 #       arcane/compose.yaml
 #       cloudflare-ddns/compose.yaml        explicit container DNS 192.168.1.1
+#       command-center/compose.yaml         immutable image digest; loopback-only 8790
 #       homepage/compose.yaml              Homepage + Glances
 #       nginx-proxy-manager/compose.yaml
 #       mkdocs-rr/compose.yaml              Rotom Support active stack
@@ -47,6 +48,7 @@
 #       homebridge/compose.yaml
 #   appdata/                              authoritative VM-local mutable state
 #     platform/
+#       command-center/                     library.db plus active WAL/SHM; owner UID 10001, Platform GID
 #       homepage/glances/glances.conf
 #       nginx-proxy-manager/{data,letsencrypt}/
 #       mkdocs-rr/{repository,source,site,site.previous}/  active guarded publisher state
@@ -62,6 +64,7 @@
 #     game-servers/
 #     smart-home/
 #   secrets/                              root-protected; values never document
+#     platform/command-center/password    exact read-only container secret; contents never document
 #   scripts/                              root-owned declarative helpers
 #   backup-staging/                       ABSENT at the evidence date
 #
@@ -91,6 +94,9 @@
 #     rotom-restic-backup-status-api.service
 #     rotom-weekly-maintenance.{service,timer}
 #
+# /var/backups/system-info/sqlite/
+#   command-center-library.db             transactionally consistent Restic staging copy
+#
 # /usr/local/
 #   bin/
 #     backup-restic-to-nas
@@ -110,6 +116,7 @@
 #
 # CURRENT SERVICE IDENTITIES
 # platform          997:5002    NSS home /home/platform          physical home absent
+# command-center  10001:5002    container-only UID exception     no host NSS account
 # libraries         127:5000    NSS home /home/libraries         physical home absent
 # hosted-websites   902:5004    NSS home /home/hosted-websites   physical home absent
 # game-servers      995:5001    NSS home /home/game-servers      physical home absent

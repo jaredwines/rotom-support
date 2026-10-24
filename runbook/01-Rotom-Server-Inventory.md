@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-24 — Route Linear ticket activation to its canonical contract
+**Documentation updated:** 2026-10-24 — Deploy and protect Command Center
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -79,11 +79,11 @@ Within each subject document, use the current-state sections first. Use historic
 
 Rotom is Debian 13 VMID 100 on Proxmox VE host `pve`. The guest uses reserved address `192.168.1.69`; PVE uses `192.168.1.68`; the UniFi NAS uses `192.168.1.70`.
 
-On 2026-10-20, Jared authorized a complete Docker and Arcane-state reset. The final reset removed 23 containers, 15 Compose-created networks, two named Arcane volumes, 25 images, and Arcane's persistent appdata. All 18 validated Compose definitions were then recreated and started. The final inventory is 23 running containers, 18 networks including Docker defaults, zero named volumes, and 21 images; no container was exited or unhealthy at verification. The active definitions are grouped under five local domains:
+On 2026-10-24, Command Center expanded the reviewed deployment to 19 Compose definitions. The observed post-deployment runtime has 24 containers total, 21 running, 19 networks including Docker defaults, two named volumes, and 15 unique image IDs. Command Center is the only container added by this task. Palworld Jared, Palworld Fran, and Jared Wines were already stopped at 2026-10-20 18:01–18:02 PDT; the two unused Arcane-created volumes date from 2026-10-21. Those unrelated items conflict with the earlier all-running/zero-volume baseline and remain unresolved rather than being restarted or removed by this task. The active definitions remain grouped under five local domains:
 
 | Domain | Identity | Active roots | Current services |
 |---|---:|---|---|
-| Platform | `997:5002` | `/srv/rotom/{stacks,appdata,secrets}/platform` | Nginx Proxy Manager, Homepage with Glances, Arcane, Cloudflare DDNS, Rotom Support |
+| Platform | `997:5002` | `/srv/rotom/{stacks,appdata,secrets}/platform` | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support |
 | Libraries | `127:5000` | `/srv/rotom/{stacks,appdata,secrets}/libraries` | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless |
 | Hosted Websites | `902:5004` | `/srv/rotom/{stacks,appdata}/hosted-websites` | Aloha Millworks, Jared Wines |
 | Game Servers | `995:5001` | `/srv/rotom/{stacks,appdata,secrets}/game-servers` | Palworld Jared, Palworld Fran |
@@ -93,9 +93,9 @@ The five service accounts are locked. Their NSS home fields still name absent `/
 
 The current non-secret Compose definitions and necessary MkDocs support files are version-controlled in the nested `/srv/rotom/stacks` Git working tree and published at `https://github.com/jaredwines/rotom-compose`. The public repository is a reviewed configuration-history and off-site-copy layer only; secrets, `.env` files, appdata, Docker state, NAS data, historical copies, and generated output remain outside it. Follow the supported update workflow in document 02; do not treat this repository as a backup or a source for recreating retired services.
 
-Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. `jaredwines.com` is active and publishes only `127.0.0.1:7777:80` for NPM proxy host `8`. Aloha publishes `7778:80`.
+Homepage and Glances share `/srv/rotom/stacks/platform/homepage/compose.yaml` and the private `homepage_default` network. Glances has no host listener. Command Center uses `/srv/rotom/stacks/platform/command-center/compose.yaml`, immutable linux/amd64 image digest `sha256:6f31d2117647d1db593ea1cbd9f5cb9cf2128c93014faf23c77a746fb3d3df01`, and loopback-only `127.0.0.1:8790`. `jaredwines.com` remains a supported loopback-only service but was observed stopped as described above. Aloha publishes `7778:80`.
 
-Cloudflare DDNS and Prowlarr use explicit container DNS `192.168.1.1` to avoid the Docker boot-time resolver race; Prowlarr's 2026-10-20 recreation restored external indexer resolution. Arcane uses canonical URL `https://arcane.rotom.casa`; it has no project-directory configuration or host Compose-directory bind, and its project database contains zero records. Its saved UI controls include Auto Update, Image Update Watcher, and Auto Heal enabled, with Scheduled Prune, Image Auto Patch, and Vulnerability Scan disabled. Both Palworld servers are active with their Compose restart policy retained as `unless-stopped`.
+Cloudflare DDNS and Prowlarr use explicit container DNS `192.168.1.1` to avoid the Docker boot-time resolver race; Prowlarr's 2026-10-20 recreation restored external indexer resolution. Arcane uses canonical URL `https://arcane.rotom.casa`; it has no project-directory configuration or host Compose-directory bind, and its project database contains zero records. Its saved UI controls include Auto Update, Image Update Watcher, and Auto Heal enabled, with Scheduled Prune, Image Auto Patch, and Vulnerability Scan disabled. Both Palworld servers retain restart policy `unless-stopped` but were observed stopped as described above.
 
 Remote Desktop Commander runs from `/opt/desktop-commander` as locked identity `desktopcmd` (`1001:1001`). Its former home is absent.
 
@@ -114,7 +114,7 @@ Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-d
 
 ## 4. Current Backup and Recovery Summary
 
-- **Rotom Restic Backup:** repository `/mnt/nas-rotom-restic-backup/rotom-restic-backup`; worker `/usr/local/sbin/rotom-restic-backup`; timer around `03:00`; retention `7 daily / 4 weekly / 12 monthly`; protected local credential path `/etc/restic/restic-repository-password`.
+- **Rotom Restic Backup:** repository `/mnt/nas-rotom-restic-backup/rotom-restic-backup`; worker `/usr/local/sbin/rotom-restic-backup`; timer around `03:00`; retention `7 daily / 4 weekly / 12 monthly`; protected local credential path `/etc/restic/restic-repository-password`. The worker's consistent SQLite staging now includes Command Center; snapshot `3c5ea6b7` and its exact restored staged database were verified on 2026-10-24.
 - **PVE Restic Backup:** repository `/mnt/nas-pve-restic-backup/pve-restic-backup`; daily `04:00`; current credential path `/etc/restic/restic-repository-password` on PVE.
 - **Rotom VM Backup:** Proxmox job `rotom-vm-daily`; VMID `100`; daily `05:00`; snapshot mode with zstd; retention `7 daily / 4 weekly / 6 monthly`.
 - **NAS-resident application data:** outside Rotom Restic because `/mnt` is excluded. Confirm the applicable NAS snapshot and isolated-restore path before relying on it.

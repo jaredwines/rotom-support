@@ -3,8 +3,8 @@
 **Documentation set:** Rotom Support
 **Document role:** Canonical source for Linux accounts, UID/GID identities, groups, privileges, ACLs, and access policy
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
-**Baseline verified:** Current state reconciled through 2026-10-15; SSH client and access evidence updated 2026-10-20; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-20 — Record the active Jared Wines publication after Docker reset
+**Baseline verified:** Current state reconciled through 2026-10-15; SSH client and access evidence updated 2026-10-20; Command Center exception verified 2026-10-24; see outstanding items for remaining verification
+**Documentation updated:** 2026-10-24 — Record Command Center's container-UID exception
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -133,12 +133,13 @@ Use the owning service identity for ordinary service-specific administration. Ro
 
 ## 4. Application-Specific Boundaries
 
+- Command Center runs as image identity UID `10001`; no host NSS account owns that number. Its exact appdata root is `10001:5002`, mode `2770`, so the container owner can write while the Platform GID remains the owning service domain. Its secret directory is `root:5002`, mode `2750`; the exact password file is `10001:5002`, mode `0400`, and is mounted read-only. Do not normalize this exception to Platform UID `997`, broaden the secret mount, or grant Docker/NAS access.
 - Paperless application processes use Libraries identity; authoritative media is `/mnt/nas-libraries/documents/paperless`.
 - qBittorrentVPN uses Libraries storage identity and a fail-closed NFS/sentinel contract.
 - RomM has no Compose user override. Its broader game-library bind is read-only, while the nested ROM-upload bind is writable; browser-uploaded ROM files were observed as `root:5000`, mode `0644`. Preserve that narrow boundary and observed ownership unless an explicit ownership change is authorized and verified.
 - Palworld uses Game Servers identity and VM-local state.
 - Home Assistant and Homebridge use Smart Home identity and VM-local state.
-- Aloha's and Jared Wines' active site content are owned within Hosted Websites roots.
+- Aloha's and Jared Wines' site content is owned within Hosted Websites roots; this ownership contract is independent of whether a site container is running.
 - NPM retains its image-default container identity; do not add a user override or Docker socket without a separate design review.
 
 ## 5. Administrative and Credential Boundaries

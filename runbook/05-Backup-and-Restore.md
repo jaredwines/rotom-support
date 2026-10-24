@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-20 — Record verified post-reset recovery points
+**Documentation updated:** 2026-10-24 — Add and verify Command Center recovery staging
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -57,7 +57,7 @@ Do **not** use this runbook for:
 
 ### 3. Impact and authorization
 
-The backup reads configured Rotom paths, refreshes restricted system-information files under `/var/backups/system-info`, creates transactionally consistent copies of the NPM and Home Assistant SQLite databases, writes a tagged Restic snapshot, then runs `forget --prune` under the installed retention policy. It can use significant disk, CPU, NAS I/O, and time.
+The backup reads configured Rotom paths, refreshes restricted system-information files under `/var/backups/system-info`, creates transactionally consistent copies of the NPM, Command Center, and Home Assistant SQLite databases, writes a tagged Restic snapshot, then runs `forget --prune` under the installed retention policy. It can use significant disk, CPU, NAS I/O, and time.
 
 The repository password file is `/etc/restic/restic-repository-password`. Never print, copy, paste, hash, or record its contents. Backups may contain credentials, certificates, application data, and personal information; do not expose snapshot contents in routine evidence.
 
@@ -231,6 +231,8 @@ Current database inputs are:
 - PostgreSQL data at `/srv/rotom/appdata/libraries/paperless/database`, image from `paperless-db`, and the non-secret `POSTGRES_USER` locator in restored `postgres.env`;
 - MariaDB data at `/srv/rotom/appdata/libraries/romm/database`, image from `romm-db`, and restored `mariadb.env`, whose values must never be printed;
 - transactionally consistent SQLite copies under restored `/var/backups/system-info/sqlite`.
+
+The SQLite staging set includes `command-center-library.db`, produced from `/srv/rotom/appdata/platform/command-center/library.db` with SQLite's online-backup API and verified with `PRAGMA quick_check` before atomic replacement. Use the staged copy for Command Center recovery; the raw WAL-mode files under restored appdata are additional crash-consistency evidence, not the preferred database source.
 
 ### 3. Read-only preflight and stop conditions
 
@@ -473,6 +475,8 @@ Select and verify an incident-appropriate recovery point before use. A successfu
 | Credential path | `/etc/restic/restic-repository-password`; contents never document |
 
 The current source scope includes `/etc`, `/home`, `/root`, `/opt`, `/srv`, `/usr/local`, `/var/lib/docker/volumes`, and `/var/backups/system-info`, subject to the installed include/exclude files. `/mnt` remains excluded.
+
+Command Center's appdata and exact password file fall under `/srv`, while the worker also creates `/var/backups/system-info/sqlite/command-center-library.db` as the preferred transactionally consistent database copy. On 2026-10-24, the application-generated backup passed `quick_check` and booted healthy in an isolated temporary container with the harmless recovery record present. Updated worker run `3c5ea6b7` completed snapshot, retention, and prune successfully; an exact `restic restore --verify` of its staged Command Center database verified one file, passed `quick_check`, and contained both harmless acceptance records. This proves the tested application and Restic-staged SQLite paths, not recovery of a future optional Codex login or any external AI credential.
 
 The latest documented automatic observation is snapshot `aad4a52e` from 2026-10-17 at 03:05 PDT, approximately 18.600 GiB. The service exited successfully after retention and prune. A same-day read-only preflight found the timer enabled and active, the exact NAS export mounted read/write, no concurrent Restic process, protected control-file permissions, readable snapshot metadata, and no failed systemd units. A standard `restic check` completed across all 22 snapshots with no errors. A separate `restic check --read-data` then read all 1,077 packs in 4 minutes 15 seconds and found no errors.
 

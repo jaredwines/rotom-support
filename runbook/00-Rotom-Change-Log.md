@@ -92,6 +92,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-24 — Deploy and protect Command Center
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, and `internals/tooling/test-rr-runbooks`.
+- **Status:** **Implemented / Verified.** Added Command Center as a supported Platform service, its private NPM route and Homepage card, a container-UID ownership exception, and transactionally consistent Rotom Restic staging.
+- **Changes:** RC commit `b31ef0d` added the immutable linux/amd64 image digest, loopback-only listener, exact appdata/password-file binds, and Homepage hostname override. Live NPM host `28` uses the wildcard certificate and dedicated access list `2`: loopback, trusted LAN, and only Homepage's current `172.18.0.2` monitor identity; `/api/events` disables proxy buffering. Homepage now places Command Center immediately after Arcane. The Restic worker stages `command-center-library.db` with SQLite's online-backup API before each snapshot.
+- **Evidence:** Direct health returned Command Center `1.2.1`, schema `2`; local-SNI HTTPS and Homepage's monitor returned `200`, while a simulated non-trusted source returned `403`. HTTPS login produced an `HttpOnly`, `SameSite=Lax`, `Secure` cookie. Harmless create, search, Markdown export, import, two-session SSE, restart, and forced-recreation checks passed; sessions expired while data persisted. An application-generated SQLite backup passed `quick_check` and an isolated-container restore. Restic snapshot `3c5ea6b7` completed retention/prune successfully, and its exact staged Command Center database restored with `--verify`, passed `quick_check`, and contained both harmless test records. Final repository validation, commit, and push results are recorded by the completion workflow.
+- **Outstanding:** Revalidate NPM access list `2` if Homepage's container IP changes. The three unrelated containers already stopped since 2026-10-20 18:01–18:02 PDT and two unused Arcane-created volumes from 2026-10-21 remain an explicit pre-existing RS/live discrepancy; this task did not restart or remove them. A visual trusted-LAN browser session was not available to Codex, so HTTPS application/API behavior and Homepage's rendered service payload were verified instead. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-24 — Adopt the Linear ticket activation contract
 
 - **Files changed:** `AGENTS.md`, `internals/agents/rotom-global-AGENTS.md`, `internals/tooling/test-rr-runbooks`, `00-Rotom-Change-Log.md`, and `01-Rotom-Server-Inventory.md`. The active `~/.codex/AGENTS.md` is synchronized outside RS.
