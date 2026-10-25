@@ -3,8 +3,8 @@
 **Documentation set:** Rotom Support
 **Document role:** Canonical source for scheduled/routine maintenance, automation, monitoring behavior, and operational administration workflow
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
-**Baseline verified:** Current state reconciled through 2026-10-17; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-20 — Record intentional backup reset and console banners
+**Baseline verified:** Current state reconciled through 2026-10-17; Fran's PVE SSH access verified 2026-10-24; see outstanding items for remaining verification
+**Documentation updated:** 2026-10-24 — Reconcile Fran's PVE SSH verification
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -180,7 +180,7 @@ The tracked `internals/tooling/rs` owns offline lint. The legacy test filename `
 - Root-only rollback archive retention.
 - PVE iGPU option-ROM warning and historical reset/NIC stability only if symptoms recur.
 - Incident-specific recovery-point selection.
-- Fran's deferred SSH-key setup.
+- Fran's separate Rotom SSH-key authorization and key-only verification; her PVE key-only access is verified in [07 — Users and Permissions](07-Users-and-Permissions.md#frans-mac-ssh-access).
 - Bluetooth pairing and data exchange with a specific device; post-reboot kernel firmware log verification.
 
 ## 9. Related Documentation

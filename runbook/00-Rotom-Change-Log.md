@@ -92,6 +92,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-10-24 — Record Fran's verified PVE SSH key access
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`.
+- **Status:** **Implemented / Verified.** This records the supplied final PVE access state; this RS task makes no live-system change.
+- **Changes:** Fran's Mac now has a dedicated PVE Ed25519 identity authorized for her existing PVE `fran` account. Its `pve` alias uses PVE's documented LAN address because that Mac could not resolve hostname `pve`; the configuration explicitly constrains authentication to the PVE identity and does not use root access. Fran's Rotom SSH access remains a separate pending verification.
+- **Evidence:** The supplied macOS command output shows PVE hostname `pve` and user `fran` from `ssh -o BatchMode=yes -o PasswordAuthentication=no pve 'hostname; whoami'`, following successful public-key installation for `fran`.
+- **Outstanding:** Verify Fran's separate Rotom SSH key and key-only login before documenting Rotom authorization. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-24 — Deploy and protect Command Center
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, and `internals/tooling/test-rr-runbooks`.

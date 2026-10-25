@@ -3,8 +3,8 @@
 **Documentation set:** Rotom Support
 **Document role:** Canonical source for Linux accounts, UID/GID identities, groups, privileges, ACLs, and access policy
 **Hosts:** PVE hypervisor `pve` and Debian VM `rotom`  
-**Baseline verified:** Current state reconciled through 2026-10-15; SSH client and access evidence updated 2026-10-20; Command Center exception verified 2026-10-24; see outstanding items for remaining verification
-**Documentation updated:** 2026-10-24 — Record Command Center's container-UID exception
+**Baseline verified:** Current state reconciled through 2026-10-15; SSH client and access evidence updated through 2026-10-24; Command Center exception verified 2026-10-24; see outstanding items for remaining verification
+**Documentation updated:** 2026-10-24 — Record Fran's verified PVE SSH key access
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -100,6 +100,12 @@ The GitHub private key and public key have modes `0600` and `0644`, respectively
 
 This register records access, not expanded authority: ordinary administration on Rotom remains local; appliance root consoles remain limited to targeted troubleshooting; PVE work remains Jared-executed; and all RS GitHub operations run as `jared`. Never copy Jared's private key into a service account or record key contents in RS.
 
+### Fran's Mac SSH access
+
+On 2026-10-24, Fran's Mac was configured with a dedicated Ed25519 key at `~/.ssh/id_ed25519_pve` for PVE. Its public key is authorized only for PVE account `fran`; the client alias `pve` targets `192.168.1.68`, uses that explicit identity with `IdentitiesOnly yes`, and does not request root access. A key-only batch-mode verification with password authentication disabled returned hostname `pve` and account `fran`. `pve` was not resolvable by that Mac, so the alias deliberately uses PVE's documented LAN address rather than its hostname.
+
+Fran's separate Rotom key and alias remain pending verification. Do not infer Rotom authorization from the verified PVE result, reuse the PVE key for Rotom, or replace existing client configuration or keys without a separately authorized, targeted change.
+
 ### Current service identities
 
 | Domain | UID:GID | NSS home field | Active roots |
@@ -148,7 +154,7 @@ Use the owning service identity for ordinary service-specific administration. Ro
 - Protected Restic credentials remain root-only and are never documented by value.
 - Service secrets remain under `/srv/rotom/secrets`; the named ACL policy above gives Jared and Fran read/traverse access where effective. Preserve service ownership and avoid exposing credential contents.
 - Remote Desktop Commander remains locked, has no sudo or Docker membership, and uses its existing outbound service registration without exposing its device state.
-- Fran's SSH-key setup remains deferred; password/sudo and PVE browser access are separate from SSH authorization.
+- Fran's PVE SSH key is authorized for her own `fran` account and was verified with key-only authentication on 2026-10-24. Rotom SSH authorization remains separate and unverified; password/sudo and PVE browser access do not establish it.
 
 ## 6. Retired Identities and Paths
 
@@ -168,7 +174,7 @@ Do not recreate a legacy account or home from historical documentation. First id
 
 ## 8. Outstanding / Needs Verification
 
-- Fran's optional SSH-key authorization.
+- Fran's separate Rotom SSH-key authorization and key-only verification.
 - Exact owner intent for any remaining root-only rollback artifact.
 - NAS-side metadata persistence after a future NAS reconfiguration or update.
 - Any proposed new service identity, storage GID, or privilege grant.
