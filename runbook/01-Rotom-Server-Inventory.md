@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-24 — Deploy and protect Command Center
+**Documentation updated:** 2026-10-26 — Route completed-media import failures
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -23,6 +23,7 @@ Choose the row that best matches the work. In the destination, read the current-
 | Task or symptom | Canonical destination |
 |---|---|
 | Website, container, or application unavailable | [02 — container and Docker-backed website diagnosis and recovery](02-Docker-Services.md#diagnose-and-recover-a-container-or-docker-backed-website) |
+| Completed movie or show missing from Jellyfin | [02 — completed media import contract](02-Docker-Services.md#completed-media-import-contract) |
 | Proxy, listener, DNS, TLS, domain, routing, or external-access problem | [03 — end-to-end access-path diagnosis](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure) |
 | NAS path, NFS mount, or storage dependency unavailable | [04 — configured NAS-mount diagnosis and recovery](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) |
 | RomM browser upload, ROM-library write boundary, or metadata-provider health | [02 — RomM upload and metadata-provider contract](02-Docker-Services.md#romm-upload-and-metadata-provider-contract) |

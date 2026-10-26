@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-24 — Adopt the Linear ticket activation contract
+**Documentation updated:** 2026-10-26 — Record the completed-media import and seeding contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -91,6 +91,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-10-26 — Record the completed-media import and seeding contract
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `internals/tooling/test-rr-runbooks`.
+- **Status:** **Implemented / Verified.** This RS update records the live qBittorrent, Radarr/Sonarr, and Jellyfin behavior established earlier in the task; the documentation step makes no additional live-system change.
+- **Changes:** Recorded the final global qBittorrent policy: completed torrents seed for 30 minutes and then stop, while ratio and inactive-seeding limits remain disabled. Documented why that window is required with the intentionally read-only Radarr/Sonarr torrent bind, the ordered diagnosis path from torrent payload through application import to Jellyfin detection, and the safe handling of invalid executable payloads.
+- **Evidence:** The prior one-minute limits left both completed torrents stopped after two seconds of recorded seeding. Radarr repeatedly selected a move for the stopped movie and failed on the read-only torrent source. After disabling those limits and resuming the movie, Radarr selected a non-destructive import, fell back from hardlink to copy, registered the complete 10,139,834,162-byte movie, and Jellyfin refreshed the final movie path. The invalid show torrent contained only a `.exe`; it and its payload were deleted, Sonarr blocklisted the release, and a replacement search across three configured indexers returned no reports. Final API readback verified the adopted 30-minute time limit with ratio and inactivity limits disabled.
+- **Outstanding:** South Park S29E04 remains monitored without a file because no valid replacement release was available at verification time. Revalidate the import contract if qBittorrent share limits, Radarr/Sonarr completed-download handling, or the read-only torrent bind changes. Available Sources replacement remains manual by Jared.
 
 ## 2026-10-24 — Record Fran's verified PVE SSH key access
 

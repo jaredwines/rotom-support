@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 records the current supported deployment and observed runtime discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-24 — Deploy and protect Command Center
+**Documentation updated:** 2026-10-26 — Record the completed-media import and seeding contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -22,6 +22,7 @@ Record substantive changes to this document in the change log as part of the sam
 ## Start by Task or Symptom
 
 - For a stopped or missing supported container, failed health check, direct application failure, or Docker-backed website outage, use the procedure immediately below.
+- For a completed movie or show missing from Jellyfin, follow [Completed Media Import Contract](#completed-media-import-contract) from the payload through Radarr or Sonarr import to Jellyfin detection.
 - **Update RC** means update the reviewed non-secret **Rotom Compose** configuration. Use [Update Rotom Compose Configuration](#update-rotom-compose-configuration) before applying the separately authorized service change.
 - If the direct listener works but proxy, TLS, DNS, routing, or public access fails, continue in [document 03](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure).
 - If a bind source is an unavailable NFS path, use [document 04](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) before changing Docker state.
@@ -279,7 +280,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | RomM | Supported active service | Parent game-library bind is read-only; only the nested ROM tree is writable for browser uploads. Protected IGDB variables are present without recording values; IGDB and LaunchBox provider health are verified. |
 | Paperless | Supported active service | VM-local database/configuration plus `/mnt/nas-libraries/documents/paperless` media |
 | Prowlarr | Supported active service | Explicit container DNS `192.168.1.1` prevents the Docker boot-time resolver race; it supplies the configured Sonarr/Radarr indexers |
-| qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract and WireGuard; UI/control listener remains at `127.0.0.1:8080` for NPM and is additionally published at `192.168.1.69:8080` for Sonarr/Radarr |
+| qBittorrentVPN | Supported active service | Libraries torrent/sentinel contract and WireGuard; completed torrents seed for 30 minutes before stopping, with ratio and inactivity stopping disabled; UI/control listener remains at `127.0.0.1:8080` for NPM and is additionally published at `192.168.1.69:8080` for Sonarr/Radarr |
 | Palworld Jared and Fran | Supported services; observed stopped | VM-local state and UDP publications unchanged; both containers exited with code `143` before this task at 2026-10-20 18:02 PDT; Compose restart policy remains `unless-stopped` |
 | Home Assistant and Homebridge | Supported active services | VM-local state under Smart Home appdata; host networking retained for discovery; each Compose file explicitly uses DNS `192.168.1.1` |
 
@@ -288,6 +289,14 @@ Container state is time-sensitive. Diagnose current runtime state with the runbo
 Home Assistant's ZHA integration is configured for a ConBee II at `/dev/ttyACM0`. PVE VM 100 has USB passthrough for vendor/product `1cf1:0030`, configured by Jared. After the 2026-10-16 PVE reboot, the device was visible on Rotom and in the Home Assistant container. The numbered device path can change, and individual Zigbee device operation was not verified. Historical ConBee disconnection during PVE stability testing did not establish the cause of earlier resets; monitor PVE stability after reconnection.
 
 For a ZHA missing-device error, check the device on Rotom and inside Home Assistant before changing configuration. If absent on Rotom, Jared must inspect the physical adapter and PVE passthrough. If present on Rotom but absent in the container, assess container startup timing and the existing Compose configuration before any targeted recovery. Preserve Zigbee state and avoid replacing the coordinator or resetting its network as a diagnostic step.
+
+## Completed Media Import Contract
+
+qBittorrentVPN downloads the `Movies` and `Shows` categories beneath `/media/torrents`. Radarr and Sonarr receive the authoritative Libraries tree read/write at `/media`, but the nested torrent bind at `/media/torrents` is intentionally read-only. Jellyfin does not ingest the torrent tree; it watches the final read-only library views at `/data/library/movies` and `/data/library/shows` after Radarr or Sonarr imports content into `/media/movies` or `/media/shows`.
+
+The verified qBittorrent global share-limit policy is time-based: completed torrents seed for 30 minutes and then stop. Ratio-based and inactive-seeding stopping are disabled. This window is part of the import contract, not merely a sharing preference. While qBittorrent reports a completed item as seeding, Radarr or Sonarr selects a non-destructive import and can fall back from a hardlink to a copy through the protected mount layout. If qBittorrent stops the item before the application observes completion, the application may instead select a move, then fail when it cannot delete the read-only torrent source.
+
+When a completed torrent does not appear in Jellyfin, diagnose the chain in order: confirm the payload is a supported media file rather than an executable or other invalid content; inspect Radarr or Sonarr activity/history and import errors; verify the qBittorrent category, state, and global share limits; confirm the final file exists in the authoritative movie or show root; then inspect Jellyfin's folder watcher or library scan. Do not weaken the read-only torrent bind merely to make a failed move succeed, and never open or execute a suspicious payload. If a bad release is confirmed, remove it through qBittorrent, mark or blocklist it in the responsible application, and search for a replacement.
 
 ## RomM Upload and Metadata-Provider Contract
 
@@ -346,4 +355,4 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 
 ## Maintenance and Revalidation Triggers
 
-Follow the canonical [Runbook-First Maintenance Standard](00-Rotom-Change-Log.md#runbook-first-maintenance-standard). Revalidate this document after a Compose path, container, image policy, service identity, bind source, listener, network, restart policy, healthcheck, recovery rule, or supported deployment changes.
+Follow the canonical [Runbook-First Maintenance Standard](00-Rotom-Change-Log.md#runbook-first-maintenance-standard). Revalidate this document after a Compose path, container, image policy, service identity, bind source, listener, network, restart policy, healthcheck, recovery rule, qBittorrent share limit, completed-download handling rule, or supported deployment changes.
