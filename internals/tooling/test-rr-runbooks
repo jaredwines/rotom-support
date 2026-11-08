@@ -92,6 +92,7 @@ require_text 01-Rotom-Server-Inventory.md "### Maintaining the Runbook-First Mod
 require_text 01-Rotom-Server-Inventory.md "00-Rotom-Change-Log.md#runbook-first-maintenance-standard"
 require_text 01-Rotom-Server-Inventory.md "SSH alias, target account, authentication method, or access-policy lookup"
 require_text 01-Rotom-Server-Inventory.md "Completed movie or show missing from Jellyfin"
+require_text 01-Rotom-Server-Inventory.md "Add a new Docker application or its Homepage entry"
 
 for file in 02-Docker-Services.md 03-Network-and-Domains.md 04-NAS-and-Storage.md \
             05-Backup-and-Restore.md 06-Maintenance-and-Automation.md 07-Users-and-Permissions.md
@@ -114,6 +115,9 @@ require_text 08-Rotom-Directory-Tree.txt "# RETIRED PATH WARNINGS"
 require_text 08-Rotom-Directory-Tree.txt "# RECOVERY RULES"
 
 require_text 02-Docker-Services.md "## Diagnose and Recover a Container or Docker-Backed Website"
+require_text 02-Docker-Services.md "## Register a New Docker Application and Homepage Entry"
+require_text 02-Docker-Services.md "Every new Docker-based application or workload deployed on Rotom has exactly one current service-domain assignment and one Homepage entry"
+require_text 02-Docker-Services.md "background-only application without an operator-facing web interface still receives a status-oriented Homepage entry"
 require_text 04-NAS-and-Storage.md "## Diagnose and Recover a Configured NAS Mount"
 require_text 04-NAS-and-Storage.md "mnt-nas\\x2dlibraries.automount"
 require_text 04-NAS-and-Storage.md "rotom-nas-docker-recovery.service"
@@ -144,6 +148,7 @@ require_text 07-Users-and-Permissions.md 'browser-uploaded ROM files were observ
 require_text 03-Network-and-Domains.md '`jaredwines.com` remains supported through NPM proxy host `8`'
 require_text 03-Network-and-Domains.md 'Glances no longer has a host listener'
 require_text 03-Network-and-Domains.md '`support.rotom.casa`'
+require_text 03-Network-and-Domains.md "Assigning a Docker application to a Rotom service domain or adding its Homepage entry is not a network decision."
 require_text 06-Maintenance-and-Automation.md 'Docker-socket access remains root-equivalent'
 require_text 06-Maintenance-and-Automation.md '/srv/rotom/appdata/platform/mkdocs-rr/repository'
 require_text 07-Users-and-Permissions.md 'Aloha'\''s and Jared Wines'\'' site content is owned within Hosted Websites roots'
@@ -185,6 +190,7 @@ fi
 
 for pair in \
     '02-Docker-Services.md:Diagnose and Recover a Container or Docker-Backed Website' \
+    '02-Docker-Services.md:Register a New Docker Application and Homepage Entry' \
     '03-Network-and-Domains.md:Diagnose a Proxy, Listener, DNS, TLS, Routing, or External-Access Failure' \
     '04-NAS-and-Storage.md:Diagnose and Recover a Configured NAS Mount' \
     '05-Backup-and-Restore.md:Start by Task or Symptom' \

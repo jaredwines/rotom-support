@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 records the current supported deployment and observed runtime discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-26 — Record the completed-media import and seeding contract
+**Documentation updated:** 2026-11-08 — Adopt Docker application placement and Homepage registration contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -22,6 +22,7 @@ Record substantive changes to this document in the change log as part of the sam
 ## Start by Task or Symptom
 
 - For a stopped or missing supported container, failed health check, direct application failure, or Docker-backed website outage, use the procedure immediately below.
+- Before deploying a new Docker application or adding its Homepage entry, use [Register a New Docker Application and Homepage Entry](#register-a-new-docker-application-and-homepage-entry).
 - For a completed movie or show missing from Jellyfin, follow [Completed Media Import Contract](#completed-media-import-contract) from the payload through Radarr or Sonarr import to Jellyfin detection.
 - **Update RC** means update the reviewed non-secret **Rotom Compose** configuration. Use [Update Rotom Compose Configuration](#update-rotom-compose-configuration) before applying the separately authorized service change.
 - If the direct listener works but proxy, TLS, DNS, routing, or public access fails, continue in [document 03](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure).
@@ -247,6 +248,36 @@ sudo -iu jared -- git -C /srv/rotom/stacks push
 ```
 
 Verify a clean worktree, the expected remote branch, and `docker compose ... config -q`. Git alone does not start, stop, recreate, or update a container. Apply only the separately intended targeted service action, then perform its owning service verification. If Git validation or push fails, preserve the working tree and error; do not reset, clean, force-push, or make a service change to compensate.
+
+## Register a New Docker Application and Homepage Entry
+
+### Outcome, scope, and authorization
+
+Every new Docker-based application or workload deployed on Rotom has exactly one current service-domain assignment and one Homepage entry in that domain's existing Homepage section. This contract applies to future deployments; it does not silently reclassify existing workloads or require a retroactive Homepage change.
+
+It does not authorize deployment, a container lifecycle action, persistent-data creation or migration, network exposure, DNS, NPM, TLS, certificates, firewall changes, or a new service identity. Obtain those permissions separately. Follow [Update Rotom Compose Configuration](#update-rotom-compose-configuration) for the reviewed RC change and document 03 for an explicitly authorized access-path change.
+
+### Canonical inputs and read-only preflight
+
+Select exactly one of the five current service domains: **Platform**, **Libraries**, **Hosted Websites**, **Game Servers**, or **Smart Home**. Confirm the service's purpose, required persistent data, identity/ownership boundary, Compose path, and whether it needs protected inputs before choosing the domain. Use the current domain table in section 1, the relevant subject documents, and the rendered target and Homepage Compose definitions; do not infer a domain from a historical path or an intended hostname.
+
+Before a change, inspect the exact proposed RC target and the current Homepage configuration source in the rendered Homepage Compose definition. Confirm that the selected domain roots are `/srv/rotom/stacks/<domain>`, `/srv/rotom/appdata/<domain>`, and, only when required, `/srv/rotom/secrets/<domain>`. Inspect the existing matching Homepage section and retain its ordering and unrelated entries. Do not print protected inputs, environment files, or credentials.
+
+Stop if no one domain clearly owns the application; the proposal would create a sixth domain; its persistence, service identity, or exposure policy is unresolved; its Homepage placement is unclear; or the RC or Homepage configuration already has an unrelated change. Resolve the decision before editing or deploying.
+
+### Required placement and Homepage registration
+
+1. Assign the application to one domain and use only that domain's approved Compose, appdata, and, where necessary, secrets roots. Do not create alternate top-level service trees.
+2. Treat databases, caches, exporters, and sidecars that serve one application as companion containers. Represent them through the parent application's single Homepage entry unless they are separately operated applications with their own ownership, lifecycle, and operator purpose.
+3. Add one entry for each independently operated application to the matching existing Homepage section. Include an accurate name, description, and appropriate icon. Include a direct link only when an operator-facing URL exists. Configure Docker status when supported by Homepage.
+4. Add a `siteMonitor` only when the application has an authorized, supported HTTP(S) endpoint. A background-only application without an operator-facing web interface still receives a status-oriented Homepage entry, but it has no fabricated URL or site monitor.
+5. A service-domain assignment or Homepage entry does not create an access path. Published ports, `*.rotom.casa` hostnames, NPM proxy hosts, DNS records, certificates, access lists, and public access require a separately reviewed and authorized change under document 03.
+
+### Verification, recovery, and evidence
+
+Validate the reviewed target Compose definition and the Homepage Compose definition before deployment. After the separately authorized deployment, verify the intended application state, its required persistent-data boundary, and the rendered Homepage entry in the matching section. Verify Docker status and, only when configured, the documented HTTP(S) monitor result. Confirm no unrelated card, section, route, or container changed.
+
+If validation or verification fails, preserve the changed configuration and diagnostic evidence, do not remove data or invent an endpoint, and stop before broadening scope. Recover only through the owning application's separately authorized procedure or a verified recovery point. Retain the domain decision, exact RC and Homepage paths, parent/companion decision, expected card behavior, deployment authorization, and sanitized verification result.
 
 ## 1. Current Docker Runtime and Deployment State
 

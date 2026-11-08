@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Rotom LAN, DNS, Docker networking, ports, Cloudflare, NPM, and domain routing
 **Hosts:** PVE hypervisor `pve` plus Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-24 — Add Command Center's restricted proxy path
+**Documentation updated:** 2026-11-08 — Clarify Docker application placement does not authorize exposure
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -22,6 +22,7 @@ Record substantive changes to this document in the change log as part of the sam
 ## Start by Task or Symptom
 
 - Application or container itself unavailable: start in [document 02](02-Docker-Services.md#diagnose-and-recover-a-container-or-docker-backed-website).
+- New Docker application placement or Homepage registration: start in [document 02](02-Docker-Services.md#register-a-new-docker-application-and-homepage-entry). Neither action authorizes a network path.
 - Direct application works, but proxy, listener, DNS, TLS, routing, or public access fails: use the procedure below.
 - NAS route or NFS path failure: use [document 04](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount).
 
@@ -132,6 +133,8 @@ Cloudflare API and DNS checks on 2026-10-17 verified an unproxied apex A record 
 `command-center.rotom.casa` relies on that existing wildcard DNS path and did not add a dedicated Cloudflare record. The currently served wildcard certificate covered the hostname and passed local-SNI verification. Trusted and Homepage-monitor requests returned `200`; a simulated public source propagated through NPM's trusted real-IP path returned `403`.
 
 Local and public DNS can legitimately differ. Diagnose the local resolver result, public authoritative result, NPM route, certificate, access list, and upstream independently. A wildcard DNS answer does not prove that an application or proxy route exists.
+
+Assigning a Docker application to a Rotom service domain or adding its Homepage entry is not a network decision. It does not authorize a listener, `*.rotom.casa` hostname, NPM proxy host, DNS record, certificate, access-list change, or public access. Review and authorize each required access-path layer separately before making it current.
 
 Home Assistant and Homebridge explicitly use router DNS `192.168.1.1` in their Compose definitions. On 2026-10-16 their previous container resolver files had no nameserver even though the host resolver worked. For outbound DNS failures, compare the host and affected container resolver files and resolution results before changing shared DNS. After the PVE reboot, both containers retained the configured DNS and Home Assistant resolved the Sensibo hostname; the integration's full operation was not independently verified.
 

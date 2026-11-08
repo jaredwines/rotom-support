@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-10-26 — Record the completed-media import and seeding contract
+**Documentation updated:** 2026-11-08 — Adopt Docker application placement and Homepage registration contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -91,6 +91,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-11-08 — Adopt Docker application placement and Homepage registration contract
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `internals/tooling/test-rr-runbooks`.
+- **Status:** **Documentation only / Adopted decision.** No Rotom, Docker, Homepage, proxy, DNS, certificate, or network change was made.
+- **Changes:** Established the onboarding contract for every newly deployed Docker application: assign exactly one of the five current service domains; use that domain's approved Compose, appdata, and, when required, secrets roots; and add one matching Homepage entry. Background-only applications receive status-oriented entries, while dependent companion containers are represented by their parent application unless separately operated. Classification and Homepage registration do not authorize any listener, hostname, NPM route, DNS, TLS, access-list, or public-exposure change.
+- **Evidence:** Jared's 2026-11-08 adoption decision. The task-router link, Docker contract, network guardrail, and structural validation now preserve the decision.
+- **Outstanding:** Apply the contract to future deployments; it does not retroactively modify existing workloads or Homepage cards. Available Sources replacement remains manual by Jared.
 
 ## 2026-11-08 — Retire Nextcloud AIO deployment
 
