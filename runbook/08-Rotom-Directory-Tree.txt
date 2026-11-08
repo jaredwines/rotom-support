@@ -85,7 +85,7 @@
 #   nas-cloud/                            Cloud/.data; Seafile library payload and readiness sentinel
 #
 # /etc/
-#   fstab                                 two current guest NFS automount entries
+#   fstab                                 three current guest NFS automount entries
 #   restic/
 #     include.txt
 #     exclude.txt
@@ -117,6 +117,8 @@
 #
 # /home/
 #   jared/                                human administrator; canonical RS checkout below
+#     .ccnet/                             private Seafile CLI state
+#     Seafile/shared-folder/              local synchronized Seafile library; owned by jared
 #     rotom-support/                       canonical RS checkout
 #   fran/                                 human administrator
 #

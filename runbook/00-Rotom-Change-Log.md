@@ -92,6 +92,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-11-08 — Record verified Rotom Seafile client
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `08-Rotom-Directory-Tree.txt`.
+- **Status:** Implemented and verified.
+- **Changes:** Recorded the user-scoped Seafile CLI client and its single `shared-folder` library at `/home/jared/Seafile/shared-folder`. The boot-enabled client service runs as `jared`; it is separate from the guarded Platform server stack and does not use the NAS library-data mount.
+- **Evidence:** Read-only audit found the client unit enabled and active, private `jared:jared` home/configuration and sync directories, one registered library with status `synchronized`, completed synchronization cycles against `https://cloud.rotom.casa`, and healthy server, database, Redis, and proxy route.
+- **Outstanding:** Client version `9.0.13` is functioning but should be reviewed for a separate upgrade. The Cloud NAS first scheduled snapshot and isolated NAS-file restore remain pending.
+
 ## 2026-11-08 — Deploy guarded Seafile Cloud service
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `08-Rotom-Directory-Tree.txt`.
