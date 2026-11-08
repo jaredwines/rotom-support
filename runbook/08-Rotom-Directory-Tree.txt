@@ -49,6 +49,7 @@
 #   appdata/                              authoritative VM-local mutable state
 #     platform/
 #       command-center/                     library.db plus active WAL/SHM; owner UID 10001, Platform GID
+#       seafile/{shared,database,backups}/  VM-local Seafile state and MariaDB dumps
 #       homepage/glances/glances.conf
 #       nginx-proxy-manager/{data,letsencrypt}/
 #       mkdocs-rr/{repository,source,site,site.previous}/  active guarded publisher state
@@ -65,6 +66,7 @@
 #     smart-home/
 #   secrets/                              root-protected; values never document
 #     platform/command-center/password    exact read-only container secret; contents never document
+#     platform/seafile/seafile.env         Seafile runtime secrets; contents never document
 #   scripts/                              root-owned declarative helpers
 #   backup-staging/                       ABSENT at the evidence date
 #
@@ -80,6 +82,7 @@
 #     .rotom-qbt-media-ready/              qBittorrent NFS readiness sentinel
 #   nas-rotom-restic-backup/              Rotom_Restic_Backup/.data
 #     rotom-restic-backup/                current guest Restic repository; two verified post-reset snapshots
+#   nas-cloud/                            Cloud/.data; Seafile library payload and readiness sentinel
 #
 # /etc/
 #   fstab                                 two current guest NFS automount entries
@@ -91,6 +94,7 @@
 #     rotom-nas-docker-recovery.service
 #     rotom-qbittorrent-media-guard.{service,timer}
 #     rotom-restic-backup.{service,timer}
+#     rotom-seafile-mariadb-dump.{service,timer}
 #     rotom-restic-backup-status-api.service
 #     rotom-weekly-maintenance.{service,timer}
 #
@@ -104,6 +108,8 @@
 #     rotom-nas-docker-recovery
 #     rotom-restic-backup
 #     rotom-restic-backup-status-api
+#     rotom-seafile-nas-guard
+#     rotom-seafile-mariadb-dump
 #     weekly-host-maintenance
 #
 # /opt/

@@ -287,7 +287,7 @@ Command Center expanded the reviewed deployment to 19 Compose definitions and ad
 
 | Domain | Compose definitions | Supported services |
 |---|---:|---|
-| Platform | 6 | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support |
+| Platform | 7 | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support, Seafile |
 | Libraries | 7 | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless |
 | Hosted Websites | 2 | Aloha Millworks, Jared Wines |
 | Game Servers | 2 | Palworld Jared, Palworld Fran |
@@ -304,6 +304,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Arcane | Supported active service | Canonical URL `https://arcane.rotom.casa`; zero registered Projects. It has writable appdata and Docker socket, read-only Platform secrets, and no host Compose-directory bind or `PROJECTS_DIRECTORY`; this removes Projects UI access to Compose files but Docker-socket control remains root-equivalent. |
 | Command Center | Supported active service | Compose path `/srv/rotom/stacks/platform/command-center/compose.yaml`; immutable linux/amd64 image digest `sha256:6f31d2117647d1db593ea1cbd9f5cb9cf2128c93014faf23c77a746fb3d3df01`; container UID `10001`; loopback-only `127.0.0.1:8790:8787`; writable appdata and exact read-only password-file bind only; no Docker socket, NAS, Platform-wide secret, or optional AI-provider access. |
 | Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
+| Seafile | Supported active service | `platform/seafile/compose.yaml`; Seafile, MariaDB, and Redis use VM-local state except `/mnt/nas-cloud/seafile-data`, which is a non-creating NAS bind. `rotom-seafile.service` runs an exact-source, sentinel, and writable-mount guard before the stack can start. |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported service; observed stopped | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8`; container exited cleanly before this task at 2026-10-20 18:01 PDT |
@@ -349,13 +350,15 @@ Homepage resolves `command-center.rotom.casa` to local NPM through its Compose `
 
 The scoped recovery helper validates the exact configured `/mnt/nas-libraries` NFS source plus `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and the qBittorrent readiness sentinel before considering container recovery. It may recover only supported NAS-dependent containers with an eligible restart policy and a recorded NAS/mount startup-failure signature. It leaves running and intentionally stopped containers unchanged.
 
+Seafile has an independent fail-closed guard. On 2026-11-08, its Cloud NFS mount returned read-only after a guest reboot and the guard prevented Seafile startup. After the exact mount was restored read/write, the service restarted normally. The guard proves safe startup refusal; it is not a runtime NAS-loss recovery mechanism.
+
 Do not recreate a missing bind source as a local directory. Stop if an expected path is not the documented NFS filesystem or if the source, ownership, mode, Compose definition, or recovery intent differs.
 
 ## 5. Retired Services and Deployment Material
 
 Uptime Kuma, Syncthing, Gamarr, JDownloader, the qBittorrent Games importer, Igir automation, and the browser-upload bridge are retired. Their former Compose/appdata roots and dedicated listeners are absent. Do not redeploy them from repository history or dated change-log entries.
 
-Nextcloud AIO is retired as of 2026-11-08. Its tracked RC Compose project, AIO runtime and networks, loopback listeners, Homepage card, and two NFS automount contracts are absent. NPM proxy host `29` for `cloud.rotom.casa` is disabled and no active generated proxy configuration serves that hostname; its shared certificate remains in use and must not be removed as part of this retirement. Do not re-enable or redeploy the service without a new reviewed deployment. The former NAS shares are unmounted but retain their payload and Borg repository; the eight retained volumes are `nextcloud_aio_apache`, `nextcloud_aio_backup_cache`, `nextcloud_aio_database`, `nextcloud_aio_database_dump`, `nextcloud_aio_elasticsearch`, `nextcloud_aio_mastercontainer`, `nextcloud_aio_nextcloud`, and `nextcloud_aio_redis`. Deleting those artifacts is a separate destructive action that requires an exact scope and NAS snapshot/recycle-bin review.
+Nextcloud AIO is retired as of 2026-11-08. Its tracked RC Compose project, AIO runtime and networks, loopback listeners, Homepage card, and two NFS automount contracts are absent. NPM proxy host `29` was reassigned to Seafile; do not redeploy Nextcloud or delete its retained NAS payload, Borg repository, or eight named volumes without separate destructive authorization.
 
 The former standalone Glances stack is retired, but Glances itself is current as the second service in Homepage's Compose file.
 

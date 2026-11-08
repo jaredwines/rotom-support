@@ -319,7 +319,7 @@ Ordinary administrators should not be added to service storage groups merely for
 
 ## 5. Protection Boundaries
 
-Rotom Restic Backup excludes `/mnt`; NAS-resident Libraries data therefore requires NAS-side protection. Jared confirmed Libraries snapshot retention and an isolated restore outcome, but exact NAS-side settings and selected recovery-point evidence were not supplied in the documentation task. Revalidate those details before depending on a specific snapshot.
+Rotom Restic Backup excludes `/mnt`; NAS-resident Libraries and Seafile library data therefore require NAS-side protection. The Seafile `Cloud/.data` export at `/mnt/nas-cloud` has a readiness sentinel and a daily midnight snapshot policy with limit 128, as supplied by Jared on 2026-11-08. A first scheduled snapshot and isolated NAS-file restore remain unobserved. Jared confirmed Libraries snapshot retention and an isolated restore outcome, but exact NAS-side settings and selected recovery-point evidence were not supplied in the documentation task. Revalidate those details before depending on a specific snapshot.
 
 The former Game Servers, Smart Home, and Hosted Websites shares were empty service boundaries, not backup copies of their VM-local application state; all three guest contracts were retired on 2026-10-20.
 

@@ -74,6 +74,7 @@ Retain the unit name, trigger time, exit result, sanitized journal error, depend
 |---|---|
 | NAS-backed Docker recovery | `rotom-nas-docker-recovery.service`; validates and recovers only eligible Libraries consumers |
 | Rotom Restic Backup | `rotom-restic-backup.timer`; around `03:00`, persistent, randomized delay up to ten minutes |
+| Seafile MariaDB dump | `rotom-seafile-mariadb-dump.timer`; daily `02:30`, persistent, randomized delay up to five minutes; writes application-only dump under Platform appdata before Restic |
 | qBittorrent mount guard | `rotom-qbittorrent-media-guard.timer`; validates Libraries NFS/sentinel and stops qBittorrentVPN if unsafe |
 | Weekly maintenance | `rotom-weekly-maintenance.timer`; Sunday `01:15`; ordinary package upgrades without automatic reboot |
 | Backup status | `rotom-restic-backup-status-api.service`; read-only port `8787` |

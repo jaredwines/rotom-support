@@ -92,6 +92,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-11-08 — Deploy guarded Seafile Cloud service
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `08-Rotom-Directory-Tree.txt`.
+- **Status:** Implemented and verified.
+- **Changes:** Commissioned Platform Seafile CE at `cloud.rotom.casa` with a loopback NPM route, local MariaDB/Redis/configuration/secrets, and NAS-resident Seafile library payload at `/mnt/nas-cloud`. Added a guarded systemd startup contract, Homepage Docker-status entry, daily application-only MariaDB dumps, and the related current-state documentation.
+- **Evidence:** Exact Cloud NFS source, sentinel, and writable behavior were verified; Seafile was healthy locally and returned the expected public HTTPS sign-in redirect; Jared verified administrator login and upload/download. The guard prevented Seafile startup when the mount returned read-only after reboot. A corrected dump was protected by Restic and restored successfully into a disposable network-isolated MariaDB container.
+- **Outstanding:** Observe the first scheduled Cloud NAS snapshot and perform an isolated NAS-file restore; client sync was not independently exercised in this task.
+
 ## 2026-11-08 — Require one Homepage health indicator per Docker application
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `02-Docker-Services.md`, `internals/tooling/test-rr-runbooks`.

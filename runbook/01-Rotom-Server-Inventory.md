@@ -85,7 +85,7 @@ On 2026-10-24, Command Center expanded the reviewed deployment to 19 Compose def
 
 | Domain | Identity | Active roots | Current services |
 |---|---:|---|---|
-| Platform | `997:5002` | `/srv/rotom/{stacks,appdata,secrets}/platform` | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support |
+| Platform | `997:5002` | `/srv/rotom/{stacks,appdata,secrets}/platform` | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support, Seafile |
 | Libraries | `127:5000` | `/srv/rotom/{stacks,appdata,secrets}/libraries` | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless |
 | Hosted Websites | `902:5004` | `/srv/rotom/{stacks,appdata}/hosted-websites` | Aloha Millworks, Jared Wines |
 | Game Servers | `995:5001` | `/srv/rotom/{stacks,appdata,secrets}/game-servers` | Palworld Jared, Palworld Fran |
@@ -103,12 +103,13 @@ Remote Desktop Commander runs from `/opt/desktop-commander` as locked identity `
 
 ## 3. Current Storage Summary
 
-Rotom has two current guest NFSv3 systemd-automount contracts:
+Rotom has three current guest NFSv3 systemd-automount contracts:
 
 | NAS export | Guest path | Purpose |
 |---|---|---|
 | `Libraries/.data` | `/mnt/nas-libraries` | Root-level `games/`, `movies/`, `shows/`, `torrents/`, and `documents/paperless/` payload plus the qBittorrent sentinel |
 | `Rotom_Restic_Backup/.data` | `/mnt/nas-rotom-restic-backup` | Rotom Restic repository |
+| `Cloud/.data` | `/mnt/nas-cloud` | Seafile library data and readiness sentinel |
 
 After the 2026-10-20 Libraries-layout reboot, Libraries returned read/write with both generated unit layers active. Its recovery helper validates the exact source and current required layout, re-arms the generated automount after boot-time start-limit failure, and conditionally recovers only eligible NAS-dependent containers. Later that day, Jared-reported deletion of the three unused NAS drives was reconciled on Rotom: their fstab entries, generated units, and empty local mountpoint directories were removed. Before the final Docker reset, both remaining NFS contracts were rechecked read/write; do not infer that state persists across a NAS or mount incident without a fresh check.
 
@@ -120,6 +121,8 @@ Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-d
 - **PVE Restic Backup:** repository `/mnt/nas-pve-restic-backup/pve-restic-backup`; daily `04:00`; current credential path `/etc/restic/restic-repository-password` on PVE.
 - **Rotom VM Backup:** Proxmox job `rotom-vm-daily`; VMID `100`; daily `05:00`; snapshot mode with zstd; retention `7 daily / 4 weekly / 6 monthly`.
 - **NAS-resident application data:** outside Rotom Restic because `/mnt` is excluded. Confirm the applicable NAS snapshot and isolated-restore path before relying on it.
+
+On 2026-11-08, Seafile CE was commissioned in Platform at `https://cloud.rotom.casa`. Its guarded systemd stack refuses startup unless the exact `/mnt/nas-cloud` NFS source, readiness sentinel, library-data directory, and a disposable write check are present. Seafile library data is NAS-resident; MariaDB, Redis, configuration, logs, and secrets are VM-local. A daily application-only MariaDB dump is created around 02:30 and falls under `/srv` Restic protection; its isolated MariaDB restore passed. The Cloud NAS snapshot policy is daily at midnight with limit 128; first scheduled observation remains pending.
 
 On 2026-10-20, Jared intentionally cleared the Rotom Restic repository, PVE Restic repository, and every retained VMID 100 VMA archive. Final checks then showed two new Rotom Restic snapshots (latest `f6cae3c8`, 14.165 GiB), two new PVE Restic snapshots (latest `00600860`, 232.049 KiB), and one VMID 100 VMA archive, `vzdump-qemu-100-2026_10_20-19_01_20.vma.zst` (34,853,099,624 bytes). The existing timers and `rotom-vm-daily` job were retained throughout; select and verify an appropriate current recovery point before relying on protection.
 

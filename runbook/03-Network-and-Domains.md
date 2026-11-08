@@ -95,6 +95,7 @@ Nginx Proxy Manager is host-networked and owns the guest's HTTP/HTTPS reverse-pr
 | `docs.rotom.casa` | `127.0.0.1:8082` | Legacy private hostname; NPM host `22` permanently redirects paths and query strings to `https://support.rotom.casa/runbook/` |
 | `arcane.rotom.casa` | `127.0.0.1:3552` | Arcane's canonical URL; local-SNI HTTPS returned `200` after its configuration update. The former `arcane.smart-hub.xyz` application URL is retired. |
 | `command-center.rotom.casa` | `127.0.0.1:8790` | Private Command Center route; NPM host `28`, wildcard certificate `24`, forced HTTPS, and dedicated access list `2`. `/api/events` disables response buffering for SSE. |
+| `cloud.rotom.casa` | `127.0.0.1:8800` | Seafile CE; NPM host `29`, certificate `24`, forced HTTPS and WebSockets. Public and local-SNI checks return the expected sign-in redirect. |
 | `pve.rotom.casa` | HTTPS `192.168.1.68:8006` | Forced TLS, WebSockets, and the configured access list |
 | `jaredwines.com` | `127.0.0.1:7777` | Supported by NPM proxy host `8`; publication remains loopback-only, but the upstream container was observed stopped on 2026-10-24 |
 | `alohamillworks.com` | `127.0.0.1:7778` | Active website; local-SNI and external public probes returned `200` |
@@ -105,7 +106,7 @@ Application routes for Paperless, Prowlarr, RomM, Home Assistant, Homebridge, Je
 
 ## 3. Current Listener and Docker-Network Model
 
-Supported host or loopback publications include Homepage `3001`, Arcane `3552`, Command Center `127.0.0.1:8790`, Rotom Support `127.0.0.1:8082`, qBittorrent `127.0.0.1:8080` plus trusted-LAN `192.168.1.69:8080`, Jared Wines `127.0.0.1:7777`, Aloha `7778`, Jellyfin `8096`, Home Assistant `8123`, Radarr `7878`, Sonarr `8989`, Prowlarr `9696`, NPM `80/81/443`, and the read-only Rotom backup-status API `8787`.
+Supported host or loopback publications include Homepage `3001`, Arcane `3552`, Command Center `127.0.0.1:8790`, Seafile `127.0.0.1:8800`, Rotom Support `127.0.0.1:8082`, qBittorrent `127.0.0.1:8080` plus trusted-LAN `192.168.1.69:8080`, Jared Wines `127.0.0.1:7777`, Aloha `7778`, Jellyfin `8096`, Home Assistant `8123`, Radarr `7878`, Sonarr `8989`, Prowlarr `9696`, NPM `80/81/443`, and the read-only Rotom backup-status API `8787`.
 
 Command Center's upstream has no non-loopback host publication. NPM access list `2` permits loopback, trusted LAN `192.168.1.0/24`, and only Homepage's observed private monitor address `172.18.0.2`; it does not broaden the shared access list or permit the entire Docker subnet. Homepage resolves the hostname to `192.168.1.69` through `extra_hosts`. Revalidate the exact monitor identity after a Homepage network recreation; a stale exception should fail closed and show an unhealthy card rather than be widened automatically.
 
