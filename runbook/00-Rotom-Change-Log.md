@@ -92,6 +92,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-11-08 — Require one Homepage health indicator per Docker application
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `02-Docker-Services.md`, `internals/tooling/test-rr-runbooks`.
+- **Status:** **Documentation only / Adopted decision.** No Rotom, Docker, Homepage, proxy, DNS, certificate, or network change was made.
+- **Changes:** Tightened the Docker-application onboarding contract so every independently operated application card renders exactly one Homepage availability indicator. An authorized operator-facing HTTP(S) endpoint uses only `siteMonitor`; a background-only application or one without that endpoint uses only Docker status. The two mechanisms are mutually exclusive, preventing duplicate status circles.
+- **Evidence:** Jared's 2026-11-08 decision after the newly added Seafile card displayed both a Docker-status and site-monitor circle. Structural validation preserves the one-indicator rule.
+- **Outstanding:** Correct the existing Seafile card through a separately authorized targeted Homepage-configuration change; this documentation update establishes the rule but does not alter live Homepage configuration. Available Sources replacement remains manual by Jared.
+
 ## 2026-11-08 — Adopt Docker application placement and Homepage registration contract
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `internals/tooling/test-rr-runbooks`.

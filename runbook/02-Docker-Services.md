@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 records the current supported deployment and observed runtime discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-08 — Adopt Docker application placement and Homepage registration contract
+**Documentation updated:** 2026-11-08 — Require one Homepage health indicator per Docker application
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -253,7 +253,7 @@ Verify a clean worktree, the expected remote branch, and `docker compose ... con
 
 ### Outcome, scope, and authorization
 
-Every new Docker-based application or workload deployed on Rotom has exactly one current service-domain assignment and one Homepage entry in that domain's existing Homepage section. This contract applies to future deployments; it does not silently reclassify existing workloads or require a retroactive Homepage change.
+Every new Docker-based application or workload deployed on Rotom has exactly one current service-domain assignment and one Homepage entry in that domain's existing Homepage section. Each independently operated application's Homepage entry renders exactly one availability indicator. This contract applies to future deployments; it does not silently reclassify existing workloads or require a retroactive Homepage change.
 
 It does not authorize deployment, a container lifecycle action, persistent-data creation or migration, network exposure, DNS, NPM, TLS, certificates, firewall changes, or a new service identity. Obtain those permissions separately. Follow [Update Rotom Compose Configuration](#update-rotom-compose-configuration) for the reviewed RC change and document 03 for an explicitly authorized access-path change.
 
@@ -269,13 +269,13 @@ Stop if no one domain clearly owns the application; the proposal would create a 
 
 1. Assign the application to one domain and use only that domain's approved Compose, appdata, and, where necessary, secrets roots. Do not create alternate top-level service trees.
 2. Treat databases, caches, exporters, and sidecars that serve one application as companion containers. Represent them through the parent application's single Homepage entry unless they are separately operated applications with their own ownership, lifecycle, and operator purpose.
-3. Add one entry for each independently operated application to the matching existing Homepage section. Include an accurate name, description, and appropriate icon. Include a direct link only when an operator-facing URL exists. Configure Docker status when supported by Homepage.
-4. Add a `siteMonitor` only when the application has an authorized, supported HTTP(S) endpoint. A background-only application without an operator-facing web interface still receives a status-oriented Homepage entry, but it has no fabricated URL or site monitor.
+3. Add one entry for each independently operated application to the matching existing Homepage section. Include an accurate name, description, and appropriate icon. Include a direct link only when an operator-facing URL exists.
+4. Configure exactly one availability indicator for every application entry. When an application has an authorized, supported operator-facing HTTP(S) endpoint, use only `siteMonitor`, which verifies the end-to-end application path. For a background-only application or one without that endpoint, use only Docker status. `siteMonitor` and Docker status are mutually exclusive on one entry; never configure both, and never fabricate a URL or monitor merely to satisfy this rule.
 5. A service-domain assignment or Homepage entry does not create an access path. Published ports, `*.rotom.casa` hostnames, NPM proxy hosts, DNS records, certificates, access lists, and public access require a separately reviewed and authorized change under document 03.
 
 ### Verification, recovery, and evidence
 
-Validate the reviewed target Compose definition and the Homepage Compose definition before deployment. After the separately authorized deployment, verify the intended application state, its required persistent-data boundary, and the rendered Homepage entry in the matching section. Verify Docker status and, only when configured, the documented HTTP(S) monitor result. Confirm no unrelated card, section, route, or container changed.
+Validate the reviewed target Compose definition and the Homepage Compose definition before deployment. After the separately authorized deployment, verify the intended application state, its required persistent-data boundary, and the rendered Homepage entry in the matching section. Verify that each application card has exactly one availability indicator: Docker status or the documented HTTP(S) monitor result, never both. Confirm no unrelated card, section, route, or container changed.
 
 If validation or verification fails, preserve the changed configuration and diagnostic evidence, do not remove data or invent an endpoint, and stop before broadening scope. Recover only through the owning application's separately authorized procedure or a verified recovery point. Retain the domain decision, exact RC and Homepage paths, parent/companion decision, expected card behavior, deployment authorization, and sanitized verification result.
 
