@@ -324,6 +324,8 @@ Do not recreate a missing bind source as a local directory. Stop if an expected 
 
 Uptime Kuma, Syncthing, Gamarr, JDownloader, the qBittorrent Games importer, Igir automation, and the browser-upload bridge are retired. Their former Compose/appdata roots and dedicated listeners are absent. Do not redeploy them from repository history or dated change-log entries.
 
+Nextcloud AIO is retired as of 2026-11-08. Its tracked RC Compose project, AIO runtime and networks, loopback listeners, Homepage card, and two NFS automount contracts are absent. NPM proxy host `29` for `cloud.rotom.casa` is disabled and no active generated proxy configuration serves that hostname; its shared certificate remains in use and must not be removed as part of this retirement. Do not re-enable or redeploy the service without a new reviewed deployment. The former NAS shares are unmounted but retain their payload and Borg repository; the eight retained volumes are `nextcloud_aio_apache`, `nextcloud_aio_backup_cache`, `nextcloud_aio_database`, `nextcloud_aio_database_dump`, `nextcloud_aio_elasticsearch`, `nextcloud_aio_mastercontainer`, `nextcloud_aio_nextcloud`, and `nextcloud_aio_redis`. Deleting those artifacts is a separate destructive action that requires an exact scope and NAS snapshot/recycle-bin review.
+
 The former standalone Glances stack is retired, but Glances itself is current as the second service in Homepage's Compose file.
 
 The former Downloader, Documents, Filesync, singular Library, Infra, Media, Web, Gameserver, and Smarthome deployment roots are historical names. Current roots use the five domains in section 1.

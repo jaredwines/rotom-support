@@ -92,6 +92,14 @@ Keep future entries brief: the change log should point to the detailed documents
 
 ## Change History
 
+## 2026-11-08 — Retire Nextcloud AIO deployment
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `02-Docker-Services.md`.
+- **Status:** **Implemented / Verified, with retained protected state.** The active AIO service was retired; this RS update makes no additional live-system change.
+- **Changes:** Removed the tracked RC Nextcloud AIO Compose project in RC commit `7c7bf0f`; disabled only NPM proxy host `29` for `cloud.rotom.casa` while retaining shared certificate `24`; removed the Homepage Platform card; and removed the two Nextcloud NFS automount contracts and empty local mountpoints. The AIO runtime, its two Docker networks, and listeners `127.0.0.1:8083` and `127.0.0.1:11000` are absent.
+- **Evidence:** Post-retirement checks found no `nextcloud-aio-*` containers or networks, no listeners on the retired ports, no Nextcloud Homepage API entry, no Nextcloud fstab entries or mountpoints, a disabled NPM host `29`, and a clean pushed RC worktree. The environment blocked permanent deletion of the dedicated NAS payload and AIO volumes.
+- **Outstanding:** The unmounted `Nextcloud` and `Nextcloud_Backup` NAS payloads, the Borg repository, and eight `nextcloud_aio_*` volumes remain retained for a separately executed manual destructive purge. NAS snapshots/recycle retention remain outside this verification. Available Sources replacement remains manual by Jared.
+
 ## 2026-10-26 — Record the completed-media import and seeding contract
 
 - **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `internals/tooling/test-rr-runbooks`.
