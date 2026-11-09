@@ -4,7 +4,7 @@
 # Configuration semantics remain canonical in documents 02 through 07.
 # Index: 01-Rotom-Server-Inventory.md
 # Maintenance contract and protected history: 00-Rotom-Change-Log.md
-# Evidence date: 2026-10-24
+# Evidence date: mixed; Seafile startup path verified 2026-11-08
 #
 # CURRENT TOPOLOGY
 #
@@ -94,6 +94,8 @@
 #     rotom-nas-docker-recovery.service
 #     rotom-qbittorrent-media-guard.{service,timer}
 #     rotom-restic-backup.{service,timer}
+#     rotom-seafile.service                 guarded Cloud-automount activation and Seafile stack startup
+#     rotom-seafile.service.d/retry.conf    bounded 30-second guarded-start retry policy
 #     rotom-seafile-mariadb-dump.{service,timer}
 #     rotom-restic-backup-status-api.service
 #     rotom-weekly-maintenance.{service,timer}

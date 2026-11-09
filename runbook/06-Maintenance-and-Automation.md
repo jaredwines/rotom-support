@@ -73,6 +73,7 @@ Retain the unit name, trigger time, exit result, sanitized journal error, depend
 | Function | Current implementation |
 |---|---|
 | NAS-backed Docker recovery | `rotom-nas-docker-recovery.service`; validates and recovers only eligible Libraries consumers |
+| Seafile server startup | `rotom-seafile.service`; activates the existing Cloud automount through a read-only preflight, validates its fail-closed NAS guard, and retries guarded boot startup every 30 seconds for up to 15 minutes |
 | Rotom Restic Backup | `rotom-restic-backup.timer`; around `03:00`, persistent, randomized delay up to ten minutes |
 | Seafile MariaDB dump | `rotom-seafile-mariadb-dump.timer`; daily `02:30`, persistent, randomized delay up to five minutes; writes application-only dump under Platform appdata before Restic |
 | Seafile client for Jared | `seafile-client-jared.service`; boot-enabled user-scoped CLI client, runs as `jared` and synchronizes only `/home/jared/Seafile/shared-folder` |

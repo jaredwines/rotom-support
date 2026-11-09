@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 records the current supported deployment and observed runtime discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-08 — Require one Homepage health indicator per Docker application
+**Documentation updated:** 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -304,7 +304,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Arcane | Supported active service | Canonical URL `https://arcane.rotom.casa`; zero registered Projects. It has writable appdata and Docker socket, read-only Platform secrets, and no host Compose-directory bind or `PROJECTS_DIRECTORY`; this removes Projects UI access to Compose files but Docker-socket control remains root-equivalent. |
 | Command Center | Supported active service | Compose path `/srv/rotom/stacks/platform/command-center/compose.yaml`; immutable linux/amd64 image digest `sha256:6f31d2117647d1db593ea1cbd9f5cb9cf2128c93014faf23c77a746fb3d3df01`; container UID `10001`; loopback-only `127.0.0.1:8790:8787`; writable appdata and exact read-only password-file bind only; no Docker socket, NAS, Platform-wide secret, or optional AI-provider access. |
 | Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
-| Seafile | Supported active service | `platform/seafile/compose.yaml`; Seafile, MariaDB, and Redis use VM-local state except `/mnt/nas-cloud/seafile-data`, which is a non-creating NAS bind. `rotom-seafile.service` runs an exact-source, sentinel, and writable-mount guard before the stack can start. |
+| Seafile | Supported active service | `platform/seafile/compose.yaml`; Seafile, MariaDB, and Redis use VM-local state except `/mnt/nas-cloud/seafile-data`, which is a non-creating NAS bind. `rotom-seafile.service` first activates that existing automount with a read-only directory check, then runs an exact-source, sentinel, and writable-mount guard. Guard failure retries every 30 seconds for up to 15 minutes. |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported service; observed stopped | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8`; container exited cleanly before this task at 2026-10-20 18:01 PDT |
@@ -350,7 +350,7 @@ Homepage resolves `command-center.rotom.casa` to local NPM through its Compose `
 
 The scoped recovery helper validates the exact configured `/mnt/nas-libraries` NFS source plus `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and the qBittorrent readiness sentinel before considering container recovery. It may recover only supported NAS-dependent containers with an eligible restart policy and a recorded NAS/mount startup-failure signature. It leaves running and intentionally stopped containers unchanged.
 
-Seafile has an independent fail-closed guard. On 2026-11-08, its Cloud NFS mount returned read-only after a guest reboot and the guard prevented Seafile startup. After the exact mount was restored read/write, the service restarted normally. The guard proves safe startup refusal; it is not a runtime NAS-loss recovery mechanism.
+Seafile has an independent fail-closed boot contract. On 2026-11-08, the Cloud automount failed during boot before `RequiresMountsFor` allowed the service to run, so a retry policy on the service alone could not recover it. The corrected unit uses a read-only preflight of `/mnt/nas-cloud/seafile-data` to activate the existing automount before the guard; it then checks the exact source, readiness sentinel, data directory, and a disposable write probe. A guard failure retries every 30 seconds, bounded to 30 attempts over 15 minutes. The successful post-change reboot mounted the exact Cloud NFSv3 export read/write and started healthy Seafile, MariaDB, and Redis containers; direct and local-SNI checks returned `302`. Do not bypass the unit with `docker start` or `docker compose up`; inspect the Cloud mount through [04 — NAS and Storage](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount), then use `systemctl status rotom-seafile.service` and allow its bounded retry to operate. The guard proves safe startup refusal; it is not a runtime NAS-loss recovery mechanism.
 
 Do not recreate a missing bind source as a local directory. Stop if an expected path is not the documented NFS filesystem or if the source, ownership, mode, Compose definition, or recovery intent differs.
 

@@ -4,7 +4,7 @@
 **Document role:** Canonical source for NAS exports, NFS mounts, storage layout, automount behavior, and storage contracts
 **Hosts:** PVE hypervisor `pve`, Debian VM `rotom`, and UniFi UNAS 2  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-10-22 — Record Libraries read-only remount and verified media import recovery
+**Documentation updated:** 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -15,7 +15,7 @@ Record substantive changes to this document in the change log as part of the sam
 
 - Start with **1. Current Storage and Recovery Policy**, **2. Libraries Storage Contract**, and **3. PVE Backup Storage**.
 - Treat recovery-critical historical artifacts as evidence, not as current mount or ownership instructions.
-- Use **7. Recovery-Critical Historical Artifacts** only after reconciling it with the current two-mount contract, current identity data in document 07, and read-only live evidence.
+- Use **7. Recovery-Critical Historical Artifacts** only after reconciling it with the current three-mount contract, current identity data in document 07, and read-only live evidence.
 - Review **Outstanding / Needs Verification** before changing NAS metadata, exports, automounts, or protection assumptions.
 - This file owns NAS/NFS and storage contracts; backup retention and restore proof are canonical in document 05, while account and ACL policy are canonical in document 07.
 
@@ -29,7 +29,7 @@ Record substantive changes to this document in the change log as part of the sam
 
 ### 1. Outcome
 
-Restore one existing Rotom NFS contract to its documented source without editing storage configuration or writing test data. When the Libraries mount caused eligible Docker startup failures, run the installed helper so it recovers only covered containers with a recorded NAS/mount failure signature.
+Restore one existing Rotom NFS contract to its documented source without editing storage configuration or writing test data. When the Libraries mount caused eligible Docker startup failures, run the installed helper so it recovers only covered containers with a recorded NAS/mount failure signature. Seafile owns its separate Cloud startup behavior through `rotom-seafile.service`; do not substitute the Libraries helper for it.
 
 ### 2. Use this runbook when
 
@@ -60,8 +60,9 @@ The installed `rotom-nas-docker-recovery.service` validates the exact configured
 |---|---|---|
 | `/mnt/nas-rotom-restic-backup` | `mnt-nas\x2drotom\x2drestic\x2dbackup.mount` | Rotom Restic repository storage |
 | `/mnt/nas-libraries` | `mnt-nas\x2dlibraries.mount` | Libraries, torrents, games, and Paperless media |
+| `/mnt/nas-cloud` | `mnt-nas\x2dcloud.mount` | Seafile library payload and readiness sentinel |
 
-Both are NFS systemd automount contracts from NAS `192.168.1.70`. Exact export paths and ownership remain canonical in document 04 and live `findmnt --fstab` output.
+All three are NFS systemd automount contracts from NAS `192.168.1.70`. Exact export paths and ownership remain canonical in document 04 and live `findmnt --fstab` output.
 
 **Current verified state (2026-10-22):** the Libraries contract was observed active from its configured NFSv3 source but unexpectedly read-only, despite the `fstab` contract requesting defaults. After the exact source and configured mount options were verified, `mount -o remount,rw /mnt/nas-libraries` restored read/write access without changing `fstab`, NAS export configuration, ownership, or service configuration. Both Libraries systemd unit layers were active afterward. Radarr then successfully imported the previously blocked completed movie. This observation does not replace the normal preflight: verify the exact active source and read/write semantics before every write-dependent action or after a NAS/mount incident.
 
@@ -103,13 +104,13 @@ sudo docker ps -a \
   --format 'table {{.Names}}\t{{.Status}}'
 ```
 
-If `findmnt -M` reports only an `autofs` layer or no NFS filesystem, the NFS mount is not yet active. Do not treat the visible local mountpoint directory as proof that NAS data is available.
+If `findmnt -M` reports only an `autofs` layer or no NFS filesystem, the NFS mount is not yet active. Do not treat the visible local mountpoint directory as proof that NAS data is available. For the Cloud contract, inspect `rotom-seafile.service` too; its read-only preflight activates `/mnt/nas-cloud/seafile-data`, then its guard retries safely when the exact export is unavailable or unsuitable.
 
 ### 6. Stop conditions
 
 Stop before recovery if:
 
-- the target is not one of the five current contracts;
+- the target is not one of the three current guest NFS contracts;
 - `findmnt --fstab` shows a different source or options from document 04;
 - the target is mounted from an unexpected source;
 - an active write, backup, or other operation requires a stable filesystem before an exact-source read/write remount;
@@ -201,6 +202,23 @@ sudo systemctl restart rotom-nas-docker-recovery.service
 
 The helper may start only the covered containers that meet its restart-policy and recorded-error gates. It must not start intentionally stopped containers without a qualifying NAS error.
 
+#### Observe or recover the Cloud contract for Seafile
+
+Do not use the Libraries helper or start Seafile containers directly. The enabled `rotom-seafile.service` activates the existing Cloud automount with a read-only directory check, validates the exact export, `.rotom-seafile-ready` sentinel, `seafile-data` directory, and writeability, then retries every 30 seconds for up to 15 minutes on guard failure. Inspect its state and the exact mount; this does not write application or NAS data.
+
+**Read-only; may activate an existing automount**
+
+```bash
+systemctl status rotom-seafile.service \
+  'mnt-nas\x2dcloud.automount' \
+  'mnt-nas\x2dcloud.mount' \
+  --no-pager
+findmnt -M /mnt/nas-cloud -t nfs,nfs4 \
+  -o TARGET,SOURCE,FSTYPE,OPTIONS
+```
+
+If the service is retrying, leave it to perform its bounded recovery. Stop and investigate the NAS/export rather than weakening the guard if retries are exhausted, the source is wrong, the mount is read-only, the sentinel/data directory is missing, or Seafile's post-start health check fails. Once the exact mount is active read/write, service-specific verification belongs to document 02.
+
 ### 8. Verification
 
 **Read-only**
@@ -226,7 +244,7 @@ systemctl --failed --no-pager
 
 Success requires the exact NFS source, its automount, and read/write semantics to be active, the helper to complete successfully when it was needed, already-running containers to remain running, and only eligible NAS-failed containers to be recovered. Application-specific health and HTTP checks from documents 02/03 must also pass for every container the helper starts. An active mount with an inactive or failed automount is usable but remains degraded and is not complete recovery.
 
-For a non-Libraries mount, success is the exact NFS source plus the service-specific verification from its canonical reference. Do not run the Libraries recovery helper merely because another current mount was activated.
+For the Cloud mount, success also requires `rotom-seafile.service` active, healthy Seafile, MariaDB, and Redis containers, and the expected `302` sign-in response from the direct listener and local-SNI route; document 02 owns those checks. For another non-Libraries mount, success is the exact NFS source plus the service-specific verification from its canonical reference. Do not run the Libraries recovery helper merely because another current mount was activated.
 
 ### 9. Rollback or recovery
 
@@ -267,16 +285,17 @@ Revalidate this runbook whenever a mount/export, systemd unit, required director
 
 **Evidence date:** 2026-10-20.
 
-Rotom uses two current guest NFSv3 systemd automounts:
+Rotom uses three current guest NFSv3 systemd automounts:
 
 | NAS export | Guest mount | Root contract | Use |
 |---|---|---|---|
 | `Libraries/.data` | `/mnt/nas-libraries` | `988:5000`; current descendants use Libraries identity | Authoritative Libraries payload and Paperless media |
 | `Rotom_Restic_Backup/.data` | `/mnt/nas-rotom-restic-backup` | root-protected repository boundary | Rotom Restic Backup |
+| `Cloud/.data` | `/mnt/nas-cloud` | Platform `997:5002` | Seafile library payload and readiness sentinel |
 
 The fstab options are the standard NFS systemd-automount pattern with `_netdev`, `nofail`, `x-systemd.automount`, and `x-systemd.mount-timeout=30s`. Verify the exact source and live options rather than reconstructing an entry from this summary.
 
-On 2026-10-20, the unused Game Servers, Smart Home, and Hosted Websites contracts were retired after Jared reported deletion of their NAS drives. Their fstab entries, generated units, and verified-empty local mountpoint directories were removed; no running container used those paths. Final verification found only the two listed contracts, both with active mount and automount units and no failed systemd units. Accessing an automount can activate it; use the command labels in the runbook above.
+On 2026-10-20, the unused Game Servers, Smart Home, and Hosted Websites contracts were retired after Jared reported deletion of their NAS drives. Their fstab entries, generated units, and verified-empty local mountpoint directories were removed; no running container used those paths. The 2026-11-08 Cloud contract is the third current guest automount. After its corrected Seafile startup configuration, a reboot verified the Cloud automount and mount active at the exact NFSv3 source read/write, followed by healthy Seafile service and proxy checks. Accessing an automount can activate it; use the command labels in the runbook above.
 
 ## 2. Libraries Storage Contract
 

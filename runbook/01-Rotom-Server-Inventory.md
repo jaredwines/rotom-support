@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-08 — Route Docker application onboarding
+**Documentation updated:** 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -122,7 +122,7 @@ Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-d
 - **Rotom VM Backup:** Proxmox job `rotom-vm-daily`; VMID `100`; daily `05:00`; snapshot mode with zstd; retention `7 daily / 4 weekly / 6 monthly`.
 - **NAS-resident application data:** outside Rotom Restic because `/mnt` is excluded. Confirm the applicable NAS snapshot and isolated-restore path before relying on it.
 
-On 2026-11-08, Seafile CE was commissioned in Platform at `https://cloud.rotom.casa`. Its guarded systemd stack refuses startup unless the exact `/mnt/nas-cloud` NFS source, readiness sentinel, library-data directory, and a disposable write check are present. Seafile library data is NAS-resident; MariaDB, Redis, configuration, logs, and secrets are VM-local. A daily application-only MariaDB dump is created around 02:30 and falls under `/srv` Restic protection; its isolated MariaDB restore passed. The Cloud NAS snapshot policy is daily at midnight with limit 128; first scheduled observation remains pending.
+On 2026-11-08, Seafile CE was commissioned in Platform at `https://cloud.rotom.casa`. Its guarded systemd stack first accesses the existing `/mnt/nas-cloud/seafile-data` directory to activate the Cloud automount, then refuses startup unless the exact NFS source, readiness sentinel, library-data directory, and a disposable write check are present. A boot-time guard failure retries every 30 seconds for up to 15 minutes; it never starts containers against a missing, incorrect, or read-only export. A post-change reboot verified the exact Cloud NFSv3 export mounted read/write and Seafile, MariaDB, Redis, direct HTTP, and local-SNI proxy responses were healthy. Seafile library data is NAS-resident; MariaDB, Redis, configuration, logs, and secrets are VM-local. A daily application-only MariaDB dump is created around 02:30 and falls under `/srv` Restic protection; its isolated MariaDB restore passed. The Cloud NAS snapshot policy is daily at midnight with limit 128; first scheduled observation remains pending.
 
 The independent user-scoped Seafile CLI client runs through `seafile-client-jared.service` and synchronizes only the `shared-folder` library to `/home/jared/Seafile/shared-folder`. It runs as `jared`, keeps its state under `/home/jared/.ccnet`, and does not use `/mnt/nas-cloud`. A 2026-11-08 audit verified the service enabled/active, one registered synchronized library, private `jared:jared` directories, and completed client-server sync cycles. Treat client version `9.0.13` as a separately reviewable maintenance item, not a current failure.
 

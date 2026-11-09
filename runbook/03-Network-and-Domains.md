@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Rotom LAN, DNS, Docker networking, ports, Cloudflare, NPM, and domain routing
 **Hosts:** PVE hypervisor `pve` plus Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-08 — Clarify Docker application placement does not authorize exposure
+**Documentation updated:** 2026-11-08 — Reconcile the current Cloud NFS contract
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -116,12 +116,13 @@ Active Compose files no longer reference the former shared bridges `rotom-proxy`
 
 ## 4. Current NAS and NFS Connectivity
 
-Rotom's two current guest NFSv3 contracts use systemd automounts to `192.168.1.70`:
+Rotom's three current guest NFSv3 contracts use systemd automounts to `192.168.1.70`:
 
 - `/mnt/nas-libraries`
 - `/mnt/nas-rotom-restic-backup`
+- `/mnt/nas-cloud`
 
-Both are active after the 2026-10-20 retirement of the three unused Game Servers, Smart Home, and Hosted Websites contracts. An automount declaration is not a readiness guarantee; use document 04 to verify the exact source, mount type, generated units, ownership, and sentinel before recovering a consumer.
+The Libraries and backup contracts remained after the 2026-10-20 retirement of the three unused Game Servers, Smart Home, and Hosted Websites contracts; Cloud was added for Seafile on 2026-11-08. An automount declaration is not a readiness guarantee; use document 04 to verify the exact source, mount type, generated units, ownership, and sentinel before recovering a consumer.
 
 PVE has separate backup-only NAS paths for PVE Restic Backup and Rotom VM Backup. It does not mount guest application shares.
 

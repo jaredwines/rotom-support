@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-11-08 — Adopt Docker application placement and Homepage registration contract
+**Documentation updated:** 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -91,6 +91,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `08-Rotom-Directory-Tree.txt`.
+- **Status:** Implemented and verified.
+- **Changes:** Corrected Seafile's boot path after a Cloud automount failure skipped the service before its guard could run. `rotom-seafile.service` now activates the existing `/mnt/nas-cloud/seafile-data` automount with a read-only preflight, then runs the exact-source, sentinel, and disposable-write guard. It retries guarded startup every 30 seconds for up to 15 minutes; it never starts containers against a missing, incorrect, or read-only export. The prior hard `RequiresMountsFor` dependency was removed because it prevented that retry path.
+- **Evidence:** The initial reboot recorded `mnt-nas\\x2dcloud.mount` failed before Seafile received an invocation, leaving the direct listener unavailable and the proxy at `502`. After the targeted systemd correction, a subsequent reboot activated the exact Cloud NFSv3 export read/write, completed both preflight and guard, and started healthy Seafile, MariaDB, and Redis containers. The direct and local-SNI routes each returned the expected `302` sign-in redirect.
+- **Outstanding:** The Cloud NAS first scheduled snapshot and isolated NAS-file restore remain pending. Available Sources replacement remains manual by Jared.
 
 ## 2026-11-08 — Record verified Rotom Seafile client
 
