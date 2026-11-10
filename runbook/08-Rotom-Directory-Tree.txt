@@ -4,14 +4,14 @@
 # Configuration semantics remain canonical in documents 02 through 07.
 # Index: 01-Rotom-Server-Inventory.md
 # Maintenance contract and protected history: 00-Rotom-Change-Log.md
-# Evidence date: mixed; Seafile startup path verified 2026-11-08
+# Evidence date: mixed; Sambee service and browser upload verified 2026-11-09
 #
 # CURRENT TOPOLOGY
 #
-# The reviewed deployment now has 19 Compose definitions. The observed runtime has
-# 24 containers total, 21 running, 19 networks including Docker defaults, two named
-# volumes, and 15 unique image IDs. Command Center added one healthy container and
-# one private network. Palworld Jared, Palworld Fran, and Jared Wines were already
+# The reviewed deployment now has 21 Compose definitions. The observed runtime has
+# 28 containers total, 25 running, 21 networks including Docker defaults, two named
+# volumes, and 22 unique image IDs. Sambee is a healthy Platform container. Palworld
+# Jared, Palworld Fran, and Jared Wines were already
 # stopped before this task; two unused Arcane-created volumes also predate it.
 # Arcane's canonical URL is https://arcane.rotom.casa. It has zero registered Projects
 # and no host Compose-directory bind; only its own appdata is writable alongside its
@@ -29,6 +29,7 @@
 #       homepage/compose.yaml              Homepage + Glances
 #       nginx-proxy-manager/compose.yaml
 #       mkdocs-rr/compose.yaml              Rotom Support active stack
+#       sambee/compose.yaml                  loopback-only authenticated SMB-drive service
 #     libraries/
 #       jellyfin/compose.yaml
 #       paperless/compose.yaml
@@ -50,6 +51,8 @@
 #     platform/
 #       command-center/                     library.db plus active WAL/SHM; owner UID 10001, Platform GID
 #       seafile/{shared,database,backups}/  VM-local Seafile state and MariaDB dumps
+#       sambee/data/                         Sambee SQLite state; UID:GID 1000:1000
+#       sambee/overrides/api-DpbjD9iP.js     read-only buffered-upload compatibility override
 #       homepage/glances/glances.conf
 #       nginx-proxy-manager/{data,letsencrypt}/
 #       mkdocs-rr/{repository,source,site,site.previous}/  active guarded publisher state
@@ -67,6 +70,7 @@
 #   secrets/                              root-protected; values never document
 #     platform/command-center/password    exact read-only container secret; contents never document
 #     platform/seafile/seafile.env         Seafile runtime secrets; contents never document
+#     platform/sambee/                     protected Sambee credentials; contents never document
 #   scripts/                              root-owned declarative helpers
 #   backup-staging/                       ABSENT at the evidence date
 #

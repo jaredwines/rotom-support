@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Rotom LAN, DNS, Docker networking, ports, Cloudflare, NPM, and domain routing
 **Hosts:** PVE hypervisor `pve` plus Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-08 — Reconcile the current Cloud NFS contract
+**Documentation updated:** 2026-11-09 — Record Sambee HTTPS and WebSocket access path
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `04-NAS-and-Storage.md`  
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -96,6 +96,7 @@ Nginx Proxy Manager is host-networked and owns the guest's HTTP/HTTPS reverse-pr
 | `arcane.rotom.casa` | `127.0.0.1:3552` | Arcane's canonical URL; local-SNI HTTPS returned `200` after its configuration update. The former `arcane.smart-hub.xyz` application URL is retired. |
 | `command-center.rotom.casa` | `127.0.0.1:8790` | Private Command Center route; NPM host `28`, wildcard certificate `24`, forced HTTPS, and dedicated access list `2`. `/api/events` disables response buffering for SSE. |
 | `cloud.rotom.casa` | `127.0.0.1:8800` | Seafile CE; NPM host `29`, certificate `24`, forced HTTPS and WebSockets. Public and local-SNI checks return the expected sign-in redirect. |
+| `files.rotom.casa` | `127.0.0.1:8010` | Sambee authenticated SMB-drive service; NPM host `30`, wildcard certificate `24`, forced HTTPS, and WebSockets. Application authentication protects personal connections; direct and local-SNI checks returned `200`. |
 | `pve.rotom.casa` | HTTPS `192.168.1.68:8006` | Forced TLS, WebSockets, and the configured access list |
 | `jaredwines.com` | `127.0.0.1:7777` | Supported by NPM proxy host `8`; publication remains loopback-only, but the upstream container was observed stopped on 2026-10-24 |
 | `alohamillworks.com` | `127.0.0.1:7778` | Active website; local-SNI and external public probes returned `200` |
@@ -106,7 +107,7 @@ Application routes for Paperless, Prowlarr, RomM, Home Assistant, Homebridge, Je
 
 ## 3. Current Listener and Docker-Network Model
 
-Supported host or loopback publications include Homepage `3001`, Arcane `3552`, Command Center `127.0.0.1:8790`, Seafile `127.0.0.1:8800`, Rotom Support `127.0.0.1:8082`, qBittorrent `127.0.0.1:8080` plus trusted-LAN `192.168.1.69:8080`, Jared Wines `127.0.0.1:7777`, Aloha `7778`, Jellyfin `8096`, Home Assistant `8123`, Radarr `7878`, Sonarr `8989`, Prowlarr `9696`, NPM `80/81/443`, and the read-only Rotom backup-status API `8787`.
+Supported host or loopback publications include Homepage `3001`, Arcane `3552`, Command Center `127.0.0.1:8790`, Seafile `127.0.0.1:8800`, Sambee `127.0.0.1:8010`, Rotom Support `127.0.0.1:8082`, qBittorrent `127.0.0.1:8080` plus trusted-LAN `192.168.1.69:8080`, Jared Wines `127.0.0.1:7777`, Aloha `7778`, Jellyfin `8096`, Home Assistant `8123`, Radarr `7878`, Sonarr `8989`, Prowlarr `9696`, NPM `80/81/443`, and the read-only Rotom backup-status API `8787`.
 
 Command Center's upstream has no non-loopback host publication. NPM access list `2` permits loopback, trusted LAN `192.168.1.0/24`, and only Homepage's observed private monitor address `172.18.0.2`; it does not broaden the shared access list or permit the entire Docker subnet. Homepage resolves the hostname to `192.168.1.69` through `extra_hosts`. Revalidate the exact monitor identity after a Homepage network recreation; a stale exception should fail closed and show an unhealthy card rather than be widened automatically.
 
@@ -167,6 +168,7 @@ The pre-virtualization bare-metal interface, routing, UFW, Docker bridge-address
 - Preserve loopback-only exposure for Jared Wines and Rotom Support. Preserve qBittorrent's dual listener: loopback `127.0.0.1:8080` for NPM and trusted-LAN `192.168.1.69:8080` for Sonarr/Radarr. Preserve the trusted-LAN restriction on both the support hostname and its legacy redirect.
 - Preserve the five exact guest NFS sources from document 04.
 - Preserve Command Center's loopback-only listener, NPM host `28`, wildcard certificate `24`, dedicated access list `2`, and unbuffered `/api/events` location. Revalidate rather than broaden the exact Homepage monitor exception.
+- Preserve Sambee's loopback-only listener, NPM host `30`, wildcard certificate `24`, forced HTTPS, and WebSocket support. Its personal-drive isolation is enforced by Sambee authentication and connection ownership, not a host SMB mount.
 - Keep secret values out of diagnostic output and documentation.
 - Reconcile public DNS, LAN DNS, TLS, proxy configuration, listeners, and application state before changing any layer.
 

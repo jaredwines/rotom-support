@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 records the current supported deployment and observed runtime discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
+**Documentation updated:** 2026-11-09 — Deploy and verify Sambee SMB-drive access
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -281,13 +281,13 @@ If validation or verification fails, preserve the changed configuration and diag
 
 ## 1. Current Docker Runtime and Deployment State
 
-**Evidence date:** 2026-10-24.
+**Evidence date:** 2026-11-09.
 
-Command Center expanded the reviewed deployment to 19 Compose definitions and added one container plus one private Compose network. The observed post-deployment runtime has 24 containers total, 21 running, 19 networks including Docker defaults, two named volumes, and 15 unique image IDs. Command Center was healthy; no other container was started, stopped, or recreated by its deployment except the separately intended Homepage recreation. Palworld Jared, Palworld Fran, and Jared Wines were already stopped at 2026-10-20 18:01–18:02 PDT. The unused `arcane-backups` and `arcane-rustic-cache` volumes were created on 2026-10-21 and are not mounted by Arcane. These five unrelated items conflict with the earlier all-running/zero-volume baseline and require a separate desired-state decision.
+The reviewed deployment has 21 Compose definitions. The observed runtime has 28 containers total, 25 running, 21 networks including Docker defaults, two named volumes, and 22 unique image IDs. Sambee added one healthy Platform container; no unrelated container was intentionally started, stopped, or recreated by this deployment. Palworld Jared, Palworld Fran, and Jared Wines were already stopped at 2026-10-20 18:01–18:02 PDT. The unused `arcane-backups` and `arcane-rustic-cache` volumes were created on 2026-10-21 and are not mounted by Arcane. These five unrelated items conflict with the earlier all-running/zero-volume baseline and require a separate desired-state decision.
 
 | Domain | Compose definitions | Supported services |
 |---|---:|---|
-| Platform | 7 | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support, Seafile |
+| Platform | 8 | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support, Seafile, Sambee |
 | Libraries | 7 | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless |
 | Hosted Websites | 2 | Aloha Millworks, Jared Wines |
 | Game Servers | 2 | Palworld Jared, Palworld Fran |
@@ -305,6 +305,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Command Center | Supported active service | Compose path `/srv/rotom/stacks/platform/command-center/compose.yaml`; immutable linux/amd64 image digest `sha256:6f31d2117647d1db593ea1cbd9f5cb9cf2128c93014faf23c77a746fb3d3df01`; container UID `10001`; loopback-only `127.0.0.1:8790:8787`; writable appdata and exact read-only password-file bind only; no Docker socket, NAS, Platform-wide secret, or optional AI-provider access. |
 | Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
 | Seafile | Supported active service | `platform/seafile/compose.yaml`; Seafile, MariaDB, and Redis use VM-local state except `/mnt/nas-cloud/seafile-data`, which is a non-creating NAS bind. `rotom-seafile.service` first activates that existing automount with a read-only directory check, then runs an exact-source, sentinel, and writable-mount guard. Guard failure retries every 30 seconds for up to 15 minutes. |
+| Sambee | Supported active service | `platform/sambee/compose.yaml`; pinned image digest `sha256:6eba5da21ec64c4a0b9649645aaeae4f3f9d74d56787c2df5c67c019f8dac70e`; container UID:GID `1000:1000`; loopback-only `127.0.0.1:8010:8000`; writable local appdata only, with no NAS bind or Docker socket. Its SQLite database is staged consistently by Rotom Restic Backup. A read-only persisted asset override forces Sambee's built-in buffered browser-upload fallback; revalidate it before changing the image. |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported service; observed stopped | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8`; container exited cleanly before this task at 2026-10-20 18:01 PDT |
@@ -346,6 +347,8 @@ Homepage reaches Glances through service DNS on their private Compose network. N
 
 Homepage resolves `command-center.rotom.casa` to local NPM through its Compose `extra_hosts` entry. Command Center has its own private default network and no cross-project Docker dependency. Its persisted `library.db` uses WAL mode under `/srv/rotom/appdata/platform/command-center`; the exact password file is mounted read-only from `/srv/rotom/secrets/platform/command-center/password`.
 
+Homepage resolves `files.rotom.casa` to local NPM through its Compose `extra_hosts` entry. Sambee has its own private default network and persists its application database under `/srv/rotom/appdata/platform/sambee/data`; its remote SMB connections are application-managed rather than host mounts.
+
 ## 4. NAS-Backed Container Safety
 
 The scoped recovery helper validates the exact configured `/mnt/nas-libraries` NFS source plus `games/`, `movies/`, `shows/`, `torrents/`, `documents/paperless/`, and the qBittorrent readiness sentinel before considering container recovery. It may recover only supported NAS-dependent containers with an eligible restart policy and a recorded NAS/mount startup-failure signature. It leaves running and intentionally stopped containers unchanged.
@@ -372,6 +375,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 - Preserve the exact current NFS sources and mountpoints from document 04.
 - Preserve non-creating NAS binds, qBittorrent sentinel checks, and current container restart policy.
 - Preserve NPM database/certificate state, Home Assistant/Homebridge state, both Palworld worlds, Paperless VM-local state, and authoritative NAS payload.
+- Preserve Sambee's loopback-only listener, local appdata/secrets boundary, consistent SQLite staging, and read-only upload-compatibility override; revalidate the override against any new Sambee image before deployment.
 - Do not place secret values in Compose files or the RS.
 - Use a selected, verified backup or snapshot rather than reconstructing a retired service from historical prose.
 
@@ -380,6 +384,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 - Arcane deliberately has zero registered Projects and no access to host Compose directories. Its Docker socket remains root-equivalent; exact post-reset schedules and healing thresholds need a current readback if they matter operationally.
 - Determine the desired state of the three containers already stopped since 2026-10-20 and the two unused Arcane-created volumes from 2026-10-21 before changing them.
 - Revalidate Command Center's NPM monitor exception if Homepage no longer uses `172.18.0.2`; do not broaden it to an entire Docker subnet merely to restore monitoring.
+- The Sambee browser-asset override is version-specific; validate the upstream browser uploader and either retain, update, or remove the override as part of every Sambee image update.
 
 ## 8. Related Documentation
 

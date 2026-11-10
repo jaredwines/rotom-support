@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
+**Documentation updated:** 2026-11-09 — Deploy and verify Sambee SMB-drive access
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -91,6 +91,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-11-09 — Deploy and verify Sambee SMB-drive access
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, `internals/tooling/test-rr-runbooks`.
+- **Status:** Implemented and verified.
+- **Changes:** Deployed Platform Sambee at `files.rotom.casa` for authenticated, separate personal SMB-drive connections. Added the loopback-only service, NPM HTTPS/WebSocket route, Homepage card, protected Sambee state, consistent SQLite staging in Rotom Restic Backup, and a read-only, persisted browser compatibility override that selects Sambee's buffered upload fallback.
+- **Evidence:** Sambee was healthy with direct and local-SNI HTTPS `200` responses; its SQLite `quick_check` passed; the Restic worker completed successfully and an exact staged database restore passed `quick_check`; and Jared confirmed a real browser upload after the compatibility change. RC commits `b147d76` (service) and `37f9a7f` (upload compatibility) were pushed.
+- **Outstanding:** Revalidate the browser-asset override whenever the pinned Sambee image changes. Available Sources replacement remains manual by Jared.
 
 ## 2026-11-08 — Verify resilient Seafile startup after Cloud automount failure
 

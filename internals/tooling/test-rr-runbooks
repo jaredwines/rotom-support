@@ -134,10 +134,10 @@ require_text 07-Users-and-Permissions.md "### Rotom-side SSH client and access r
 require_text 07-Users-and-Permissions.md '`id_ed25519_github`'
 require_text 07-Users-and-Permissions.md 'Never use `chmod 777`'
 
-require_text 01-Rotom-Server-Inventory.md "The observed post-deployment runtime has 24 containers total, 21 running, 19 networks including Docker defaults, two named volumes, and 15 unique image IDs"
+require_text 01-Rotom-Server-Inventory.md "the observed runtime had 28 containers total, 25 running, 21 networks including Docker defaults, two named volumes, and 22 unique image IDs"
 require_text 01-Rotom-Server-Inventory.md "Rotom Support"
 require_text 02-Docker-Services.md '| Jared Wines | Supported service; observed stopped |'
-require_text 02-Docker-Services.md "The observed post-deployment runtime has 24 containers total, 21 running, 19 networks including Docker defaults, two named volumes, and 15 unique image IDs"
+require_text 02-Docker-Services.md "The observed runtime has 28 containers total, 25 running, 21 networks including Docker defaults, two named volumes, and 22 unique image IDs"
 require_text 02-Docker-Services.md '| Rotom Support | Supported active service |'
 require_text 02-Docker-Services.md '## Completed Media Import Contract'
 require_text 02-Docker-Services.md 'completed torrents seed for 30 minutes and then stop'
@@ -154,7 +154,7 @@ require_text 03-Network-and-Domains.md "Assigning a Docker application to a Roto
 require_text 06-Maintenance-and-Automation.md 'Docker-socket access remains root-equivalent'
 require_text 06-Maintenance-and-Automation.md '/srv/rotom/appdata/platform/mkdocs-rr/repository'
 require_text 07-Users-and-Permissions.md 'Aloha'\''s and Jared Wines'\'' site content is owned within Hosted Websites roots'
-require_text 08-Rotom-Directory-Tree.txt '24 containers total, 21 running, 19 networks including Docker defaults, two named'
+require_text 08-Rotom-Directory-Tree.txt '28 containers total, 25 running, 21 networks including Docker defaults, two named'
 require_text 08-Rotom-Directory-Tree.txt 'mkdocs-rr/compose.yaml'
 
 reject_text '| Jared Wines | **Needs Verification** |' "$REPO_ROOT/runbook"/0[1-8]-*
