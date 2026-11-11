@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 records the current supported deployment and observed runtime discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-10 — Deploy and verify Seerr media request portal
+**Documentation updated:** 2026-11-10 — Correct Seerr approval and cancellation behavior
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -24,6 +24,7 @@ Record substantive changes to this document in the change log as part of the sam
 - For a stopped or missing supported container, failed health check, direct application failure, or Docker-backed website outage, use the procedure immediately below.
 - Before deploying a new Docker application or adding its Homepage entry, use [Register a New Docker Application and Homepage Entry](#register-a-new-docker-application-and-homepage-entry).
 - For a completed movie or show missing from Jellyfin, follow [Completed Media Import Contract](#completed-media-import-contract) from the payload through Radarr or Sonarr import to Jellyfin detection.
+- To cancel a Seerr request that has already reached Sonarr, Radarr, or qBittorrent, use [Cancel an Active Seerr Delivery](#cancel-an-active-seerr-delivery). Do not assume deleting a Seerr request cancels downstream work.
 - **Update RC** means update the reviewed non-secret **Rotom Compose** configuration. Use [Update Rotom Compose Configuration](#update-rotom-compose-configuration) before applying the separately authorized service change.
 - If the direct listener works but proxy, TLS, DNS, routing, or public access fails, continue in [document 03](03-Network-and-Domains.md#diagnose-a-proxy-listener-dns-tls-routing-or-external-access-failure).
 - If a bind source is an unavailable NFS path, use [document 04](04-NAS-and-Storage.md#diagnose-and-recover-a-configured-nas-mount) before changing Docker state.
@@ -306,7 +307,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
 | Seafile | Supported active service | `platform/seafile/compose.yaml`; Seafile, MariaDB, and Redis use VM-local state except `/mnt/nas-cloud/seafile-data`, which is a non-creating NAS bind. `rotom-seafile.service` first activates that existing automount with a read-only directory check, then runs an exact-source, sentinel, and writable-mount guard. Guard failure retries every 30 seconds for up to 15 minutes. |
 | Sambee | Supported active service | `platform/sambee/compose.yaml`; pinned image digest `sha256:6eba5da21ec64c4a0b9649645aaeae4f3f9d74d56787c2df5c67c019f8dac70e`; container UID:GID `1000:1000`; loopback-only `127.0.0.1:8010:8000`; writable local appdata only, with no NAS bind or Docker socket. Its SQLite database is staged consistently by Rotom Restic Backup. A read-only persisted asset override forces Sambee's built-in buffered browser-upload fallback; revalidate it before changing the image. |
-| Seerr | Supported active service | `libraries/seerr/compose.yaml`; pinned image `ghcr.io/seerr-team/seerr:v3.5.1@sha256:d8fab675b55ad293ded98fd71efcfd46054cbad9746534ae1cc4794a88c0b3be`; image identity UID:GID `1000:1000`; loopback-only `127.0.0.1:5055:5055`; writable VM-local configuration at `/srv/rotom/appdata/libraries/seerr/config`; no NAS bind, Docker socket, privileged mode, or host secret mount. It links to Jellyfin at `http://192.168.1.69:8096` and its public Jellyfin route is `https://jellyfin.rotom.casa`. Its intended request policy is manual administrator approval; readback and a real request/import/Jellyfin delivery test were intentionally deferred. |
+| Seerr | Supported active service | `libraries/seerr/compose.yaml`; pinned image `ghcr.io/seerr-team/seerr:v3.5.1@sha256:d8fab675b55ad293ded98fd71efcfd46054cbad9746534ae1cc4794a88c0b3be`; image identity UID:GID `1000:1000`; loopback-only `127.0.0.1:5055:5055`; writable VM-local configuration at `/srv/rotom/appdata/libraries/seerr/config`; no NAS bind, Docker socket, privileged mode, or host secret mount. It links to Jellyfin at `http://192.168.1.69:8096` and its public Jellyfin route is `https://jellyfin.rotom.casa`. Its existing Sonarr and Radarr entries are their respective default servers. The sole current Seerr account is an owner, so its requests auto-approve; a separate non-admin requester account is required for a manual-approval queue. |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported service; observed stopped | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8`; container exited cleanly before this task at 2026-10-20 18:01 PDT |
@@ -323,6 +324,37 @@ Container state is time-sensitive. Diagnose current runtime state with the runbo
 Home Assistant's ZHA integration is configured for a ConBee II at `/dev/ttyACM0`. PVE VM 100 has USB passthrough for vendor/product `1cf1:0030`, configured by Jared. After the 2026-10-16 PVE reboot, the device was visible on Rotom and in the Home Assistant container. The numbered device path can change, and individual Zigbee device operation was not verified. Historical ConBee disconnection during PVE stability testing did not establish the cause of earlier resets; monitor PVE stability after reconnection.
 
 For a ZHA missing-device error, check the device on Rotom and inside Home Assistant before changing configuration. If absent on Rotom, Jared must inspect the physical adapter and PVE passthrough. If present on Rotom but absent in the container, assess container startup timing and the existing Compose configuration before any targeted recovery. Preserve Zigbee state and avoid replacing the coordinator or resetting its network as a diagnostic step.
+
+## Cancel an Active Seerr Delivery
+
+### Outcome, scope, and exclusions
+
+Cancel one exact Seerr-requested delivery without touching unrelated requests or downloads. A Seerr request record, the Sonarr/Radarr media record, an active qBittorrent torrent, and its partial payload are distinct resources. Deleting a request in Seerr does not remove a media record or torrent. Seerr has no current custom integration that cascades cancellation into qBittorrent.
+
+This procedure does not authorize a bulk queue cleanup, deletion by category, removal of a completed seeding torrent, or a new Seerr/qBittorrent automation. Deleting an active torrent and its data is destructive and requires explicit per-target authorization.
+
+### Canonical inputs and read-only preflight
+
+Identify the exact title, whether it is a movie or series, the associated Seerr request, and the intended outcome: remove only the Seerr record, cancel the active download, remove the *arr media record, or delete the torrent payload. In Sonarr or Radarr, inspect **Activity → Queue** and confirm the matching item is active and belongs to that exact title. In qBittorrent, confirm the matching torrent and payload before removal. Do not select based solely on category, an approximate title, or a shared tracker name.
+
+If Seerr shows **Remove from Sonarr** or **Remove from Radarr**, treat that as an *arr media-record action only; it is not verified as a qBittorrent cancellation path. The existing *arr entries are now configured as default servers, but no destructive post-correction removal test has been run.
+
+### Stop conditions
+
+Stop if the request, *arr media record, queue item, and qBittorrent torrent cannot be matched unambiguously; if the torrent is shared with another wanted item; if the intended file-deletion outcome is unclear; or if cancelling could violate a desired seed/share policy. Do not delete an approximate match or broaden the action to a queue/category.
+
+### Manual cancellation
+
+1. In Seerr, delete the exact request only after confirming that removing the Seerr record is intended. This does not stop a downstream torrent.
+2. For an active torrent, in the matching Sonarr or Radarr **Activity → Queue** item, use the client-removal action. Choose the application's explicit option that removes the item from the download client; use its blocklist/no-redownload behavior when the same release must not be selected again.
+3. If the explicit user-authorized outcome includes deleting the torrent payload, confirm the matching qBittorrent removal dialog specifies deletion of the torrent **and files** before confirming. If the *arr action leaves the torrent or its data behind, perform that one exact qBittorrent removal manually; do not use a bulk cleanup.
+4. Remove the Sonarr/Radarr media record only when it is no longer wanted. Verify the affected queue item and torrent are gone, then confirm unrelated queue items, torrents, and library files remain.
+
+Retain the exact title, request type, matching evidence, approved destructive scope, final Seerr/*arr/qBittorrent state, and any re-grab/blocklist result. Never retain API keys, cookies, or torrent contents.
+
+### Revalidation triggers
+
+Revalidate this procedure after Seerr, Sonarr, Radarr, qBittorrent, download-client policy, categories, seed/share policy, or any future cancellation automation changes. A custom one-click Seerr-to-qBittorrent cancellation path requires separate design, security review, implementation authorization, and verification.
 
 ## Completed Media Import Contract
 
@@ -381,7 +413,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 - Preserve non-creating NAS binds, qBittorrent sentinel checks, and current container restart policy.
 - Preserve NPM database/certificate state, Home Assistant/Homebridge state, both Palworld worlds, Paperless VM-local state, and authoritative NAS payload.
 - Preserve Sambee's loopback-only listener, local appdata/secrets boundary, consistent SQLite staging, and read-only upload-compatibility override; revalidate the override against any new Sambee image before deployment.
-- Preserve Seerr's pinned image, loopback-only listener, rootless image identity, VM-local configuration boundary, and no-NAS/no-Docker-socket/no-secret-mount contract. Reconfirm the request policy before relying on it, because its user-facing readback was intentionally deferred.
+- Preserve Seerr's pinned image, loopback-only listener, rootless image identity, VM-local configuration boundary, and no-NAS/no-Docker-socket/no-secret-mount contract. Preserve its Sonarr/Radarr default-server selection. Its sole owner account auto-approves requests, so a separate non-admin requester account is required before claiming manual approval.
 - Do not place secret values in Compose files or the RS.
 - Use a selected, verified backup or snapshot rather than reconstructing a retired service from historical prose.
 
@@ -391,7 +423,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 - Determine the desired state of the three containers already stopped since 2026-10-20 and the two unused Arcane-created volumes from 2026-10-21 before changing them.
 - Revalidate Command Center's NPM monitor exception if Homepage no longer uses `172.18.0.2`; do not broaden it to an entire Docker subnet merely to restore monitoring.
 - The Sambee browser-asset override is version-specific; validate the upstream browser uploader and either retain, update, or remove the override as part of every Sambee image update.
-- The Seerr approval setting and end-to-end request/import/Jellyfin behavior remain intentionally untested; do not infer them from the healthy container, route, or library match.
+- Seerr's owner-account auto-approval is verified. A separate non-admin requester account, manual-approval queue, destructive cancellation flow, and end-to-end request/import/Jellyfin delivery behavior remain unverified; do not infer them from the healthy container, route, or library match.
 
 ## 8. Related Documentation
 

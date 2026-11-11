@@ -92,6 +92,7 @@ require_text 01-Rotom-Server-Inventory.md "### Maintaining the Runbook-First Mod
 require_text 01-Rotom-Server-Inventory.md "00-Rotom-Change-Log.md#runbook-first-maintenance-standard"
 require_text 01-Rotom-Server-Inventory.md "SSH alias, target account, authentication method, or access-policy lookup"
 require_text 01-Rotom-Server-Inventory.md "Completed movie or show missing from Jellyfin"
+require_text 01-Rotom-Server-Inventory.md "Cancel a Seerr request or its active delivery"
 require_text 01-Rotom-Server-Inventory.md "Add a new Docker application or its Homepage entry"
 
 for file in 02-Docker-Services.md 03-Network-and-Domains.md 04-NAS-and-Storage.md \
@@ -141,6 +142,8 @@ require_text 02-Docker-Services.md "The observed runtime has 29 containers total
 require_text 02-Docker-Services.md '| Rotom Support | Supported active service |'
 require_text 02-Docker-Services.md '| Seerr | Supported active service |'
 require_text 02-Docker-Services.md '## Completed Media Import Contract'
+require_text 02-Docker-Services.md '## Cancel an Active Seerr Delivery'
+require_text 02-Docker-Services.md 'Deleting a request in Seerr does not remove a media record or torrent.'
 require_text 02-Docker-Services.md 'completed torrents seed for 30 minutes and then stop'
 require_text 02-Docker-Services.md 'the nested torrent bind at `/media/torrents` is intentionally read-only'
 require_text 04-NAS-and-Storage.md '`documents/paperless/` for authoritative Paperless media'

@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-11-10 — Deploy and verify Seerr media request portal
+**Documentation updated:** 2026-11-10 — Correct Seerr approval and cancellation behavior
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -91,6 +91,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-11-10 — Correct Seerr approval and cancellation behavior
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `internals/tooling/test-rr-runbooks`.
+- **Status:** Implemented / verified; cancellation procedure documented.
+- **Changes:** Corrected Seerr's existing Sonarr and Radarr entries so each is its respective default server, then restarted only Seerr. Recorded that the sole Seerr account is its owner and therefore auto-approves its own requests. Recorded the current manual cancellation path: removing a Seerr request does not cancel an already-sent *arr/qBittorrent delivery.
+- **Evidence:** Sanitized configuration inspection found both existing *arr entries had `isDefault: false`; each is now `true`. Seerr restarted healthy and returned its expected loopback redirect. Read-only database and service-log evidence showed one owner account and automatically approved requests sent to both Sonarr and Radarr.
+- **Outstanding:** A separate non-admin Seerr/Jellyfin requester account is required to establish a manual-approval queue. No custom Seerr-to-qBittorrent cancellation integration exists; deleting an active torrent and its payload remains an explicit, target-scoped destructive *arr/qBittorrent action. The original ticket remains in progress until its manual-approval acceptance criterion is met. Available Sources replacement remains manual by Jared.
 
 ## 2026-11-10 — Deploy and verify Seerr media request portal
 
