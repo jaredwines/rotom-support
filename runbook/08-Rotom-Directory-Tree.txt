@@ -4,15 +4,16 @@
 # Configuration semantics remain canonical in documents 02 through 07.
 # Index: 01-Rotom-Server-Inventory.md
 # Maintenance contract and protected history: 00-Rotom-Change-Log.md
-# Evidence date: mixed; Sambee service and browser upload verified 2026-11-09
+# Evidence date: mixed; Seerr deployment and backup evidence verified 2026-11-10
 #
 # CURRENT TOPOLOGY
 #
-# The reviewed deployment now has 21 Compose definitions. The observed runtime has
-# 28 containers total, 25 running, 21 networks including Docker defaults, two named
-# volumes, and 22 unique image IDs. Sambee is a healthy Platform container. Palworld
-# Jared, Palworld Fran, and Jared Wines were already
-# stopped before this task; two unused Arcane-created volumes also predate it.
+# The reviewed deployment now has 22 Compose definitions. The observed runtime has
+# 29 containers total, 26 running, 22 networks including Docker defaults, 14
+# volumes, and 22 unique image IDs. Seerr is a healthy Libraries container. Palworld
+# Jared, Palworld Fran, and Jared Wines were already stopped before this task; two
+# unused Arcane-created volumes also predate it. The 14-volume inventory conflicts
+# with the earlier two-named-volume record and needs separate ownership review.
 # Arcane's canonical URL is https://arcane.rotom.casa. It has zero registered Projects
 # and no host Compose-directory bind; only its own appdata is writable alongside its
 # Docker socket, while Platform secrets remain read-only.
@@ -37,6 +38,7 @@
 #       qbittorrentvpn/compose.yaml
 #       radarr/compose.yaml
 #       romm/compose.yaml
+#       seerr/compose.yaml                 loopback-only media-request service
 #       sonarr/compose.yaml
 #     hosted-websites/
 #       alohamillworks.com/compose.yaml
@@ -64,6 +66,7 @@
 #       romm/
 #       sonarr/
 #       jellyfin/
+#       seerr/config/                      protected Seerr settings and SQLite state; numeric owner 1000:1000
 #     hosted-websites/
 #     game-servers/
 #     smart-home/

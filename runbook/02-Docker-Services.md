@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Docker/Compose service inventory and deployment details
 **Scope:** Rotom workload layer; section 1 records the current supported deployment and observed runtime discrepancy
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-09 — Deploy and verify Sambee SMB-drive access
+**Documentation updated:** 2026-11-10 — Deploy and verify Seerr media request portal
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -218,7 +218,7 @@ Revalidate this runbook when a website's desired deployment state, Compose path,
 
 Use this procedure when Jared says **Update RC** or when recording a reviewed change to a tracked file in the nested Git working tree `/srv/rotom/stacks`, whose `origin` is `git@github.com:jaredwines/rotom-compose.git`. **RC** means **Rotom Compose**. The public remote holds only current non-secret configuration history and an off-site copy; it is not a secret store, a replacement for Restic/PVE/NAS recovery, or authority to recreate retired services.
 
-The reviewed allowlist is the 19 current `compose.yaml` definitions across `platform`, `libraries`, `hosted-websites`, `game-servers`, and `smart-home`, plus `platform/mkdocs-rr/mkdocs.yml`, `platform/mkdocs-rr/scripts/publish-source`, `README.md`, and `.gitignore`. Command Center's reviewed addition is `platform/command-center/compose.yaml`. Never add `/srv/rotom/secrets`, `/srv/rotom/appdata`, Docker volumes or `/var/lib/docker`, NAS data, databases, logs, certificates, credentials, `.env` files, generated output, `.git`, or historical `*.before-*`/`*.pre-*` files.
+The reviewed allowlist is the 22 current `compose.yaml` definitions across `platform`, `libraries`, `hosted-websites`, `game-servers`, and `smart-home`, plus `platform/mkdocs-rr/mkdocs.yml`, `platform/mkdocs-rr/scripts/publish-source`, `README.md`, and `.gitignore`. Never add `/srv/rotom/secrets`, `/srv/rotom/appdata`, Docker volumes or `/var/lib/docker`, NAS data, databases, logs, certificates, credentials, `.env` files, generated output, `.git`, or historical `*.before-*`/`*.pre-*` files.
 
 ### Read-only preflight and stop conditions
 
@@ -281,14 +281,14 @@ If validation or verification fails, preserve the changed configuration and diag
 
 ## 1. Current Docker Runtime and Deployment State
 
-**Evidence date:** 2026-11-09.
+**Evidence date:** 2026-11-10.
 
-The reviewed deployment has 21 Compose definitions. The observed runtime has 28 containers total, 25 running, 21 networks including Docker defaults, two named volumes, and 22 unique image IDs. Sambee added one healthy Platform container; no unrelated container was intentionally started, stopped, or recreated by this deployment. Palworld Jared, Palworld Fran, and Jared Wines were already stopped at 2026-10-20 18:01–18:02 PDT. The unused `arcane-backups` and `arcane-rustic-cache` volumes were created on 2026-10-21 and are not mounted by Arcane. These five unrelated items conflict with the earlier all-running/zero-volume baseline and require a separate desired-state decision.
+The reviewed deployment has 22 Compose definitions. The observed runtime has 29 containers total, 26 running, 22 networks including Docker defaults, 14 volumes, and 22 unique image IDs. Seerr added one healthy Libraries container; no unrelated container was intentionally started, stopped, recreated, or changed by this deployment. Palworld Jared, Palworld Fran, and Jared Wines were already stopped at 2026-10-20 18:01–18:02 PDT. The unused `arcane-backups` and `arcane-rustic-cache` volumes were created on 2026-10-21 and are not mounted by Arcane. The observed 14-volume inventory conflicts with the prior two-named-volume record and requires a separately authorized ownership/desired-state review; do not delete, recreate, or assign ownership to a volume merely to reconcile documentation.
 
 | Domain | Compose definitions | Supported services |
 |---|---:|---|
 | Platform | 8 | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support, Seafile, Sambee |
-| Libraries | 7 | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless |
+| Libraries | 8 | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless, Seerr |
 | Hosted Websites | 2 | Aloha Millworks, Jared Wines |
 | Game Servers | 2 | Palworld Jared, Palworld Fran |
 | Smart Home | 2 | Home Assistant, Homebridge |
@@ -306,6 +306,7 @@ The runtime uses local Docker root `/var/lib/docker`. Supported mutable state is
 | Cloudflare DDNS | Supported active service | Outbound-only DNS updater; explicit container DNS `192.168.1.1`; protected token remains under Platform secrets |
 | Seafile | Supported active service | `platform/seafile/compose.yaml`; Seafile, MariaDB, and Redis use VM-local state except `/mnt/nas-cloud/seafile-data`, which is a non-creating NAS bind. `rotom-seafile.service` first activates that existing automount with a read-only directory check, then runs an exact-source, sentinel, and writable-mount guard. Guard failure retries every 30 seconds for up to 15 minutes. |
 | Sambee | Supported active service | `platform/sambee/compose.yaml`; pinned image digest `sha256:6eba5da21ec64c4a0b9649645aaeae4f3f9d74d56787c2df5c67c019f8dac70e`; container UID:GID `1000:1000`; loopback-only `127.0.0.1:8010:8000`; writable local appdata only, with no NAS bind or Docker socket. Its SQLite database is staged consistently by Rotom Restic Backup. A read-only persisted asset override forces Sambee's built-in buffered browser-upload fallback; revalidate it before changing the image. |
+| Seerr | Supported active service | `libraries/seerr/compose.yaml`; pinned image `ghcr.io/seerr-team/seerr:v3.5.1@sha256:d8fab675b55ad293ded98fd71efcfd46054cbad9746534ae1cc4794a88c0b3be`; image identity UID:GID `1000:1000`; loopback-only `127.0.0.1:5055:5055`; writable VM-local configuration at `/srv/rotom/appdata/libraries/seerr/config`; no NAS bind, Docker socket, privileged mode, or host secret mount. It links to Jellyfin at `http://192.168.1.69:8096` and its public Jellyfin route is `https://jellyfin.rotom.casa`. Its intended request policy is manual administrator approval; readback and a real request/import/Jellyfin delivery test were intentionally deferred. |
 | Rotom Support | Supported active service | Read-only generated site from `/srv/rotom/{stacks,appdata}/platform/mkdocs-rr`; `mkdocs-rr` retains the loopback listener `127.0.0.1:8082` |
 | Aloha Millworks | Supported active site | Host publication `7778:80` |
 | Jared Wines | Supported service; observed stopped | Loopback-only `127.0.0.1:7777:80`; NPM proxy host `8`; container exited cleanly before this task at 2026-10-20 18:01 PDT |
@@ -331,6 +332,8 @@ The verified qBittorrent global share-limit policy is time-based: completed torr
 
 When a completed torrent does not appear in Jellyfin, diagnose the chain in order: confirm the payload is a supported media file rather than an executable or other invalid content; inspect Radarr or Sonarr activity/history and import errors; verify the qBittorrent category, state, and global share limits; confirm the final file exists in the authoritative movie or show root; then inspect Jellyfin's folder watcher or library scan. Do not weaken the read-only torrent bind merely to make a failed move succeed, and never open or execute a suspicious payload. If a bad release is confirmed, remove it through qBittorrent, mark or blocklist it in the responsible application, and search for a replacement.
 
+Seerr is the Libraries request frontend for movies and shows; it does not receive NAS media binds, replace Prowlarr, or bypass the established Radarr/Sonarr and qBittorrent import contract. When a real approved request is explicitly authorized, use this contract for diagnosis and retain the request, approval, Radarr/Sonarr, import, and Jellyfin outcomes. No live request, download, import, or Jellyfin delivery test was initiated during its deployment.
+
 ## RomM Upload and Metadata-Provider Contract
 
 RomM receives `/mnt/nas-libraries/games` at `/romm/library` through a non-creating read-only bind. Its only writable NAS exception is the non-creating nested bind `/mnt/nas-libraries/games/roms` at `/romm/library/roms`. Browser uploads therefore write to `/mnt/nas-libraries/games/roms/<platform>/`; they must not be used as a reason to grant RomM write access to the broader `games/` tree.
@@ -348,6 +351,8 @@ Homepage reaches Glances through service DNS on their private Compose network. N
 Homepage resolves `command-center.rotom.casa` to local NPM through its Compose `extra_hosts` entry. Command Center has its own private default network and no cross-project Docker dependency. Its persisted `library.db` uses WAL mode under `/srv/rotom/appdata/platform/command-center`; the exact password file is mounted read-only from `/srv/rotom/secrets/platform/command-center/password`.
 
 Homepage resolves `files.rotom.casa` to local NPM through its Compose `extra_hosts` entry. Sambee has its own private default network and persists its application database under `/srv/rotom/appdata/platform/sambee/data`; its remote SMB connections are application-managed rather than host mounts.
+
+Homepage's Libraries card for Seerr uses its Docker health only. Jared explicitly chose this service-specific exception to the usual endpoint-monitor preference; it deliberately has no `siteMonitor`, so it renders exactly one availability indicator.
 
 ## 4. NAS-Backed Container Safety
 
@@ -376,6 +381,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 - Preserve non-creating NAS binds, qBittorrent sentinel checks, and current container restart policy.
 - Preserve NPM database/certificate state, Home Assistant/Homebridge state, both Palworld worlds, Paperless VM-local state, and authoritative NAS payload.
 - Preserve Sambee's loopback-only listener, local appdata/secrets boundary, consistent SQLite staging, and read-only upload-compatibility override; revalidate the override against any new Sambee image before deployment.
+- Preserve Seerr's pinned image, loopback-only listener, rootless image identity, VM-local configuration boundary, and no-NAS/no-Docker-socket/no-secret-mount contract. Reconfirm the request policy before relying on it, because its user-facing readback was intentionally deferred.
 - Do not place secret values in Compose files or the RS.
 - Use a selected, verified backup or snapshot rather than reconstructing a retired service from historical prose.
 
@@ -385,6 +391,7 @@ The local `/srv/rotom/backup-staging` root is absent. Historical statements abou
 - Determine the desired state of the three containers already stopped since 2026-10-20 and the two unused Arcane-created volumes from 2026-10-21 before changing them.
 - Revalidate Command Center's NPM monitor exception if Homepage no longer uses `172.18.0.2`; do not broaden it to an entire Docker subnet merely to restore monitoring.
 - The Sambee browser-asset override is version-specific; validate the upstream browser uploader and either retain, update, or remove the override as part of every Sambee image update.
+- The Seerr approval setting and end-to-end request/import/Jellyfin behavior remain intentionally untested; do not infer them from the healthy container, route, or library match.
 
 ## 8. Related Documentation
 

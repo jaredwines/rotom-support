@@ -4,7 +4,7 @@
 **Document role:** Task-first starting page, symptom router, architecture overview, and source map
 **Hosts:** PVE hypervisor `pve` and portable Debian VM `rotom`  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-09 — Deploy and verify Sambee SMB-drive access
+**Documentation updated:** 2026-11-10 — Deploy and verify Seerr media request portal
 **Related canonical sources:** `02-Docker-Services.md`, `03-Network-and-Domains.md`, `04-NAS-and-Storage.md`, `05-Backup-and-Restore.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
 
@@ -77,16 +77,16 @@ Within each subject document, use the current-state sections first. Use historic
 
 ## 2. Current Rotom Summary
 
-**Evidence date:** 2026-11-09 unless a row states otherwise.
+**Evidence date:** 2026-11-10 unless a row states otherwise.
 
 Rotom is Debian 13 VMID 100 on Proxmox VE host `pve`. The guest uses reserved address `192.168.1.69`; PVE uses `192.168.1.68`; the UniFi NAS uses `192.168.1.70`.
 
-On 2026-11-09, the reviewed deployment had 21 Compose definitions and the observed runtime had 28 containers total, 25 running, 21 networks including Docker defaults, two named volumes, and 22 unique image IDs. Sambee is the newest Platform container. Palworld Jared, Palworld Fran, and Jared Wines were already stopped at 2026-10-20 18:01–18:02 PDT; the two unused Arcane-created volumes date from 2026-10-21. Those unrelated items conflict with the earlier all-running/zero-volume baseline and remain unresolved rather than being restarted or removed by this task. The active definitions remain grouped under five local domains:
+On 2026-11-10, the reviewed deployment had 22 Compose definitions and the observed runtime had 29 containers total, 26 running, 22 networks including Docker defaults, 14 volumes, and 22 unique image IDs. Seerr is the newest Libraries container. Palworld Jared, Palworld Fran, and Jared Wines were already stopped at 2026-10-20 18:01–18:02 PDT; the two unused Arcane-created volumes date from 2026-10-21. The observed 14-volume inventory conflicts with the prior two-named-volume record and requires a separately authorized ownership/desired-state review; no volume was created, removed, or changed by the Seerr deployment. Those unrelated items remain unresolved rather than being restarted or removed by this task. The active definitions remain grouped under five local domains:
 
 | Domain | Identity | Active roots | Current services |
 |---|---:|---|---|
 | Platform | `997:5002` | `/srv/rotom/{stacks,appdata,secrets}/platform` | Nginx Proxy Manager, Homepage with Glances, Arcane, Command Center, Cloudflare DDNS, Rotom Support, Seafile, Sambee |
-| Libraries | `127:5000` | `/srv/rotom/{stacks,appdata,secrets}/libraries` | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless |
+| Libraries | `127:5000` | `/srv/rotom/{stacks,appdata,secrets}/libraries` | Jellyfin, Radarr, Sonarr, Prowlarr, qBittorrentVPN, RomM, Paperless, Seerr |
 | Hosted Websites | `902:5004` | `/srv/rotom/{stacks,appdata}/hosted-websites` | Aloha Millworks, Jared Wines |
 | Game Servers | `995:5001` | `/srv/rotom/{stacks,appdata,secrets}/game-servers` | Palworld Jared, Palworld Fran |
 | Smart Home | `126:5003` | `/srv/rotom/{stacks,appdata}/smart-home` | Home Assistant, Homebridge |
@@ -117,7 +117,7 @@ Historical guest paths such as `/mnt/nas-media`, `/mnt/nas-library`, `/mnt/nas-d
 
 ## 4. Current Backup and Recovery Summary
 
-- **Rotom Restic Backup:** repository `/mnt/nas-rotom-restic-backup/rotom-restic-backup`; worker `/usr/local/sbin/rotom-restic-backup`; timer around `03:00`; retention `7 daily / 4 weekly / 12 monthly`; protected local credential path `/etc/restic/restic-repository-password`. The worker's consistent SQLite staging includes Command Center and Sambee; snapshot `3c5ea6b7` verified Command Center on 2026-10-24, and snapshot `5c11d86d` verified Sambee on 2026-11-09.
+- **Rotom Restic Backup:** repository `/mnt/nas-rotom-restic-backup/rotom-restic-backup`; worker `/usr/local/sbin/rotom-restic-backup`; timer around `03:00`; retention `7 daily / 4 weekly / 12 monthly`; protected local credential path `/etc/restic/restic-repository-password`. The worker's consistent SQLite staging includes Command Center and Sambee; snapshot `3c5ea6b7` verified Command Center on 2026-10-24, and snapshot `5c11d86d` verified Sambee on 2026-11-09. Seerr's VM-local configuration is included through the existing `/srv` scope; snapshot `eeb209e6` verified that its configuration paths are present, but no isolated Seerr restore was performed.
 - **PVE Restic Backup:** repository `/mnt/nas-pve-restic-backup/pve-restic-backup`; daily `04:00`; current credential path `/etc/restic/restic-repository-password` on PVE.
 - **Rotom VM Backup:** Proxmox job `rotom-vm-daily`; VMID `100`; daily `05:00`; snapshot mode with zstd; retention `7 daily / 4 weekly / 6 monthly`.
 - **NAS-resident application data:** outside Rotom Restic because `/mnt` is excluded. Confirm the applicable NAS snapshot and isolated-restore path before relying on it.

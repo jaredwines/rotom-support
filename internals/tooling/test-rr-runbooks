@@ -134,11 +134,12 @@ require_text 07-Users-and-Permissions.md "### Rotom-side SSH client and access r
 require_text 07-Users-and-Permissions.md '`id_ed25519_github`'
 require_text 07-Users-and-Permissions.md 'Never use `chmod 777`'
 
-require_text 01-Rotom-Server-Inventory.md "the observed runtime had 28 containers total, 25 running, 21 networks including Docker defaults, two named volumes, and 22 unique image IDs"
+require_text 01-Rotom-Server-Inventory.md "the observed runtime had 29 containers total, 26 running, 22 networks including Docker defaults, 14 volumes, and 22 unique image IDs"
 require_text 01-Rotom-Server-Inventory.md "Rotom Support"
 require_text 02-Docker-Services.md '| Jared Wines | Supported service; observed stopped |'
-require_text 02-Docker-Services.md "The observed runtime has 28 containers total, 25 running, 21 networks including Docker defaults, two named volumes, and 22 unique image IDs"
+require_text 02-Docker-Services.md "The observed runtime has 29 containers total, 26 running, 22 networks including Docker defaults, 14 volumes, and 22 unique image IDs"
 require_text 02-Docker-Services.md '| Rotom Support | Supported active service |'
+require_text 02-Docker-Services.md '| Seerr | Supported active service |'
 require_text 02-Docker-Services.md '## Completed Media Import Contract'
 require_text 02-Docker-Services.md 'completed torrents seed for 30 minutes and then stop'
 require_text 02-Docker-Services.md 'the nested torrent bind at `/media/torrents` is intentionally read-only'
@@ -150,11 +151,14 @@ require_text 07-Users-and-Permissions.md 'browser-uploaded ROM files were observ
 require_text 03-Network-and-Domains.md '`jaredwines.com` remains supported through NPM proxy host `8`'
 require_text 03-Network-and-Domains.md 'Glances no longer has a host listener'
 require_text 03-Network-and-Domains.md '`support.rotom.casa`'
+require_text 03-Network-and-Domains.md '`seerr.rotom.casa`'
 require_text 03-Network-and-Domains.md "Assigning a Docker application to a Rotom service domain or adding its Homepage entry is not a network decision."
 require_text 06-Maintenance-and-Automation.md 'Docker-socket access remains root-equivalent'
 require_text 06-Maintenance-and-Automation.md '/srv/rotom/appdata/platform/mkdocs-rr/repository'
 require_text 07-Users-and-Permissions.md 'Aloha'\''s and Jared Wines'\'' site content is owned within Hosted Websites roots'
-require_text 08-Rotom-Directory-Tree.txt '28 containers total, 25 running, 21 networks including Docker defaults, two named'
+require_text 07-Users-and-Permissions.md 'Seerr runs as image identity UID:GID `1000:1000`'
+require_text 08-Rotom-Directory-Tree.txt '29 containers total, 26 running, 22 networks including Docker defaults, 14'
+require_text 08-Rotom-Directory-Tree.txt 'seerr/compose.yaml'
 require_text 08-Rotom-Directory-Tree.txt 'mkdocs-rr/compose.yaml'
 
 reject_text '| Jared Wines | **Needs Verification** |' "$REPO_ROOT/runbook"/0[1-8]-*

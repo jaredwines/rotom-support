@@ -4,7 +4,7 @@
 **Document role:** Canonical source for Restic backup architecture, scope, retention, verification, restore evidence, and recovery boundaries
 **Recovery scope:** pre-migration Rotom plus current Proxmox/VM foundation  
 **Baseline verified:** Mixed evidence dates; see section-level evidence notes  
-**Documentation updated:** 2026-11-09 — Add and verify Sambee recovery staging
+**Documentation updated:** 2026-11-10 — Record Seerr backup evidence
 **Related canonical sources:** `01-Rotom-Server-Inventory.md`, `04-NAS-and-Storage.md`, `06-Maintenance-and-Automation.md`, `07-Users-and-Permissions.md`
 **Index:** [01-Rotom-Server-Inventory.md](01-Rotom-Server-Inventory.md)  
 **Change history and update rules:** [00-Rotom-Change-Log.md](00-Rotom-Change-Log.md)
@@ -483,6 +483,8 @@ The user-scoped Seafile client synchronizes only `shared-folder` to `/home/jared
 Command Center's appdata and exact password file fall under `/srv`, while the worker also creates `/var/backups/system-info/sqlite/command-center-library.db` as the preferred transactionally consistent database copy. On 2026-10-24, the application-generated backup passed `quick_check` and booted healthy in an isolated temporary container with the harmless recovery record present. Updated worker run `3c5ea6b7` completed snapshot, retention, and prune successfully; an exact `restic restore --verify` of its staged Command Center database verified one file, passed `quick_check`, and contained both harmless acceptance records. This proves the tested application and Restic-staged SQLite paths, not recovery of a future optional Codex login or any external AI credential.
 
 Sambee's appdata and protected credential files fall under `/srv`; the worker creates `/var/backups/system-info/sqlite/sambee.db` as the preferred transactionally consistent database copy. On 2026-11-09, Sambee's live database passed `quick_check`; manual Restic snapshot `5c11d86d` completed successfully; and an exact verified restore of the staged database passed `quick_check`. This verifies the VM-local Sambee application state and its Restic-staged SQLite recovery path, not recovery of the UniFi NAS data or SMB appliance credentials.
+
+Seerr's protected local application configuration, including its settings and SQLite database, is under `/srv/rotom/appdata/libraries/seerr/config` and is therefore included by the existing `/srv` source scope. Manual snapshot `eeb209e6` completed on 2026-11-10 at 19:53 PST after retention and prune; a sanitized file listing confirmed the Seerr configuration paths were captured. This proves snapshot presence only: no Seerr-consistent staging or isolated Seerr restore was performed, and it does not verify the intentionally deferred user-facing request flow.
 
 The latest documented automatic observation is snapshot `aad4a52e` from 2026-10-17 at 03:05 PDT, approximately 18.600 GiB. The service exited successfully after retention and prune. A same-day read-only preflight found the timer enabled and active, the exact NAS export mounted read/write, no concurrent Restic process, protected control-file permissions, readable snapshot metadata, and no failed systemd units. A standard `restic check` completed across all 22 snapshots with no errors. A separate `restic check --read-data` then read all 1,077 packs in 4 minutes 15 seconds and found no errors.
 

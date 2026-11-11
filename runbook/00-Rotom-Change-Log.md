@@ -4,7 +4,7 @@
 **Document role:** Canonical history of documentation/server changes, adopted decisions, corrections, status, outstanding checks, and the sole RS maintenance contract
 **Scope:** Rotom system history across bare metal, Proxmox host, and portable VM  
 **Baseline verified:** Historical record; evidence dates are entry-specific  
-**Documentation updated:** 2026-11-09 — Deploy and verify Sambee SMB-drive access
+**Documentation updated:** 2026-11-10 — Deploy and verify Seerr media request portal
 **Related canonical sources:** `01-Rotom-Server-Inventory.md` through `08-Rotom-Directory-Tree.txt`
 
 
@@ -91,6 +91,14 @@ Keep future entries brief: the change log should point to the detailed documents
 ```
 
 ## Change History
+
+## 2026-11-10 — Deploy and verify Seerr media request portal
+
+- **Files changed:** `00-Rotom-Change-Log.md`, `01-Rotom-Server-Inventory.md`, `02-Docker-Services.md`, `03-Network-and-Domains.md`, `05-Backup-and-Restore.md`, `07-Users-and-Permissions.md`, `08-Rotom-Directory-Tree.txt`, `internals/tooling/test-rr-runbooks`.
+- **Status:** Implemented / verified, with intentionally deferred user-facing acceptance checks.
+- **Changes:** Added Libraries Seerr at `seerr.rotom.casa`: a pinned, rootless, loopback-only container with VM-local configuration; NPM HTTPS route; and one Homepage Docker-health card. Seerr is linked to the existing Jellyfin, Radarr, and Sonarr services. Its request policy is intended to require administrator approval; no notification workflow was introduced.
+- **Evidence:** The container is healthy; direct and local-SNI HTTPS checks returned `200`; the NPM route uses wildcard certificate `24`, forced HTTPS, and no access list, matching the Jellyfin/Sonarr exposure policy. A Seerr library scan matched six Jellyfin media records. Rotom Restic snapshot `eeb209e6` completed at 2026-11-10 19:53 PST after retention/prune and contains Seerr configuration paths. RC commit `61d274c` was pushed.
+- **Outstanding:** Jared intentionally deferred manual-approval readback, availability UI review, and a real request/download/import/Jellyfin delivery test. Do not initiate one without explicit authorization. The current live Docker inventory has fourteen volumes, whereas the prior runbook recorded two named volumes; identify their ownership and desired state in a separately authorized review. Available Sources replacement remains manual by Jared.
 
 ## 2026-11-09 — Deploy and verify Sambee SMB-drive access
 
